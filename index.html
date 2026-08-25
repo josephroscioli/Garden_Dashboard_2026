@@ -374,8 +374,8 @@
     <header>
         <h1>🌱 Garden Dashboard</h1>
         <div style="display: flex; align-items: center; gap: 16px;">
-            <div id="stats-summary" style="font-size: 0.9rem; color: var(--text-light);">Tracking 8 Crop Type(s) | 7 Harvest Records</div>
-            <button class="btn btn-secondary" id="save-file-btn" onclick="saveDashboardToFile()">💾 Save Updated File</button>
+            <div id="stats-summary" style="font-size: 0.9rem; color: var(--text-light);">Tracking 8 Crop Type(s) | 11 Harvest Records</div>
+            <button class="btn btn-secondary" id="save-file-btn" onclick="saveDashboardToFile()" disabled="">⏳ Syncing...</button>
         </div>
     </header>
 
@@ -439,7 +439,7 @@
                     <td>2026-05-15</td>
                     <td>16</td>
                     <td>2026-07-27</td>
-                    <td><span class="badge">6 ears</span></td>
+                    <td><span class="badge">18 ears, 1 a, 1 c</span></td>
                     <td class="actions-cell">
                         <button class="icon-btn" onclick="editCrop('crop_corn')" title="Edit">✏️</button>
                         <button class="icon-btn delete" onclick="deleteCrop('crop_corn')" title="Hard Remove">🗑️</button>
@@ -449,7 +449,7 @@
                     <td>2026-05-20</td>
                     <td>4</td>
                     <td>2026-07-16</td>
-                    <td><span class="badge">10 count</span></td>
+                    <td><span class="badge">4 count</span></td>
                     <td class="actions-cell">
                         <button class="icon-btn" onclick="editCrop('crop_cucumbers')" title="Edit">✏️</button>
                         <button class="icon-btn delete" onclick="deleteCrop('crop_cucumbers')" title="Hard Remove">🗑️</button>
@@ -459,7 +459,7 @@
                     <td>2026-05-15</td>
                     <td>6</td>
                     <td>2026-08-15</td>
-                    <td><span class="badge">120 count</span></td>
+                    <td><span class="badge">12 count</span></td>
                     <td class="actions-cell">
                         <button class="icon-btn" onclick="editCrop('crop_tomatoes')" title="Edit">✏️</button>
                         <button class="icon-btn delete" onclick="deleteCrop('crop_tomatoes')" title="Hard Remove">🗑️</button>
@@ -489,7 +489,7 @@
                     <td>2026-05-10</td>
                     <td>6</td>
                     <td>2026-08-15</td>
-                    <td><span class="badge">2.875 lbs</span></td>
+                    <td><span class="badge">5.6875 lbs</span></td>
                     <td class="actions-cell">
                         <button class="icon-btn" onclick="editCrop('crop_potatoes')" title="Edit">✏️</button>
                         <button class="icon-btn delete" onclick="deleteCrop('crop_potatoes')" title="Hard Remove">🗑️</button>
@@ -509,7 +509,7 @@
                     <td>2026-04-15</td>
                     <td>10</td>
                     <td>2026-06-15</td>
-                    <td><span class="badge">1 lbs</span></td>
+                    <td><span class="badge">0</span></td>
                     <td class="actions-cell">
                         <button class="icon-btn" onclick="editCrop('crop_peas')" title="Edit">✏️</button>
                         <button class="icon-btn delete" onclick="deleteCrop('crop_peas')" title="Hard Remove">🗑️</button>
@@ -1543,6 +1543,38 @@
                             </tr>
                         </thead>
                         <tbody id="harvest-table-body"><tr>
+                    <td>2026-08-25</td>
+                    <td>Corn</td>
+                    <td><strong>10 ears</strong></td>
+                    <td class="actions-cell">
+                        <button class="icon-btn" onclick="editHarvest('_d228609r8')">✏️</button>
+                        <button class="icon-btn delete" onclick="deleteHarvest('_d228609r8')">🗑️</button>
+                    </td>
+                </tr><tr>
+                    <td>2026-08-25</td>
+                    <td>Corn</td>
+                    <td><strong>2 ears</strong></td>
+                    <td class="actions-cell">
+                        <button class="icon-btn" onclick="editHarvest('_l3h791lrp')">✏️</button>
+                        <button class="icon-btn delete" onclick="deleteHarvest('_l3h791lrp')">🗑️</button>
+                    </td>
+                </tr><tr>
+                    <td>2026-08-25</td>
+                    <td>Corn</td>
+                    <td><strong>1 a</strong></td>
+                    <td class="actions-cell">
+                        <button class="icon-btn" onclick="editHarvest('_ddtniv68r')">✏️</button>
+                        <button class="icon-btn delete" onclick="deleteHarvest('_ddtniv68r')">🗑️</button>
+                    </td>
+                </tr><tr>
+                    <td>2026-08-25</td>
+                    <td>Corn</td>
+                    <td><strong>1 c</strong></td>
+                    <td class="actions-cell">
+                        <button class="icon-btn" onclick="editHarvest('_cbqt7sr6e')">✏️</button>
+                        <button class="icon-btn delete" onclick="deleteHarvest('_cbqt7sr6e')">🗑️</button>
+                    </td>
+                </tr><tr>
                     <td>2026-08-22</td>
                     <td>Yellow Potatoes</td>
                     <td><strong>2.875 lbs</strong></td>
@@ -1552,8 +1584,16 @@
                     </td>
                 </tr><tr>
                     <td>2026-08-22</td>
+                    <td>Yellow Potatoes</td>
+                    <td><strong>2.8125 lbs</strong></td>
+                    <td class="actions-cell">
+                        <button class="icon-btn" onclick="editHarvest('h_2')">✏️</button>
+                        <button class="icon-btn delete" onclick="deleteHarvest('h_2')">🗑️</button>
+                    </td>
+                </tr><tr>
+                    <td>2026-08-22</td>
                     <td>Tomatoes</td>
-                    <td><strong>120 count</strong></td>
+                    <td><strong>12 count</strong></td>
                     <td class="actions-cell">
                         <button class="icon-btn" onclick="editHarvest('h_3')">✏️</button>
                         <button class="icon-btn delete" onclick="deleteHarvest('h_3')">🗑️</button>
@@ -1585,18 +1625,10 @@
                 </tr><tr>
                     <td>2026-07-16</td>
                     <td>Cucumbers</td>
-                    <td><strong>10 count</strong></td>
+                    <td><strong>4 count</strong></td>
                     <td class="actions-cell">
                         <button class="icon-btn" onclick="editHarvest('h_7')">✏️</button>
                         <button class="icon-btn delete" onclick="deleteHarvest('h_7')">🗑️</button>
-                    </td>
-                </tr><tr>
-                    <td>2026-07-01</td>
-                    <td>Peas (First-sown)</td>
-                    <td><strong>1 lbs</strong></td>
-                    <td class="actions-cell">
-                        <button class="icon-btn" onclick="editHarvest('_u7cb4eijj')">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteHarvest('_u7cb4eijj')">🗑️</button>
                     </td>
                 </tr></tbody>
                     </table>
