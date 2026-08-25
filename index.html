@@ -381,14 +381,14 @@
 	</header>
 
     <div class="nav-tabs">
-        <button class="tab-btn active" onclick="switchTab('inventory')">📦 Crop Inventory</button>
+        <button class="tab-btn" onclick="switchTab('inventory')">📦 Crop Inventory</button>
         <button class="tab-btn" onclick="switchTab('metrics')">📈 Metrics</button>
         <button class="tab-btn" onclick="switchTab('logs')">📝 Field Logs</button>
-        <button class="tab-btn" onclick="switchTab('harvest')">🧺 Harvest</button>
+        <button class="tab-btn active" onclick="switchTab('harvest')">🧺 Harvest</button>
     </div>
 
     <!-- TAB 1: CROP INVENTORY -->
-    <div id="tab-inventory" class="tab-content active">
+    <div id="tab-inventory" class="tab-content">
         <div class="grid">
             <div class="card">
                 <h2 id="crop-form-title">Add New Crop</h2>
@@ -1502,7 +1502,7 @@
     </div>
 
     <!-- TAB 4: HARVEST -->
-    <div id="tab-harvest" class="tab-content">
+    <div id="tab-harvest" class="tab-content active">
         <div class="grid">
             <div class="card">
                 <h2 id="harvest-form-title">Log Harvest</h2>
