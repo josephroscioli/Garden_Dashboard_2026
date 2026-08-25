@@ -31,7 +31,7 @@
         body {
             background-color: var(--bg);
             color: var(--text);
-            padding: 24px;
+            padding: 16px;
             max-width: 1400px;
             margin: 0 auto;
         }
@@ -39,10 +39,21 @@
         header {
             margin-bottom: 24px;
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+            flex-direction: column;
+            gap: 12px;
             border-bottom: 2px solid var(--border);
             padding-bottom: 16px;
+        }
+
+        @media (min-width: 768px) {
+            body {
+                padding: 24px;
+            }
+            header {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+            }
         }
 
         h1 {
@@ -53,18 +64,33 @@
             gap: 10px;
         }
 
+        .header-controls {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .last-updated {
+            font-size: 0.8rem;
+            color: var(--text-light);
+            font-weight: 500;
+        }
+
         .nav-tabs {
             display: flex;
-            gap: 8px;
+            gap: 6px;
             margin-bottom: 24px;
             background: #e8efe9;
             padding: 6px;
             border-radius: var(--radius);
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
         }
 
         .tab-btn {
-            flex: 1;
-            padding: 12px 20px;
+            flex: 1 0 auto;
+            padding: 10px 14px;
             border: none;
             background: transparent;
             font-weight: 600;
@@ -72,11 +98,12 @@
             cursor: pointer;
             border-radius: 8px;
             transition: all 0.2s ease;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+            gap: 6px;
+            white-space: nowrap;
         }
 
         .tab-btn:hover {
@@ -100,17 +127,32 @@
 
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            grid-template-columns: 1fr;
             gap: 24px;
             margin-bottom: 24px;
+        }
+
+        @media (min-width: 992px) {
+            .grid {
+                grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            }
+            .grid-span-2 {
+                grid-column: span 2;
+            }
         }
 
         .card {
             background: var(--surface);
             border-radius: var(--radius);
-            padding: 24px;
+            padding: 18px;
             box-shadow: var(--shadow);
             border: 1px solid var(--border);
+        }
+
+        @media (min-width: 768px) {
+            .card {
+                padding: 24px;
+            }
         }
 
         .card h2 {
@@ -192,12 +234,21 @@
             width: 100%;
             border-collapse: collapse;
             text-align: left;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
         }
 
         th, td {
-            padding: 12px 16px;
+            padding: 10px 12px;
             border-bottom: 1px solid var(--border);
+        }
+
+        @media (min-width: 768px) {
+            table {
+                font-size: 0.95rem;
+            }
+            th, td {
+                padding: 12px 16px;
+            }
         }
 
         th {
@@ -243,11 +294,11 @@
             padding: 20px;
             box-shadow: var(--shadow);
             border: 1px solid var(--border);
-            resize: both;
-            overflow: hidden; /* Prevents unwanted scrollbars */
+            resize: vertical;
+            overflow: hidden;
             display: flex;
             flex-direction: column;
-            min-width: 320px;
+            min-width: 100%;
             min-height: 300px;
             height: 420px;
             margin-bottom: 24px;
@@ -266,8 +317,7 @@
 
         .chart-controls .form-group {
             margin-bottom: 0;
-            flex: 1;
-            min-width: 120px;
+            flex: 1 1 120px;
         }
 
         canvas {
@@ -341,7 +391,7 @@
             background: white;
             padding: 24px;
             border-radius: var(--radius);
-            width: 100%;
+            width: 90%;
             max-width: 450px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.2);
         }
@@ -372,18 +422,22 @@
 <body>
 
     <header>
-    <h1>🌱 Garden Dashboard</h1>
-    <div style="display: flex; align-items: center; gap: 12px;">
-        <div id="stats-summary" style="font-size: 0.9rem; color: var(--text-light);">Tracking 8 Crop Type(s) | 6 Harvest Records</div>
-		<button class="btn btn-secondary" onclick="forceReloadLatest()">🔄 Load Latest from Cloud</button>
-		<button class="btn btn-secondary" id="save-file-btn" onclick="saveDashboardToFile()" style="background: rgb(236, 239, 241);">💾 Save &amp; Sync to GitHub</button>    </div>
-	</header>
+        <div>
+            <h1>🌱 Garden Dashboard</h1>
+            <div id="stats-summary" style="font-size: 0.9rem; color: var(--text-light); margin-top: 4px;">Tracking 8 Crop Type(s) | 6 Harvest Records</div>
+        </div>
+        <div class="header-controls">
+            <div id="last-updated-display" class="last-updated">Last Synced: N/A</div>
+            <button class="btn btn-secondary" onclick="forceReloadLatest()">🔄 Load Latest</button>
+            <button class="btn btn-secondary" id="save-file-btn" onclick="saveDashboardToFile()">💾 Save &amp; Sync to GitHub</button>
+        </div>
+    </header>
 
     <div class="nav-tabs">
-        <button class="tab-btn" onclick="switchTab('inventory')">📦 Crop Inventory</button>
-        <button class="tab-btn" onclick="switchTab('metrics')">📈 Metrics</button>
-        <button class="tab-btn active" onclick="switchTab('logs')">📝 Field Logs</button>
-        <button class="tab-btn" onclick="switchTab('harvest')">🧺 Harvest</button>
+        <button class="tab-btn" onclick="switchTab('inventory', this)">📦 Crop Inventory</button>
+        <button class="tab-btn" onclick="switchTab('metrics', this)">📈 Metrics</button>
+        <button class="tab-btn active" onclick="switchTab('logs', this)">📝 Field Logs</button>
+        <button class="tab-btn" onclick="switchTab('harvest', this)">🧺 Harvest</button>
     </div>
 
     <!-- TAB 1: CROP INVENTORY -->
@@ -420,7 +474,7 @@
                 </form>
             </div>
 
-            <div class="card" style="grid-column: span 2;">
+            <div class="card grid-span-2">
                 <h2>Master Crop Inventory</h2>
                 <div style="overflow-x: auto;">
                     <table>
@@ -434,87 +488,7 @@
                                 <th>Actions</th>
                             </tr>
                         </thead>
-                        <tbody id="inventory-table-body"><tr>
-                    <td><strong>Corn</strong></td>
-                    <td>2026-05-15</td>
-                    <td>16</td>
-                    <td>2026-07-27</td>
-                    <td><span class="badge">6 ears</span></td>
-                    <td class="actions-cell">
-                        <button class="icon-btn" onclick="editCrop('crop_corn')" title="Edit">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteCrop('crop_corn')" title="Hard Remove">🗑️</button>
-                    </td>
-                </tr><tr>
-                    <td><strong>Cucumbers</strong></td>
-                    <td>2026-05-20</td>
-                    <td>4</td>
-                    <td>2026-07-16</td>
-                    <td><span class="badge">4 count</span></td>
-                    <td class="actions-cell">
-                        <button class="icon-btn" onclick="editCrop('crop_cucumbers')" title="Edit">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteCrop('crop_cucumbers')" title="Hard Remove">🗑️</button>
-                    </td>
-                </tr><tr>
-                    <td><strong>Tomatoes</strong></td>
-                    <td>2026-05-15</td>
-                    <td>6</td>
-                    <td>2026-08-15</td>
-                    <td><span class="badge">12 count</span></td>
-                    <td class="actions-cell">
-                        <button class="icon-btn" onclick="editCrop('crop_tomatoes')" title="Edit">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteCrop('crop_tomatoes')" title="Hard Remove">🗑️</button>
-                    </td>
-                </tr><tr>
-                    <td><strong>Green Bush Beans (1st Sow)</strong></td>
-                    <td>2026-05-15</td>
-                    <td>12</td>
-                    <td>2026-07-15</td>
-                    <td><span class="badge">1.5 lbs</span></td>
-                    <td class="actions-cell">
-                        <button class="icon-btn" onclick="editCrop('crop_beans1')" title="Edit">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteCrop('crop_beans1')" title="Hard Remove">🗑️</button>
-                    </td>
-                </tr><tr>
-                    <td><strong>Carrots</strong></td>
-                    <td>2026-05-15</td>
-                    <td>20</td>
-                    <td>2026-08-01</td>
-                    <td><span class="badge">0</span></td>
-                    <td class="actions-cell">
-                        <button class="icon-btn" onclick="editCrop('crop_carrots')" title="Edit">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteCrop('crop_carrots')" title="Hard Remove">🗑️</button>
-                    </td>
-                </tr><tr>
-                    <td><strong>Yellow Potatoes</strong></td>
-                    <td>2026-05-10</td>
-                    <td>6</td>
-                    <td>2026-08-15</td>
-                    <td><span class="badge">2.875 lbs</span></td>
-                    <td class="actions-cell">
-                        <button class="icon-btn" onclick="editCrop('crop_potatoes')" title="Edit">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteCrop('crop_potatoes')" title="Hard Remove">🗑️</button>
-                    </td>
-                </tr><tr>
-                    <td><strong>Green Bush Beans (2nd Sow)</strong></td>
-                    <td>2026-06-15</td>
-                    <td>12</td>
-                    <td>2026-08-01</td>
-                    <td><span class="badge">1 lbs</span></td>
-                    <td class="actions-cell">
-                        <button class="icon-btn" onclick="editCrop('crop_beans2')" title="Edit">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteCrop('crop_beans2')" title="Hard Remove">🗑️</button>
-                    </td>
-                </tr><tr>
-                    <td><strong>Peas (First-sown)</strong></td>
-                    <td>2026-04-15</td>
-                    <td>10</td>
-                    <td>2026-06-15</td>
-                    <td><span class="badge">0</span></td>
-                    <td class="actions-cell">
-                        <button class="icon-btn" onclick="editCrop('crop_peas')" title="Edit">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteCrop('crop_peas')" title="Hard Remove">🗑️</button>
-                    </td>
-                </tr></tbody>
+                        <tbody id="inventory-table-body"></tbody>
                     </table>
                 </div>
             </div>
@@ -545,11 +519,11 @@
                     <input type="hidden" id="meas-id">
                     <div class="form-group">
                         <label>Select Crop</label>
-                        <select id="meas-crop" required=""><option value="crop_corn">Corn</option><option value="crop_cucumbers">Cucumbers</option><option value="crop_tomatoes">Tomatoes</option><option value="crop_beans1">Green Bush Beans (1st Sow)</option><option value="crop_carrots">Carrots</option><option value="crop_potatoes">Yellow Potatoes</option><option value="crop_beans2">Green Bush Beans (2nd Sow)</option><option value="crop_peas">Peas (First-sown)</option></select>
+                        <select id="meas-crop" required=""></select>
                     </div>
                     <div class="form-group">
                         <label>Metric Type</label>
-                        <select id="meas-metric" required=""><option value="m_height">Height (inches)</option></select>
+                        <select id="meas-metric" required=""></select>
                     </div>
                     <div class="form-group">
                         <label>Date</label>
@@ -570,16 +544,16 @@
         <div class="chart-container" id="chart-card">
             <h2>
                 Metric Visualization
-                <span style="font-size: 0.75rem; font-weight: normal; color: var(--text-light);">(Drag bottom-right corner to resize)</span>
+                <span style="font-size: 0.75rem; font-weight: normal; color: var(--text-light);">(Drag bottom handle to resize)</span>
             </h2>
             <div class="chart-controls">
                 <div class="form-group">
                     <label>Filter Crop</label>
-                    <select id="chart-filter-crop" onchange="renderChart()"><option value="ALL">All Crops</option><option value="crop_corn">Corn</option><option value="crop_cucumbers">Cucumbers</option><option value="crop_tomatoes">Tomatoes</option><option value="crop_beans1">Green Bush Beans (1st Sow)</option><option value="crop_carrots">Carrots</option><option value="crop_potatoes">Yellow Potatoes</option><option value="crop_beans2">Green Bush Beans (2nd Sow)</option><option value="crop_peas">Peas (First-sown)</option></select>
+                    <select id="chart-filter-crop" onchange="renderChart()"></select>
                 </div>
                 <div class="form-group">
                     <label>Filter Metric</label>
-                    <select id="chart-filter-metric" onchange="renderChart()"><option value="m_height">Height (inches)</option></select>
+                    <select id="chart-filter-metric" onchange="renderChart()"></select>
                 </div>
                 <div class="form-group">
                     <label>Y-Min Range</label>
@@ -591,7 +565,7 @@
                 </div>
                 <button class="btn btn-secondary" style="margin-top: auto;" onclick="autoscaleChart()">Autoscale</button>
             </div>
-            <canvas id="metricsChart" width="0" height="0"></canvas>
+            <canvas id="metricsChart"></canvas>
         </div>
 
         <div class="card">
@@ -607,700 +581,7 @@
                             <th>Actions</th>
                         </tr>
                     </thead>
-                    <tbody id="meas-table-body"><tr>
-                    <td>2026-08-22</td>
-                    <td>Tomatoes</td>
-                    <td>Height (inches)</td>
-                    <td><strong>52</strong></td>
-                    <td class="actions-cell">
-                        <button class="icon-btn" onclick="editMeas('meas_13')">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteMeas('meas_13')">🗑️</button>
-                    </td>
-                </tr><tr>
-                    <td>2026-08-22</td>
-                    <td>Yellow Potatoes</td>
-                    <td>Height (inches)</td>
-                    <td><strong>16</strong></td>
-                    <td class="actions-cell">
-                        <button class="icon-btn" onclick="editMeas('meas_25')">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteMeas('meas_25')">🗑️</button>
-                    </td>
-                </tr><tr>
-                    <td>2026-08-22</td>
-                    <td>Corn</td>
-                    <td>Height (inches)</td>
-                    <td><strong>104</strong></td>
-                    <td class="actions-cell">
-                        <button class="icon-btn" onclick="editMeas('meas_38')">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteMeas('meas_38')">🗑️</button>
-                    </td>
-                </tr><tr>
-                    <td>2026-08-22</td>
-                    <td>Green Bush Beans (1st Sow)</td>
-                    <td>Height (inches)</td>
-                    <td><strong>26</strong></td>
-                    <td class="actions-cell">
-                        <button class="icon-btn" onclick="editMeas('meas_57')">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteMeas('meas_57')">🗑️</button>
-                    </td>
-                </tr><tr>
-                    <td>2026-08-22</td>
-                    <td>Carrots</td>
-                    <td>Height (inches)</td>
-                    <td><strong>24</strong></td>
-                    <td class="actions-cell">
-                        <button class="icon-btn" onclick="editMeas('meas_69')">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteMeas('meas_69')">🗑️</button>
-                    </td>
-                </tr><tr>
-                    <td>2026-08-22</td>
-                    <td>Green Bush Beans (2nd Sow)</td>
-                    <td>Height (inches)</td>
-                    <td><strong>18</strong></td>
-                    <td class="actions-cell">
-                        <button class="icon-btn" onclick="editMeas('meas_77')">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteMeas('meas_77')">🗑️</button>
-                    </td>
-                </tr><tr>
-                    <td>2026-08-16</td>
-                    <td>Tomatoes</td>
-                    <td>Height (inches)</td>
-                    <td><strong>57</strong></td>
-                    <td class="actions-cell">
-                        <button class="icon-btn" onclick="editMeas('meas_12')">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteMeas('meas_12')">🗑️</button>
-                    </td>
-                </tr><tr>
-                    <td>2026-08-16</td>
-                    <td>Yellow Potatoes</td>
-                    <td>Height (inches)</td>
-                    <td><strong>18</strong></td>
-                    <td class="actions-cell">
-                        <button class="icon-btn" onclick="editMeas('meas_24')">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteMeas('meas_24')">🗑️</button>
-                    </td>
-                </tr><tr>
-                    <td>2026-08-16</td>
-                    <td>Corn</td>
-                    <td>Height (inches)</td>
-                    <td><strong>108</strong></td>
-                    <td class="actions-cell">
-                        <button class="icon-btn" onclick="editMeas('meas_37')">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteMeas('meas_37')">🗑️</button>
-                    </td>
-                </tr><tr>
-                    <td>2026-08-16</td>
-                    <td>Green Bush Beans (1st Sow)</td>
-                    <td>Height (inches)</td>
-                    <td><strong>25</strong></td>
-                    <td class="actions-cell">
-                        <button class="icon-btn" onclick="editMeas('meas_56')">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteMeas('meas_56')">🗑️</button>
-                    </td>
-                </tr><tr>
-                    <td>2026-08-16</td>
-                    <td>Carrots</td>
-                    <td>Height (inches)</td>
-                    <td><strong>21</strong></td>
-                    <td class="actions-cell">
-                        <button class="icon-btn" onclick="editMeas('meas_68')">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteMeas('meas_68')">🗑️</button>
-                    </td>
-                </tr><tr>
-                    <td>2026-08-16</td>
-                    <td>Green Bush Beans (2nd Sow)</td>
-                    <td>Height (inches)</td>
-                    <td><strong>17</strong></td>
-                    <td class="actions-cell">
-                        <button class="icon-btn" onclick="editMeas('meas_76')">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteMeas('meas_76')">🗑️</button>
-                    </td>
-                </tr><tr>
-                    <td>2026-08-08</td>
-                    <td>Tomatoes</td>
-                    <td>Height (inches)</td>
-                    <td><strong>53</strong></td>
-                    <td class="actions-cell">
-                        <button class="icon-btn" onclick="editMeas('meas_11')">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteMeas('meas_11')">🗑️</button>
-                    </td>
-                </tr><tr>
-                    <td>2026-08-08</td>
-                    <td>Yellow Potatoes</td>
-                    <td>Height (inches)</td>
-                    <td><strong>17</strong></td>
-                    <td class="actions-cell">
-                        <button class="icon-btn" onclick="editMeas('meas_23')">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteMeas('meas_23')">🗑️</button>
-                    </td>
-                </tr><tr>
-                    <td>2026-08-08</td>
-                    <td>Corn</td>
-                    <td>Height (inches)</td>
-                    <td><strong>103</strong></td>
-                    <td class="actions-cell">
-                        <button class="icon-btn" onclick="editMeas('meas_36')">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteMeas('meas_36')">🗑️</button>
-                    </td>
-                </tr><tr>
-                    <td>2026-08-08</td>
-                    <td>Green Bush Beans (1st Sow)</td>
-                    <td>Height (inches)</td>
-                    <td><strong>25</strong></td>
-                    <td class="actions-cell">
-                        <button class="icon-btn" onclick="editMeas('meas_55')">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteMeas('meas_55')">🗑️</button>
-                    </td>
-                </tr><tr>
-                    <td>2026-08-08</td>
-                    <td>Carrots</td>
-                    <td>Height (inches)</td>
-                    <td><strong>22</strong></td>
-                    <td class="actions-cell">
-                        <button class="icon-btn" onclick="editMeas('meas_67')">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteMeas('meas_67')">🗑️</button>
-                    </td>
-                </tr><tr>
-                    <td>2026-08-08</td>
-                    <td>Green Bush Beans (2nd Sow)</td>
-                    <td>Height (inches)</td>
-                    <td><strong>16</strong></td>
-                    <td class="actions-cell">
-                        <button class="icon-btn" onclick="editMeas('meas_75')">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteMeas('meas_75')">🗑️</button>
-                    </td>
-                </tr><tr>
-                    <td>2026-08-01</td>
-                    <td>Tomatoes</td>
-                    <td>Height (inches)</td>
-                    <td><strong>57</strong></td>
-                    <td class="actions-cell">
-                        <button class="icon-btn" onclick="editMeas('meas_10')">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteMeas('meas_10')">🗑️</button>
-                    </td>
-                </tr><tr>
-                    <td>2026-08-01</td>
-                    <td>Yellow Potatoes</td>
-                    <td>Height (inches)</td>
-                    <td><strong>18</strong></td>
-                    <td class="actions-cell">
-                        <button class="icon-btn" onclick="editMeas('meas_22')">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteMeas('meas_22')">🗑️</button>
-                    </td>
-                </tr><tr>
-                    <td>2026-08-01</td>
-                    <td>Corn</td>
-                    <td>Height (inches)</td>
-                    <td><strong>99</strong></td>
-                    <td class="actions-cell">
-                        <button class="icon-btn" onclick="editMeas('meas_35')">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteMeas('meas_35')">🗑️</button>
-                    </td>
-                </tr><tr>
-                    <td>2026-08-01</td>
-                    <td>Green Bush Beans (1st Sow)</td>
-                    <td>Height (inches)</td>
-                    <td><strong>22</strong></td>
-                    <td class="actions-cell">
-                        <button class="icon-btn" onclick="editMeas('meas_54')">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteMeas('meas_54')">🗑️</button>
-                    </td>
-                </tr><tr>
-                    <td>2026-08-01</td>
-                    <td>Carrots</td>
-                    <td>Height (inches)</td>
-                    <td><strong>19</strong></td>
-                    <td class="actions-cell">
-                        <button class="icon-btn" onclick="editMeas('meas_66')">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteMeas('meas_66')">🗑️</button>
-                    </td>
-                </tr><tr>
-                    <td>2026-08-01</td>
-                    <td>Green Bush Beans (2nd Sow)</td>
-                    <td>Height (inches)</td>
-                    <td><strong>16</strong></td>
-                    <td class="actions-cell">
-                        <button class="icon-btn" onclick="editMeas('meas_74')">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteMeas('meas_74')">🗑️</button>
-                    </td>
-                </tr><tr>
-                    <td>2026-07-24</td>
-                    <td>Tomatoes</td>
-                    <td>Height (inches)</td>
-                    <td><strong>52</strong></td>
-                    <td class="actions-cell">
-                        <button class="icon-btn" onclick="editMeas('meas_9')">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteMeas('meas_9')">🗑️</button>
-                    </td>
-                </tr><tr>
-                    <td>2026-07-24</td>
-                    <td>Yellow Potatoes</td>
-                    <td>Height (inches)</td>
-                    <td><strong>16</strong></td>
-                    <td class="actions-cell">
-                        <button class="icon-btn" onclick="editMeas('meas_21')">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteMeas('meas_21')">🗑️</button>
-                    </td>
-                </tr><tr>
-                    <td>2026-07-24</td>
-                    <td>Corn</td>
-                    <td>Height (inches)</td>
-                    <td><strong>72</strong></td>
-                    <td class="actions-cell">
-                        <button class="icon-btn" onclick="editMeas('meas_34')">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteMeas('meas_34')">🗑️</button>
-                    </td>
-                </tr><tr>
-                    <td>2026-07-24</td>
-                    <td>Cucumbers</td>
-                    <td>Height (inches)</td>
-                    <td><strong>57</strong></td>
-                    <td class="actions-cell">
-                        <button class="icon-btn" onclick="editMeas('meas_46')">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteMeas('meas_46')">🗑️</button>
-                    </td>
-                </tr><tr>
-                    <td>2026-07-24</td>
-                    <td>Green Bush Beans (1st Sow)</td>
-                    <td>Height (inches)</td>
-                    <td><strong>18</strong></td>
-                    <td class="actions-cell">
-                        <button class="icon-btn" onclick="editMeas('meas_53')">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteMeas('meas_53')">🗑️</button>
-                    </td>
-                </tr><tr>
-                    <td>2026-07-24</td>
-                    <td>Carrots</td>
-                    <td>Height (inches)</td>
-                    <td><strong>17</strong></td>
-                    <td class="actions-cell">
-                        <button class="icon-btn" onclick="editMeas('meas_65')">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteMeas('meas_65')">🗑️</button>
-                    </td>
-                </tr><tr>
-                    <td>2026-07-24</td>
-                    <td>Green Bush Beans (2nd Sow)</td>
-                    <td>Height (inches)</td>
-                    <td><strong>21</strong></td>
-                    <td class="actions-cell">
-                        <button class="icon-btn" onclick="editMeas('meas_73')">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteMeas('meas_73')">🗑️</button>
-                    </td>
-                </tr><tr>
-                    <td>2026-07-16</td>
-                    <td>Tomatoes</td>
-                    <td>Height (inches)</td>
-                    <td><strong>50</strong></td>
-                    <td class="actions-cell">
-                        <button class="icon-btn" onclick="editMeas('meas_8')">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteMeas('meas_8')">🗑️</button>
-                    </td>
-                </tr><tr>
-                    <td>2026-07-16</td>
-                    <td>Yellow Potatoes</td>
-                    <td>Height (inches)</td>
-                    <td><strong>17</strong></td>
-                    <td class="actions-cell">
-                        <button class="icon-btn" onclick="editMeas('meas_20')">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteMeas('meas_20')">🗑️</button>
-                    </td>
-                </tr><tr>
-                    <td>2026-07-16</td>
-                    <td>Corn</td>
-                    <td>Height (inches)</td>
-                    <td><strong>67</strong></td>
-                    <td class="actions-cell">
-                        <button class="icon-btn" onclick="editMeas('meas_33')">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteMeas('meas_33')">🗑️</button>
-                    </td>
-                </tr><tr>
-                    <td>2026-07-16</td>
-                    <td>Cucumbers</td>
-                    <td>Height (inches)</td>
-                    <td><strong>64</strong></td>
-                    <td class="actions-cell">
-                        <button class="icon-btn" onclick="editMeas('meas_45')">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteMeas('meas_45')">🗑️</button>
-                    </td>
-                </tr><tr>
-                    <td>2026-07-16</td>
-                    <td>Green Bush Beans (1st Sow)</td>
-                    <td>Height (inches)</td>
-                    <td><strong>17</strong></td>
-                    <td class="actions-cell">
-                        <button class="icon-btn" onclick="editMeas('meas_52')">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteMeas('meas_52')">🗑️</button>
-                    </td>
-                </tr><tr>
-                    <td>2026-07-16</td>
-                    <td>Carrots</td>
-                    <td>Height (inches)</td>
-                    <td><strong>12</strong></td>
-                    <td class="actions-cell">
-                        <button class="icon-btn" onclick="editMeas('meas_64')">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteMeas('meas_64')">🗑️</button>
-                    </td>
-                </tr><tr>
-                    <td>2026-07-16</td>
-                    <td>Green Bush Beans (2nd Sow)</td>
-                    <td>Height (inches)</td>
-                    <td><strong>10</strong></td>
-                    <td class="actions-cell">
-                        <button class="icon-btn" onclick="editMeas('meas_72')">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteMeas('meas_72')">🗑️</button>
-                    </td>
-                </tr><tr>
-                    <td>2026-07-09</td>
-                    <td>Tomatoes</td>
-                    <td>Height (inches)</td>
-                    <td><strong>41</strong></td>
-                    <td class="actions-cell">
-                        <button class="icon-btn" onclick="editMeas('meas_7')">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteMeas('meas_7')">🗑️</button>
-                    </td>
-                </tr><tr>
-                    <td>2026-07-09</td>
-                    <td>Yellow Potatoes</td>
-                    <td>Height (inches)</td>
-                    <td><strong>19</strong></td>
-                    <td class="actions-cell">
-                        <button class="icon-btn" onclick="editMeas('meas_19')">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteMeas('meas_19')">🗑️</button>
-                    </td>
-                </tr><tr>
-                    <td>2026-07-09</td>
-                    <td>Corn</td>
-                    <td>Height (inches)</td>
-                    <td><strong>50</strong></td>
-                    <td class="actions-cell">
-                        <button class="icon-btn" onclick="editMeas('meas_32')">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteMeas('meas_32')">🗑️</button>
-                    </td>
-                </tr><tr>
-                    <td>2026-07-09</td>
-                    <td>Cucumbers</td>
-                    <td>Height (inches)</td>
-                    <td><strong>50</strong></td>
-                    <td class="actions-cell">
-                        <button class="icon-btn" onclick="editMeas('meas_44')">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteMeas('meas_44')">🗑️</button>
-                    </td>
-                </tr><tr>
-                    <td>2026-07-09</td>
-                    <td>Green Bush Beans (1st Sow)</td>
-                    <td>Height (inches)</td>
-                    <td><strong>14</strong></td>
-                    <td class="actions-cell">
-                        <button class="icon-btn" onclick="editMeas('meas_51')">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteMeas('meas_51')">🗑️</button>
-                    </td>
-                </tr><tr>
-                    <td>2026-07-09</td>
-                    <td>Carrots</td>
-                    <td>Height (inches)</td>
-                    <td><strong>10</strong></td>
-                    <td class="actions-cell">
-                        <button class="icon-btn" onclick="editMeas('meas_63')">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteMeas('meas_63')">🗑️</button>
-                    </td>
-                </tr><tr>
-                    <td>2026-07-09</td>
-                    <td>Green Bush Beans (2nd Sow)</td>
-                    <td>Height (inches)</td>
-                    <td><strong>7</strong></td>
-                    <td class="actions-cell">
-                        <button class="icon-btn" onclick="editMeas('meas_71')">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteMeas('meas_71')">🗑️</button>
-                    </td>
-                </tr><tr>
-                    <td>2026-07-03</td>
-                    <td>Tomatoes</td>
-                    <td>Height (inches)</td>
-                    <td><strong>45</strong></td>
-                    <td class="actions-cell">
-                        <button class="icon-btn" onclick="editMeas('meas_6')">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteMeas('meas_6')">🗑️</button>
-                    </td>
-                </tr><tr>
-                    <td>2026-07-03</td>
-                    <td>Yellow Potatoes</td>
-                    <td>Height (inches)</td>
-                    <td><strong>15</strong></td>
-                    <td class="actions-cell">
-                        <button class="icon-btn" onclick="editMeas('meas_18')">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteMeas('meas_18')">🗑️</button>
-                    </td>
-                </tr><tr>
-                    <td>2026-07-03</td>
-                    <td>Corn</td>
-                    <td>Height (inches)</td>
-                    <td><strong>46</strong></td>
-                    <td class="actions-cell">
-                        <button class="icon-btn" onclick="editMeas('meas_31')">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteMeas('meas_31')">🗑️</button>
-                    </td>
-                </tr><tr>
-                    <td>2026-07-03</td>
-                    <td>Cucumbers</td>
-                    <td>Height (inches)</td>
-                    <td><strong>28</strong></td>
-                    <td class="actions-cell">
-                        <button class="icon-btn" onclick="editMeas('meas_43')">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteMeas('meas_43')">🗑️</button>
-                    </td>
-                </tr><tr>
-                    <td>2026-07-03</td>
-                    <td>Green Bush Beans (1st Sow)</td>
-                    <td>Height (inches)</td>
-                    <td><strong>16</strong></td>
-                    <td class="actions-cell">
-                        <button class="icon-btn" onclick="editMeas('meas_50')">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteMeas('meas_50')">🗑️</button>
-                    </td>
-                </tr><tr>
-                    <td>2026-07-03</td>
-                    <td>Carrots</td>
-                    <td>Height (inches)</td>
-                    <td><strong>12</strong></td>
-                    <td class="actions-cell">
-                        <button class="icon-btn" onclick="editMeas('meas_62')">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteMeas('meas_62')">🗑️</button>
-                    </td>
-                </tr><tr>
-                    <td>2026-07-03</td>
-                    <td>Green Bush Beans (2nd Sow)</td>
-                    <td>Height (inches)</td>
-                    <td><strong>10</strong></td>
-                    <td class="actions-cell">
-                        <button class="icon-btn" onclick="editMeas('meas_70')">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteMeas('meas_70')">🗑️</button>
-                    </td>
-                </tr><tr>
-                    <td>2026-06-27</td>
-                    <td>Tomatoes</td>
-                    <td>Height (inches)</td>
-                    <td><strong>34</strong></td>
-                    <td class="actions-cell">
-                        <button class="icon-btn" onclick="editMeas('meas_5')">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteMeas('meas_5')">🗑️</button>
-                    </td>
-                </tr><tr>
-                    <td>2026-06-27</td>
-                    <td>Yellow Potatoes</td>
-                    <td>Height (inches)</td>
-                    <td><strong>18</strong></td>
-                    <td class="actions-cell">
-                        <button class="icon-btn" onclick="editMeas('meas_17')">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteMeas('meas_17')">🗑️</button>
-                    </td>
-                </tr><tr>
-                    <td>2026-06-27</td>
-                    <td>Corn</td>
-                    <td>Height (inches)</td>
-                    <td><strong>28</strong></td>
-                    <td class="actions-cell">
-                        <button class="icon-btn" onclick="editMeas('meas_30')">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteMeas('meas_30')">🗑️</button>
-                    </td>
-                </tr><tr>
-                    <td>2026-06-27</td>
-                    <td>Cucumbers</td>
-                    <td>Height (inches)</td>
-                    <td><strong>16</strong></td>
-                    <td class="actions-cell">
-                        <button class="icon-btn" onclick="editMeas('meas_42')">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteMeas('meas_42')">🗑️</button>
-                    </td>
-                </tr><tr>
-                    <td>2026-06-27</td>
-                    <td>Green Bush Beans (1st Sow)</td>
-                    <td>Height (inches)</td>
-                    <td><strong>8</strong></td>
-                    <td class="actions-cell">
-                        <button class="icon-btn" onclick="editMeas('meas_49')">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteMeas('meas_49')">🗑️</button>
-                    </td>
-                </tr><tr>
-                    <td>2026-06-27</td>
-                    <td>Carrots</td>
-                    <td>Height (inches)</td>
-                    <td><strong>7</strong></td>
-                    <td class="actions-cell">
-                        <button class="icon-btn" onclick="editMeas('meas_61')">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteMeas('meas_61')">🗑️</button>
-                    </td>
-                </tr><tr>
-                    <td>2026-06-22</td>
-                    <td>Tomatoes</td>
-                    <td>Height (inches)</td>
-                    <td><strong>29</strong></td>
-                    <td class="actions-cell">
-                        <button class="icon-btn" onclick="editMeas('meas_4')">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteMeas('meas_4')">🗑️</button>
-                    </td>
-                </tr><tr>
-                    <td>2026-06-22</td>
-                    <td>Yellow Potatoes</td>
-                    <td>Height (inches)</td>
-                    <td><strong>19</strong></td>
-                    <td class="actions-cell">
-                        <button class="icon-btn" onclick="editMeas('meas_16')">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteMeas('meas_16')">🗑️</button>
-                    </td>
-                </tr><tr>
-                    <td>2026-06-22</td>
-                    <td>Corn</td>
-                    <td>Height (inches)</td>
-                    <td><strong>16</strong></td>
-                    <td class="actions-cell">
-                        <button class="icon-btn" onclick="editMeas('meas_29')">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteMeas('meas_29')">🗑️</button>
-                    </td>
-                </tr><tr>
-                    <td>2026-06-22</td>
-                    <td>Cucumbers</td>
-                    <td>Height (inches)</td>
-                    <td><strong>10</strong></td>
-                    <td class="actions-cell">
-                        <button class="icon-btn" onclick="editMeas('meas_41')">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteMeas('meas_41')">🗑️</button>
-                    </td>
-                </tr><tr>
-                    <td>2026-06-22</td>
-                    <td>Green Bush Beans (1st Sow)</td>
-                    <td>Height (inches)</td>
-                    <td><strong>9</strong></td>
-                    <td class="actions-cell">
-                        <button class="icon-btn" onclick="editMeas('meas_48')">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteMeas('meas_48')">🗑️</button>
-                    </td>
-                </tr><tr>
-                    <td>2026-06-22</td>
-                    <td>Carrots</td>
-                    <td>Height (inches)</td>
-                    <td><strong>8</strong></td>
-                    <td class="actions-cell">
-                        <button class="icon-btn" onclick="editMeas('meas_60')">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteMeas('meas_60')">🗑️</button>
-                    </td>
-                </tr><tr>
-                    <td>2026-06-17</td>
-                    <td>Tomatoes</td>
-                    <td>Height (inches)</td>
-                    <td><strong>24</strong></td>
-                    <td class="actions-cell">
-                        <button class="icon-btn" onclick="editMeas('meas_3')">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteMeas('meas_3')">🗑️</button>
-                    </td>
-                </tr><tr>
-                    <td>2026-06-17</td>
-                    <td>Yellow Potatoes</td>
-                    <td>Height (inches)</td>
-                    <td><strong>18</strong></td>
-                    <td class="actions-cell">
-                        <button class="icon-btn" onclick="editMeas('meas_15')">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteMeas('meas_15')">🗑️</button>
-                    </td>
-                </tr><tr>
-                    <td>2026-06-17</td>
-                    <td>Corn</td>
-                    <td>Height (inches)</td>
-                    <td><strong>16</strong></td>
-                    <td class="actions-cell">
-                        <button class="icon-btn" onclick="editMeas('meas_28')">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteMeas('meas_28')">🗑️</button>
-                    </td>
-                </tr><tr>
-                    <td>2026-06-17</td>
-                    <td>Cucumbers</td>
-                    <td>Height (inches)</td>
-                    <td><strong>9</strong></td>
-                    <td class="actions-cell">
-                        <button class="icon-btn" onclick="editMeas('meas_40')">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteMeas('meas_40')">🗑️</button>
-                    </td>
-                </tr><tr>
-                    <td>2026-06-17</td>
-                    <td>Green Bush Beans (1st Sow)</td>
-                    <td>Height (inches)</td>
-                    <td><strong>2</strong></td>
-                    <td class="actions-cell">
-                        <button class="icon-btn" onclick="editMeas('meas_47')">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteMeas('meas_47')">🗑️</button>
-                    </td>
-                </tr><tr>
-                    <td>2026-06-17</td>
-                    <td>Carrots</td>
-                    <td>Height (inches)</td>
-                    <td><strong>5</strong></td>
-                    <td class="actions-cell">
-                        <button class="icon-btn" onclick="editMeas('meas_59')">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteMeas('meas_59')">🗑️</button>
-                    </td>
-                </tr><tr>
-                    <td>2026-06-11</td>
-                    <td>Tomatoes</td>
-                    <td>Height (inches)</td>
-                    <td><strong>18</strong></td>
-                    <td class="actions-cell">
-                        <button class="icon-btn" onclick="editMeas('meas_2')">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteMeas('meas_2')">🗑️</button>
-                    </td>
-                </tr><tr>
-                    <td>2026-06-11</td>
-                    <td>Yellow Potatoes</td>
-                    <td>Height (inches)</td>
-                    <td><strong>16</strong></td>
-                    <td class="actions-cell">
-                        <button class="icon-btn" onclick="editMeas('meas_14')">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteMeas('meas_14')">🗑️</button>
-                    </td>
-                </tr><tr>
-                    <td>2026-06-11</td>
-                    <td>Corn</td>
-                    <td>Height (inches)</td>
-                    <td><strong>9</strong></td>
-                    <td class="actions-cell">
-                        <button class="icon-btn" onclick="editMeas('meas_27')">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteMeas('meas_27')">🗑️</button>
-                    </td>
-                </tr><tr>
-                    <td>2026-06-11</td>
-                    <td>Cucumbers</td>
-                    <td>Height (inches)</td>
-                    <td><strong>5</strong></td>
-                    <td class="actions-cell">
-                        <button class="icon-btn" onclick="editMeas('meas_39')">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteMeas('meas_39')">🗑️</button>
-                    </td>
-                </tr><tr>
-                    <td>2026-06-11</td>
-                    <td>Carrots</td>
-                    <td>Height (inches)</td>
-                    <td><strong>4.5</strong></td>
-                    <td class="actions-cell">
-                        <button class="icon-btn" onclick="editMeas('meas_58')">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteMeas('meas_58')">🗑️</button>
-                    </td>
-                </tr><tr>
-                    <td>2026-06-06</td>
-                    <td>Tomatoes</td>
-                    <td>Height (inches)</td>
-                    <td><strong>16</strong></td>
-                    <td class="actions-cell">
-                        <button class="icon-btn" onclick="editMeas('meas_1')">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteMeas('meas_1')">🗑️</button>
-                    </td>
-                </tr><tr>
-                    <td>2026-06-06</td>
-                    <td>Corn</td>
-                    <td>Height (inches)</td>
-                    <td><strong>4</strong></td>
-                    <td class="actions-cell">
-                        <button class="icon-btn" onclick="editMeas('meas_26')">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteMeas('meas_26')">🗑️</button>
-                    </td>
-                </tr></tbody>
+                    <tbody id="meas-table-body"></tbody>
                 </table>
             </div>
         </div>
@@ -1319,52 +600,7 @@
                     </div>
                     <div class="form-group">
                         <label>Tag Crops</label>
-                        <div class="tag-select-container" id="log-tags-container">
-                <label class="tag-option">
-                    <input type="checkbox" value="ALL" id="tag-all" onchange="toggleAllTags(this)">
-                    <strong>All Crops</strong>
-                </label>
-            
-                    <label class="tag-option">
-                        <input type="checkbox" value="crop_corn" class="crop-tag-chk">
-                        Corn
-                    </label>
-                
-                    <label class="tag-option">
-                        <input type="checkbox" value="crop_cucumbers" class="crop-tag-chk">
-                        Cucumbers
-                    </label>
-                
-                    <label class="tag-option">
-                        <input type="checkbox" value="crop_tomatoes" class="crop-tag-chk">
-                        Tomatoes
-                    </label>
-                
-                    <label class="tag-option">
-                        <input type="checkbox" value="crop_beans1" class="crop-tag-chk">
-                        Green Bush Beans (1st Sow)
-                    </label>
-                
-                    <label class="tag-option">
-                        <input type="checkbox" value="crop_carrots" class="crop-tag-chk">
-                        Carrots
-                    </label>
-                
-                    <label class="tag-option">
-                        <input type="checkbox" value="crop_potatoes" class="crop-tag-chk">
-                        Yellow Potatoes
-                    </label>
-                
-                    <label class="tag-option">
-                        <input type="checkbox" value="crop_beans2" class="crop-tag-chk">
-                        Green Bush Beans (2nd Sow)
-                    </label>
-                
-                    <label class="tag-option">
-                        <input type="checkbox" value="crop_peas" class="crop-tag-chk">
-                        Peas (First-sown)
-                    </label>
-                </div>
+                        <div class="tag-select-container" id="log-tags-container"></div>
                     </div>
                     <div class="form-group">
                         <label>Log Entry / Notes</label>
@@ -1377,123 +613,19 @@
                 </form>
             </div>
 
-            <div class="card" style="grid-column: span 2;">
+            <div class="card grid-span-2">
                 <h2>Field Journal</h2>
                 <div style="overflow-x: auto;">
                     <table>
                         <thead>
                             <tr>
-                                <th style="width: 120px;">Date</th>
-                                <th style="width: 200px;">Tagged Crops</th>
+                                <th style="width: 110px;">Date</th>
+                                <th style="width: 180px;">Tagged Crops</th>
                                 <th>Notes</th>
-                                <th style="width: 100px;">Actions</th>
+                                <th style="width: 90px;">Actions</th>
                             </tr>
                         </thead>
-                        <tbody id="logs-table-body"><tr>
-                    <td>2026-08-22</td>
-                    <td><span class="badge">Yellow Potatoes</span></td>
-                    <td style="white-space: pre-wrap;">[Crop Status] Potato harvest weight: 2 lbs 14 oz.</td>
-                    <td class="actions-cell">
-                        <button class="icon-btn" onclick="editLog('log_1')">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteLog('log_1')">🗑️</button>
-                    </td>
-                </tr><tr>
-                    <td>2026-08-22</td>
-                    <td><span class="badge">Tomatoes</span> <span class="badge">Green Bush Beans (1st Sow)</span> <span class="badge">Green Bush Beans (2nd Sow)</span> <span class="badge">Yellow Potatoes</span> <span class="badge">Carrots</span> <span class="badge">Corn</span></td>
-                    <td style="white-space: pre-wrap;">[Crop Status] Big harvest day! Harvested many tomatoes and green beans (both actively producing). Harvested 3 potato plants (2 volunteer, 1 intentional) yielding 2 lbs 13 oz total of large tubers. Heights logged: Carrots (24"), 1st Sow Beans (26"), 2nd Sow Beans (18"), Tomatoes (52"), Potatoes (16"), Corn (104").</td>
-                    <td class="actions-cell">
-                        <button class="icon-btn" onclick="editLog('log_2')">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteLog('log_2')">🗑️</button>
-                    </td>
-                </tr><tr>
-                    <td>2026-08-16</td>
-                    <td><span class="badge">Corn</span> <span class="badge">Tomatoes</span> <span class="badge">Green Bush Beans (2nd Sow)</span></td>
-                    <td style="white-space: pre-wrap;">[Crop Status] First amazing sweet corn harvested! Corn height reached 108". Tomatoes rebounded to 57", and 2nd Sow Bush Beans reached 17".</td>
-                    <td class="actions-cell">
-                        <button class="icon-btn" onclick="editLog('log_3')">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteLog('log_3')">🗑️</button>
-                    </td>
-                </tr><tr>
-                    <td>2026-08-08</td>
-                    <td><span class="badge">Corn</span> <span class="badge">Carrots</span> <span class="badge">Green Bush Beans (1st Sow)</span></td>
-                    <td style="white-space: pre-wrap;">[Crop Status] Sweet Corn surged past 100" reaching 103". Carrots (22") and 1st Sow Bush Beans (25") showing continued vertical progress.</td>
-                    <td class="actions-cell">
-                        <button class="icon-btn" onclick="editLog('log_4')">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteLog('log_4')">🗑️</button>
-                    </td>
-                </tr><tr>
-                    <td>2026-07-27</td>
-                    <td><span class="badge">Corn</span></td>
-                    <td style="white-space: pre-wrap;">[Corn Milestones] Corn started silking on Monday, July 27, supported by deep-soaking irrigation interventions.</td>
-                    <td class="actions-cell">
-                        <button class="icon-btn" onclick="editLog('log_5')">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteLog('log_5')">🗑️</button>
-                    </td>
-                </tr><tr>
-                    <td>2026-07-16</td>
-                    <td><span class="badge">Corn</span> <span class="badge">Cucumbers</span> <span class="badge">Tomatoes</span> <span class="badge">Yellow Potatoes</span></td>
-                    <td style="white-space: pre-wrap;">[Crop Status] Major heat-driven growth explosion logged across corn (67"), cucumbers (64"), and tomatoes (50"). Potatoes showing flowers and potato berries, signaling transition to active underground tuber-bulking phase. First cucumbers harvested.</td>
-                    <td class="actions-cell">
-                        <button class="icon-btn" onclick="editLog('log_6')">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteLog('log_6')">🗑️</button>
-                    </td>
-                </tr><tr>
-                    <td>2026-07-12</td>
-                    <td><span class="badge">Corn</span> <span class="badge">Tomatoes</span> <span class="badge">Carrots</span></td>
-                    <td style="white-space: pre-wrap;">[Crop Status] Audibled from fish fertilizer drench to dry pellet side-dressing due to restrictive mature crop canopy density. Completed targeted Coop Poop distributions across corn, tomatoes, and carrots.</td>
-                    <td class="actions-cell">
-                        <button class="icon-btn" onclick="editLog('log_7')">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteLog('log_7')">🗑️</button>
-                    </td>
-                </tr><tr>
-                    <td>2026-07-12</td>
-                    <td><span class="badge" style="background:#c8e6c9;">All Crops</span></td>
-                    <td style="white-space: pre-wrap;">[Soaker Hose System] Transitioned out of full standby into a defensive watering interval of once every 2 days (1-hour deep soak) to counter local cucumber root saturation.</td>
-                    <td class="actions-cell">
-                        <button class="icon-btn" onclick="editLog('log_10')">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteLog('log_10')">🗑️</button>
-                    </td>
-                </tr><tr>
-                    <td>2026-07-09</td>
-                    <td><span class="badge" style="background:#c8e6c9;">All Crops</span></td>
-                    <td style="white-space: pre-wrap;">[Pest Defense] Baby rabbits breached perimeter; physical fence gap reinforcement updated.</td>
-                    <td class="actions-cell">
-                        <button class="icon-btn" onclick="editLog('log_12')">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteLog('log_12')">🗑️</button>
-                    </td>
-                </tr><tr>
-                    <td>2026-07-08</td>
-                    <td><span class="badge" style="background:#c8e6c9;">All Crops</span></td>
-                    <td style="white-space: pre-wrap;">[Precipitation] Massive storm delivered 2.1" of rainfall on July 8. Irrigation manually shut off to avoid waterlogging the sub-surface soil.</td>
-                    <td class="actions-cell">
-                        <button class="icon-btn" onclick="editLog('log_8')">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteLog('log_8')">🗑️</button>
-                    </td>
-                </tr><tr>
-                    <td>2026-07-05</td>
-                    <td><span class="badge">Peas (First-sown)</span></td>
-                    <td style="white-space: pre-wrap;">[Crop Status] Peas Cleared: Spring pea vines removed. Soil preparing for late-summer planting strategy.</td>
-                    <td class="actions-cell">
-                        <button class="icon-btn" onclick="editLog('log_9')">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteLog('log_9')">🗑️</button>
-                    </td>
-                </tr><tr>
-                    <td>2026-07-01</td>
-                    <td><span class="badge">Cucumbers</span></td>
-                    <td style="white-space: pre-wrap;">[Pest Warning] Spotted yellow and green cucumber beetles. Bacterial wilt &amp; leaf mottling observed.</td>
-                    <td class="actions-cell">
-                        <button class="icon-btn" onclick="editLog('log_13')">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteLog('log_13')">🗑️</button>
-                    </td>
-                </tr><tr>
-                    <td>2026-06-29</td>
-                    <td><span class="badge">Corn</span> <span class="badge">Cucumbers</span></td>
-                    <td style="white-space: pre-wrap;">[Beneficial Nematodes] 2 million units deployed via Chapin G362D sprayer at dusk across 16 corn clusters and cucumber footprint.</td>
-                    <td class="actions-cell">
-                        <button class="icon-btn" onclick="editLog('log_11')">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteLog('log_11')">🗑️</button>
-                    </td>
-                </tr></tbody>
+                        <tbody id="logs-table-body"></tbody>
                     </table>
                 </div>
             </div>
@@ -1513,7 +645,7 @@
                     </div>
                     <div class="form-group">
                         <label>Select Crop</label>
-                        <select id="harvest-crop" required=""><option value="crop_corn">Corn</option><option value="crop_cucumbers">Cucumbers</option><option value="crop_tomatoes">Tomatoes</option><option value="crop_beans1">Green Bush Beans (1st Sow)</option><option value="crop_carrots">Carrots</option><option value="crop_potatoes">Yellow Potatoes</option><option value="crop_beans2">Green Bush Beans (2nd Sow)</option><option value="crop_peas">Peas (First-sown)</option></select>
+                        <select id="harvest-crop" required=""></select>
                     </div>
                     <div class="form-group">
                         <label>Quantity Harvested</label>
@@ -1530,7 +662,7 @@
                 </form>
             </div>
 
-            <div class="card" style="grid-column: span 2;">
+            <div class="card grid-span-2">
                 <h2>Harvest Logs</h2>
                 <div style="overflow-x: auto;">
                     <table>
@@ -1542,55 +674,7 @@
                                 <th>Actions</th>
                             </tr>
                         </thead>
-                        <tbody id="harvest-table-body"><tr>
-                    <td>2026-08-22</td>
-                    <td>Yellow Potatoes</td>
-                    <td><strong>2.875 lbs</strong></td>
-                    <td class="actions-cell">
-                        <button class="icon-btn" onclick="editHarvest('h_1')">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteHarvest('h_1')">🗑️</button>
-                    </td>
-                </tr><tr>
-                    <td>2026-08-22</td>
-                    <td>Tomatoes</td>
-                    <td><strong>12 count</strong></td>
-                    <td class="actions-cell">
-                        <button class="icon-btn" onclick="editHarvest('h_3')">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteHarvest('h_3')">🗑️</button>
-                    </td>
-                </tr><tr>
-                    <td>2026-08-22</td>
-                    <td>Green Bush Beans (1st Sow)</td>
-                    <td><strong>1.5 lbs</strong></td>
-                    <td class="actions-cell">
-                        <button class="icon-btn" onclick="editHarvest('h_4')">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteHarvest('h_4')">🗑️</button>
-                    </td>
-                </tr><tr>
-                    <td>2026-08-22</td>
-                    <td>Green Bush Beans (2nd Sow)</td>
-                    <td><strong>1 lbs</strong></td>
-                    <td class="actions-cell">
-                        <button class="icon-btn" onclick="editHarvest('h_5')">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteHarvest('h_5')">🗑️</button>
-                    </td>
-                </tr><tr>
-                    <td>2026-08-16</td>
-                    <td>Corn</td>
-                    <td><strong>6 ears</strong></td>
-                    <td class="actions-cell">
-                        <button class="icon-btn" onclick="editHarvest('h_6')">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteHarvest('h_6')">🗑️</button>
-                    </td>
-                </tr><tr>
-                    <td>2026-07-16</td>
-                    <td>Cucumbers</td>
-                    <td><strong>4 count</strong></td>
-                    <td class="actions-cell">
-                        <button class="icon-btn" onclick="editHarvest('h_7')">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteHarvest('h_7')">🗑️</button>
-                    </td>
-                </tr></tbody>
+                        <tbody id="harvest-table-body"></tbody>
                     </table>
                 </div>
             </div>
@@ -1601,7 +685,7 @@
     <div class="modal" id="delete-modal">
         <div class="modal-content">
             <h3 style="color: var(--danger); margin-bottom: 12px;">⚠️ High Protection Action</h3>
-            <p id="delete-modal-text">Are you sure you want to delete this log entry?</p>
+            <p id="delete-modal-text">Are you sure you want to delete this entry?</p>
             <div class="modal-footer">
                 <button class="btn btn-secondary" onclick="closeDeleteModal()">Cancel</button>
                 <button class="btn btn-danger" id="confirm-delete-btn">Confirm Deletion</button>
@@ -1611,19 +695,20 @@
 
     <script>
         // --- DATA STORE POPULATED FROM PREVIOUS DASHBOARD ---
+        const initialLastUpdated = "2026-08-25 14:40";
         const initialCrops = [{"id":"crop_corn","name":"Corn","datePlanted":"2026-05-15","amountPlanted":16,"dateRipening":"2026-07-27"},{"id":"crop_cucumbers","name":"Cucumbers","datePlanted":"2026-05-20","amountPlanted":4,"dateRipening":"2026-07-16"},{"id":"crop_tomatoes","name":"Tomatoes","datePlanted":"2026-05-15","amountPlanted":6,"dateRipening":"2026-08-15"},{"id":"crop_beans1","name":"Green Bush Beans (1st Sow)","datePlanted":"2026-05-15","amountPlanted":12,"dateRipening":"2026-07-15"},{"id":"crop_carrots","name":"Carrots","datePlanted":"2026-05-15","amountPlanted":20,"dateRipening":"2026-08-01"},{"id":"crop_potatoes","name":"Yellow Potatoes","datePlanted":"2026-05-10","amountPlanted":6,"dateRipening":"2026-08-15"},{"id":"crop_beans2","name":"Green Bush Beans (2nd Sow)","datePlanted":"2026-06-15","amountPlanted":12,"dateRipening":"2026-08-01"},{"id":"crop_peas","name":"Peas (First-sown)","datePlanted":"2026-04-15","amountPlanted":10,"dateRipening":"2026-06-15"}];
         const initialMetricDefs = [{"id":"m_height","name":"Height","unit":"inches"}];
         const initialMeasurements = [{"id":"meas_1","cropId":"crop_tomatoes","metricId":"m_height","date":"2026-06-06","value":16},{"id":"meas_2","cropId":"crop_tomatoes","metricId":"m_height","date":"2026-06-11","value":18},{"id":"meas_3","cropId":"crop_tomatoes","metricId":"m_height","date":"2026-06-17","value":24},{"id":"meas_4","cropId":"crop_tomatoes","metricId":"m_height","date":"2026-06-22","value":29},{"id":"meas_5","cropId":"crop_tomatoes","metricId":"m_height","date":"2026-06-27","value":34},{"id":"meas_6","cropId":"crop_tomatoes","metricId":"m_height","date":"2026-07-03","value":45},{"id":"meas_7","cropId":"crop_tomatoes","metricId":"m_height","date":"2026-07-09","value":41},{"id":"meas_8","cropId":"crop_tomatoes","metricId":"m_height","date":"2026-07-16","value":50},{"id":"meas_9","cropId":"crop_tomatoes","metricId":"m_height","date":"2026-07-24","value":52},{"id":"meas_10","cropId":"crop_tomatoes","metricId":"m_height","date":"2026-08-01","value":57},{"id":"meas_11","cropId":"crop_tomatoes","metricId":"m_height","date":"2026-08-08","value":53},{"id":"meas_12","cropId":"crop_tomatoes","metricId":"m_height","date":"2026-08-16","value":57},{"id":"meas_13","cropId":"crop_tomatoes","metricId":"m_height","date":"2026-08-22","value":52},{"id":"meas_14","cropId":"crop_potatoes","metricId":"m_height","date":"2026-06-11","value":16},{"id":"meas_15","cropId":"crop_potatoes","metricId":"m_height","date":"2026-06-17","value":18},{"id":"meas_16","cropId":"crop_potatoes","metricId":"m_height","date":"2026-06-22","value":19},{"id":"meas_17","cropId":"crop_potatoes","metricId":"m_height","date":"2026-06-27","value":18},{"id":"meas_18","cropId":"crop_potatoes","metricId":"m_height","date":"2026-07-03","value":15},{"id":"meas_19","cropId":"crop_potatoes","metricId":"m_height","date":"2026-07-09","value":19},{"id":"meas_20","cropId":"crop_potatoes","metricId":"m_height","date":"2026-07-16","value":17},{"id":"meas_21","cropId":"crop_potatoes","metricId":"m_height","date":"2026-07-24","value":16},{"id":"meas_22","cropId":"crop_potatoes","metricId":"m_height","date":"2026-08-01","value":18},{"id":"meas_23","cropId":"crop_potatoes","metricId":"m_height","date":"2026-08-08","value":17},{"id":"meas_24","cropId":"crop_potatoes","metricId":"m_height","date":"2026-08-16","value":18},{"id":"meas_25","cropId":"crop_potatoes","metricId":"m_height","date":"2026-08-22","value":16},{"id":"meas_26","cropId":"crop_corn","metricId":"m_height","date":"2026-06-06","value":4},{"id":"meas_27","cropId":"crop_corn","metricId":"m_height","date":"2026-06-11","value":9},{"id":"meas_28","cropId":"crop_corn","metricId":"m_height","date":"2026-06-17","value":16},{"id":"meas_29","cropId":"crop_corn","metricId":"m_height","date":"2026-06-22","value":16},{"id":"meas_30","cropId":"crop_corn","metricId":"m_height","date":"2026-06-27","value":28},{"id":"meas_31","cropId":"crop_corn","metricId":"m_height","date":"2026-07-03","value":46},{"id":"meas_32","cropId":"crop_corn","metricId":"m_height","date":"2026-07-09","value":50},{"id":"meas_33","cropId":"crop_corn","metricId":"m_height","date":"2026-07-16","value":67},{"id":"meas_34","cropId":"crop_corn","metricId":"m_height","date":"2026-07-24","value":72},{"id":"meas_35","cropId":"crop_corn","metricId":"m_height","date":"2026-08-01","value":99},{"id":"meas_36","cropId":"crop_corn","metricId":"m_height","date":"2026-08-08","value":103},{"id":"meas_37","cropId":"crop_corn","metricId":"m_height","date":"2026-08-16","value":108},{"id":"meas_38","cropId":"crop_corn","metricId":"m_height","date":"2026-08-22","value":104},{"id":"meas_39","cropId":"crop_cucumbers","metricId":"m_height","date":"2026-06-11","value":5},{"id":"meas_40","cropId":"crop_cucumbers","metricId":"m_height","date":"2026-06-17","value":9},{"id":"meas_41","cropId":"crop_cucumbers","metricId":"m_height","date":"2026-06-22","value":10},{"id":"meas_42","cropId":"crop_cucumbers","metricId":"m_height","date":"2026-06-27","value":16},{"id":"meas_43","cropId":"crop_cucumbers","metricId":"m_height","date":"2026-07-03","value":28},{"id":"meas_44","cropId":"crop_cucumbers","metricId":"m_height","date":"2026-07-09","value":50},{"id":"meas_45","cropId":"crop_cucumbers","metricId":"m_height","date":"2026-07-16","value":64},{"id":"meas_46","cropId":"crop_cucumbers","metricId":"m_height","date":"2026-07-24","value":57},{"id":"meas_47","cropId":"crop_beans1","metricId":"m_height","date":"2026-06-17","value":2},{"id":"meas_48","cropId":"crop_beans1","metricId":"m_height","date":"2026-06-22","value":9},{"id":"meas_49","cropId":"crop_beans1","metricId":"m_height","date":"2026-06-27","value":8},{"id":"meas_50","cropId":"crop_beans1","metricId":"m_height","date":"2026-07-03","value":16},{"id":"meas_51","cropId":"crop_beans1","metricId":"m_height","date":"2026-07-09","value":14},{"id":"meas_52","cropId":"crop_beans1","metricId":"m_height","date":"2026-07-16","value":17},{"id":"meas_53","cropId":"crop_beans1","metricId":"m_height","date":"2026-07-24","value":18},{"id":"meas_54","cropId":"crop_beans1","metricId":"m_height","date":"2026-08-01","value":22},{"id":"meas_55","cropId":"crop_beans1","metricId":"m_height","date":"2026-08-08","value":25},{"id":"meas_56","cropId":"crop_beans1","metricId":"m_height","date":"2026-08-16","value":25},{"id":"meas_57","cropId":"crop_beans1","metricId":"m_height","date":"2026-08-22","value":26},{"id":"meas_58","cropId":"crop_carrots","metricId":"m_height","date":"2026-06-11","value":4.5},{"id":"meas_59","cropId":"crop_carrots","metricId":"m_height","date":"2026-06-17","value":5},{"id":"meas_60","cropId":"crop_carrots","metricId":"m_height","date":"2026-06-22","value":8},{"id":"meas_61","cropId":"crop_carrots","metricId":"m_height","date":"2026-06-27","value":7},{"id":"meas_62","cropId":"crop_carrots","metricId":"m_height","date":"2026-07-03","value":12},{"id":"meas_63","cropId":"crop_carrots","metricId":"m_height","date":"2026-07-09","value":10},{"id":"meas_64","cropId":"crop_carrots","metricId":"m_height","date":"2026-07-16","value":12},{"id":"meas_65","cropId":"crop_carrots","metricId":"m_height","date":"2026-07-24","value":17},{"id":"meas_66","cropId":"crop_carrots","metricId":"m_height","date":"2026-08-01","value":19},{"id":"meas_67","cropId":"crop_carrots","metricId":"m_height","date":"2026-08-08","value":22},{"id":"meas_68","cropId":"crop_carrots","metricId":"m_height","date":"2026-08-16","value":21},{"id":"meas_69","cropId":"crop_carrots","metricId":"m_height","date":"2026-08-22","value":24},{"id":"meas_70","cropId":"crop_beans2","metricId":"m_height","date":"2026-07-03","value":10},{"id":"meas_71","cropId":"crop_beans2","metricId":"m_height","date":"2026-07-09","value":7},{"id":"meas_72","cropId":"crop_beans2","metricId":"m_height","date":"2026-07-16","value":10},{"id":"meas_73","cropId":"crop_beans2","metricId":"m_height","date":"2026-07-24","value":21},{"id":"meas_74","cropId":"crop_beans2","metricId":"m_height","date":"2026-08-01","value":16},{"id":"meas_75","cropId":"crop_beans2","metricId":"m_height","date":"2026-08-08","value":16},{"id":"meas_76","cropId":"crop_beans2","metricId":"m_height","date":"2026-08-16","value":17},{"id":"meas_77","cropId":"crop_beans2","metricId":"m_height","date":"2026-08-22","value":18}];
-        const initialLogs = [{"id":"log_1","date":"2026-08-22","tags":["crop_potatoes"],"notes":"[Crop Status] Potato harvest weight: 2 lbs 14 oz."},{"id":"log_2","date":"2026-08-22","tags":["crop_tomatoes","crop_beans1","crop_beans2","crop_potatoes","crop_carrots","crop_corn"],"notes":"[Crop Status] Big harvest day! Harvested many tomatoes and green beans (both actively producing). Harvested 3 potato plants (2 volunteer, 1 intentional) yielding 2 lbs 13 oz total of large tubers. Heights logged: Carrots (24\"), 1st Sow Beans (26\"), 2nd Sow Beans (18\"), Tomatoes (52\"), Potatoes (16\"), Corn (104\")."},{"id":"log_3","date":"2026-08-16","tags":["crop_corn","crop_tomatoes","crop_beans2"],"notes":"[Crop Status] First amazing sweet corn harvested! Corn height reached 108\". Tomatoes rebounded to 57\", and 2nd Sow Bush Beans reached 17\"."},{"id":"log_4","date":"2026-08-08","tags":["crop_corn","crop_carrots","crop_beans1"],"notes":"[Crop Status] Sweet Corn surged past 100\" reaching 103\". Carrots (22\") and 1st Sow Bush Beans (25\") showing continued vertical progress."},{"id":"log_5","date":"2026-07-27","tags":["crop_corn"],"notes":"[Corn Milestones] Corn started silking on Monday, July 27, supported by deep-soaking irrigation interventions."},{"id":"log_6","date":"2026-07-16","tags":["crop_corn","crop_cucumbers","crop_tomatoes","crop_potatoes"],"notes":"[Crop Status] Major heat-driven growth explosion logged across corn (67\"), cucumbers (64\"), and tomatoes (50\"). Potatoes showing flowers and potato berries, signaling transition to active underground tuber-bulking phase. First cucumbers harvested."},{"id":"log_7","date":"2026-07-12","tags":["crop_corn","crop_tomatoes","crop_carrots"],"notes":"[Crop Status] Audibled from fish fertilizer drench to dry pellet side-dressing due to restrictive mature crop canopy density. Completed targeted Coop Poop distributions across corn, tomatoes, and carrots."},{"id":"log_8","date":"2026-07-08","tags":["ALL"],"notes":"[Precipitation] Massive storm delivered 2.1\" of rainfall on July 8. Irrigation manually shut off to avoid waterlogging the sub-surface soil."},{"id":"log_9","date":"2026-07-05","tags":["crop_peas"],"notes":"[Crop Status] Peas Cleared: Spring pea vines removed. Soil preparing for late-summer planting strategy."},{"id":"log_10","date":"2026-07-12","tags":["ALL"],"notes":"[Soaker Hose System] Transitioned out of full standby into a defensive watering interval of once every 2 days (1-hour deep soak) to counter local cucumber root saturation."},{"id":"log_11","date":"2026-06-29","tags":["crop_corn","crop_cucumbers"],"notes":"[Beneficial Nematodes] 2 million units deployed via Chapin G362D sprayer at dusk across 16 corn clusters and cucumber footprint."},{"id":"log_12","date":"2026-07-09","tags":["ALL"],"notes":"[Pest Defense] Baby rabbits breached perimeter; physical fence gap reinforcement updated."},{"id":"log_13","date":"2026-07-01","tags":["crop_cucumbers"],"notes":"[Pest Warning] Spotted yellow and green cucumber beetles. Bacterial wilt & leaf mottling observed."}];
+        const initialLogs = [{"id": "log_1", "date": "2026-08-22", "tags": ["crop_potatoes"], "notes": "[Crop Status] Potato harvest weight: 2 lbs 14 oz."}, {"id": "log_2", "date": "2026-08-22", "tags": ["crop_tomatoes", "crop_beans1", "crop_beans2", "crop_potatoes", "crop_carrots", "crop_corn"], "notes": "[Crop Status] Big harvest day! Harvested many tomatoes and green beans (both actively producing). Harvested 3 potato plants (2 volunteer, 1 intentional) yielding 2 lbs 13 oz total of large tubers. Heights logged: Carrots (24\"), 1st Sow Beans (26\"), 2nd Sow Beans (18\"), Tomatoes (52\"), Potatoes (16\"), Corn (104\")."}, {"id": "log_3", "date": "2026-08-16", "tags": ["crop_corn", "crop_tomatoes", "crop_beans2"], "notes": "[Crop Status] First amazing sweet corn harvested! Corn height reached 108\". Tomatoes rebounded to 57\", and 2nd Sow Bush Beans reached 17\"."}, {"id": "log_4", "date": "2026-08-08", "tags": ["crop_corn", "crop_carrots", "crop_beans1"], "notes": "[Crop Status] Sweet Corn surged past 100\" reaching 103\". Carrots (22\") and 1st Sow Bush Beans (25\") showing continued vertical progress."}, {"id": "log_5", "date": "2026-07-27", "tags": ["crop_corn"], "notes": "[Corn Milestones] Corn started silking on Monday, July 27, supported by deep-soaking irrigation interventions."}, {"id": "log_6", "date": "2026-07-16", "tags": ["crop_corn", "crop_cucumbers", "crop_tomatoes", "crop_potatoes"], "notes": "[Crop Status] Major heat-driven growth explosion logged across corn (67\"), cucumbers (64\"), and tomatoes (50\"). Potatoes showing flowers and potato berries, signaling transition to active underground tuber-bulking phase. First cucumbers harvested."}, {"id": "log_7", "date": "2026-07-12", "tags": ["crop_corn", "crop_tomatoes", "crop_carrots"], "notes": "[Crop Status] Audibled from fish fertilizer drench to dry pellet side-dressing due to restrictive mature crop canopy density. Completed targeted Coop Poop distributions across corn, tomatoes, and carrots."}, {"id": "log_8", "date": "2026-07-08", "tags": ["ALL"], "notes": "[Precipitation] Massive storm delivered 2.1\" of rainfall on July 8. Irrigation manually shut off to avoid waterlogging the sub-surface soil."}, {"id": "log_9", "date": "2026-07-05", "tags": ["crop_peas"], "notes": "[Crop Status] Peas Cleared: Spring pea vines removed. Soil preparing for late-summer planting strategy."}, {"id": "log_10", "date": "2026-07-12", "tags": ["ALL"], "notes": "[Soaker Hose System] Transitioned out of full standby into a defensive watering interval of once every 2 days (1-hour deep soak) to counter local cucumber root saturation."}, {"id": "log_11", "date": "2026-06-29", "tags": ["crop_corn", "crop_cucumbers"], "notes": "[Beneficial Nematodes] 2 million units deployed via Chapin G362D sprayer at dusk across 16 corn clusters and cucumber footprint."}, {"id": "log_12", "date": "2026-07-09", "tags": ["ALL"], "notes": "[Pest Defense] Baby rabbits breached perimeter; physical fence gap reinforcement updated."}, {"id": "log_13", "date": "2026-07-01", "tags": ["crop_cucumbers"], "notes": "[Pest Warning] Spotted yellow and green cucumber beetles. Bacterial wilt & leaf mottling observed."}];
         const initialHarvests = [{"id":"h_1","date":"2026-08-22","cropId":"crop_potatoes","qty":2.875,"unit":"lbs"},{"id":"h_3","date":"2026-08-22","cropId":"crop_tomatoes","qty":12,"unit":"count"},{"id":"h_4","date":"2026-08-22","cropId":"crop_beans1","qty":1.5,"unit":"lbs"},{"id":"h_5","date":"2026-08-22","cropId":"crop_beans2","qty":1,"unit":"lbs"},{"id":"h_6","date":"2026-08-16","cropId":"crop_corn","qty":6,"unit":"ears"},{"id":"h_7","date":"2026-07-16","cropId":"crop_cucumbers","qty":4,"unit":"count"}];
 
         let state = {
-	    crops: initialCrops,
-   	 metricDefs: initialMetricDefs,
-   	 measurements: initialMeasurements,
-    	logs: initialLogs,
-   	 harvests: initialHarvests
-	};
+            crops: initialCrops,
+            metricDefs: initialMetricDefs,
+            measurements: initialMeasurements,
+            logs: initialLogs,
+            harvests: initialHarvests
+        };
 
         let pendingDeleteFn = null;
 
@@ -1638,12 +723,21 @@
         }
 
         // --- NAVIGATION ---
-        function switchTab(tabId) {
+        function switchTab(tabId, btnEl) {
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
 
-            event.currentTarget.classList.add('active');
-            document.getElementById(`tab-${tabId}`).classList.add('active');
+            if (btnEl) {
+                btnEl.classList.add('active');
+            } else if (window.event && window.event.currentTarget) {
+                window.event.currentTarget.classList.add('active');
+            } else {
+                const targetBtn = document.querySelector(`.tab-btn[onclick*="${tabId}"]`);
+                if (targetBtn) targetBtn.classList.add('active');
+            }
+
+            const targetTab = document.getElementById(`tab-${tabId}`);
+            if (targetTab) targetTab.classList.add('active');
 
             if (tabId === 'metrics') {
                 renderChart();
@@ -1651,13 +745,15 @@
         }
 
         // --- INIT & UTILS ---
-function init() {
+        function init() {
             const today = new Date().toISOString().split('T')[0];
             const dateInputs = ['crop-date-planted', 'meas-date', 'log-date', 'harvest-date'];
             dateInputs.forEach(id => {
                 const el = document.getElementById(id);
                 if (el && !el.value) el.value = today;
             });
+
+            document.getElementById('last-updated-display').innerText = `Last Synced: ${initialLastUpdated}`;
 
             renderAll();
         }
@@ -1928,14 +1024,14 @@ function init() {
 
         function renderChart() {
             const canvas = document.getElementById('metricsChart');
-            if (!canvas) return; // Prevent iOS canvas context initialization crashes
+            if (!canvas) return;
             const ctx = canvas.getContext('2d');
 
             const metricSelect = document.getElementById('chart-filter-metric');
-            if (!metricSelect || !metricSelect.value) return; // Safeguard for iOS initial boot
+            if (!metricSelect || !metricSelect.value) return;
 
             const rect = canvas.getBoundingClientRect();
-            if (rect.width === 0 || rect.height === 0) return; // Guard against hidden/zero-size canvas on mobile
+            if (rect.width === 0 || rect.height === 0) return;
 
             canvas.width = rect.width * window.devicePixelRatio;
             canvas.height = rect.height * window.devicePixelRatio;
@@ -2169,31 +1265,47 @@ function init() {
             renderLogTagsSelector();
 
             const tbody = document.getElementById('logs-table-body');
+            if (!tbody) return;
             tbody.innerHTML = '';
 
-            if (state.logs.length === 0) {
+            if (!state.logs || state.logs.length === 0) {
                 tbody.innerHTML = `<tr><td colspan="4" class="empty-state">No field logs recorded.</td></tr>`;
                 return;
             }
 
-            const sorted = [...state.logs].sort((a,b) => new Date(b.date) - new Date(a.date));
+            const sorted = [...state.logs].sort((a, b) => {
+                const dateA = a.date ? new Date(a.date).getTime() : 0;
+                const dateB = b.date ? new Date(b.date).getTime() : 0;
+                return dateB - dateA;
+            });
 
             sorted.forEach(l => {
+                if (!l) return;
+
                 let tagsDisplay = "";
-                if (l.tags.includes('ALL')) {
+                const tagsList = Array.isArray(l.tags) ? l.tags : [];
+
+                if (tagsList.includes('ALL')) {
                     tagsDisplay = `<span class="badge" style="background:#c8e6c9;">All Crops</span>`;
                 } else {
-                    tagsDisplay = l.tags.map(tid => {
+                    tagsDisplay = tagsList.map(tid => {
                         const crop = state.crops.find(c => c.id === tid);
                         return crop ? `<span class="badge">${crop.name}</span>` : '';
                     }).join(' ');
                 }
 
+                const safeNotes = (l.notes || '')
+                    .replace(/&/g, "&amp;")
+                    .replace(/</g, "&lt;")
+                    .replace(/>/g, "&gt;")
+                    .replace(/"/g, "&quot;")
+                    .replace(/'/g, "&#039;");
+
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
-                    <td>${l.date}</td>
+                    <td>${l.date || 'N/A'}</td>
                     <td>${tagsDisplay || '<em>General Log</em>'}</td>
-                    <td style="white-space: pre-wrap;">${l.notes}</td>
+                    <td style="white-space: pre-wrap;">${safeNotes}</td>
                     <td class="actions-cell">
                         <button class="icon-btn" onclick="editLog('${l.id}')">✏️</button>
                         <button class="icon-btn delete" onclick="deleteLog('${l.id}')">🗑️</button>
@@ -2301,102 +1413,106 @@ function init() {
             });
         }
 
-        
-// --- FORCE RELOAD LATEST FROM GITHUB PAGES (BYPASS BROWSER CACHE) ---
-function forceReloadLatest() {
-    // Append unique timestamp parameter to bypass browser/CDN cache completely
-    const cacheBuster = '?v=' + new Date().getTime();
-    window.location.href = window.location.pathname + cacheBuster;
-}
-
-// --- STRICT MANUAL-ONLY SAVE FUNCTION ---
-async function saveDashboardToFile() {
-    const btn = document.getElementById('save-file-btn');
-    if (!btn || btn.disabled) return;
-
-    const WORKER_URL = "https://garden-dashboard-sync.joseph-roscioli.workers.dev"; // Your exact Cloudflare Worker URL
-
-    try {
-        // 1. Temporarily ensure clean DOM state BEFORE capturing outerHTML
-        btn.innerText = "💾 Save & Sync to GitHub";
-        btn.disabled = false;
-        btn.removeAttribute('disabled');
-
-        // 2. Capture the raw HTML string
-        let updatedHtml = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
-
-        // 3. ✨ THE CRITICAL FIX ✨
-        // Inject the latest live JavaScript memory back into the script tag string!
-        updatedHtml = updatedHtml.replace(/const initialCrops = .*/, `const initialCrops = ${JSON.stringify(state.crops)};`);
-        updatedHtml = updatedHtml.replace(/const initialMetricDefs = .*/, `const initialMetricDefs = ${JSON.stringify(state.metricDefs)};`);
-        updatedHtml = updatedHtml.replace(/const initialMeasurements = .*/, `const initialMeasurements = ${JSON.stringify(state.measurements)};`);
-        updatedHtml = updatedHtml.replace(/const initialLogs = .*/, `const initialLogs = ${JSON.stringify(state.logs)};`);
-        updatedHtml = updatedHtml.replace(/const initialHarvests = .*/, `const initialHarvests = ${JSON.stringify(state.harvests)};`);
-
-        // 4. Set visual loading state for active network request
-        btn.innerText = "⏳ Syncing...";
-        btn.disabled = true;
-
-        const res = await fetch(WORKER_URL, {
-            method: "POST",
-            mode: "cors",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ html: updatedHtml })
-        });
-
-        const data = await res.json().catch(() => ({}));
-
-        if (!res.ok || data.error) {
-            throw new Error(data.error || `HTTP ${res.status}: ${res.statusText}`);
+        // --- FORCE RELOAD LATEST FROM GITHUB PAGES (BYPASS BROWSER CACHE) ---
+        function forceReloadLatest() {
+            const cacheBuster = '?v=' + new Date().getTime();
+            window.location.href = window.location.pathname + cacheBuster;
         }
 
-        btn.innerText = "✅ Committed to Git!";
-        btn.style.background = "#c8e6c9";
-    } catch (err) {
-        console.error("Save Error:", err);
-        alert("Sync failed: " + err.message);
-        btn.innerText = "❌ Sync Failed";
-        btn.style.background = "#ffebee";
-    } finally {
-        setTimeout(() => {
-            btn.innerText = "💾 Save & Sync to GitHub";
-            btn.style.background = "#eceff1";
-            btn.disabled = false;
-            btn.removeAttribute('disabled');
-        }, 3000);
-    }
-}
+        // --- STRICT MANUAL-ONLY SAVE FUNCTION ---
+        async function saveDashboardToFile() {
+            const btn = document.getElementById('save-file-btn');
+            if (!btn || btn.disabled) return;
 
-// Global Orchestrator
-function renderAll() {
-    renderInventory();
-    renderMetricsUI();
-    renderLogs();
-    renderHarvestUI();
+            const WORKER_URL = "https://garden-dashboard-sync.joseph-roscioli.workers.dev";
 
-    document.getElementById('stats-summary').innerText = 
-        `Tracking ${state.crops.length} Crop Type(s) | ${state.harvests.length} Harvest Records`;
+            try {
+                // Generate current timestamp for last updated
+                const now = new Date();
+                const year = now.getFullYear();
+                const month = String(now.getMonth() + 1).padStart(2, '0');
+                const day = String(now.getDate()).padStart(2, '0');
+                const hours = String(now.getHours()).padStart(2, '0');
+                const mins = String(now.getMinutes()).padStart(2, '0');
+                const timestampStr = `${year}-${month}-${day} ${hours}:${mins}`;
 
-    renderChart();
-}
+                // Temporarily ensure clean DOM state BEFORE capturing outerHTML
+                btn.innerText = "💾 Save & Sync to GitHub";
+                btn.disabled = false;
+                btn.removeAttribute('disabled');
 
-window.addEventListener('load', () => {
-    init();
-    
-    const chartCard = document.getElementById('chart-card');
-    if (chartCard && 'ResizeObserver' in window) {
-        new ResizeObserver(() => {
+                let updatedHtml = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
+
+                // Inject live memory and updated timestamp into script string
+                updatedHtml = updatedHtml.replace(/const initialLastUpdated = .*/, `const initialLastUpdated = "${timestampStr}";`);
+                updatedHtml = updatedHtml.replace(/const initialCrops = .*/, `const initialCrops = ${JSON.stringify(state.crops)};`);
+                updatedHtml = updatedHtml.replace(/const initialMetricDefs = .*/, `const initialMetricDefs = ${JSON.stringify(state.metricDefs)};`);
+                updatedHtml = updatedHtml.replace(/const initialMeasurements = .*/, `const initialMeasurements = ${JSON.stringify(state.measurements)};`);
+                updatedHtml = updatedHtml.replace(/const initialLogs = .*/, `const initialLogs = ${JSON.stringify(state.logs)};`);
+                updatedHtml = updatedHtml.replace(/const initialHarvests = .*/, `const initialHarvests = ${JSON.stringify(state.harvests)};`);
+
+                btn.innerText = "⏳ Syncing...";
+                btn.disabled = true;
+
+                const res = await fetch(WORKER_URL, {
+                    method: "POST",
+                    mode: "cors",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ html: updatedHtml })
+                });
+
+                const data = await res.json().catch(() => ({}));
+
+                if (!res.ok || data.error) {
+                    throw new Error(data.error || `HTTP ${res.status}: ${res.statusText}`);
+                }
+
+                document.getElementById('last-updated-display').innerText = `Last Synced: ${timestampStr}`;
+
+                btn.innerText = "✅ Committed to Git!";
+                btn.style.background = "#c8e6c9";
+            } catch (err) {
+                console.error("Save Error:", err);
+                alert("Sync failed: " + err.message);
+                btn.innerText = "❌ Sync Failed";
+                btn.style.background = "#ffebee";
+            } finally {
+                setTimeout(() => {
+                    btn.innerText = "💾 Save & Sync to GitHub";
+                    btn.style.background = "#eceff1";
+                    btn.disabled = false;
+                    btn.removeAttribute('disabled');
+                }, 3000);
+            }
+        }
+
+        // Global Orchestrator
+        function renderAll() {
+            renderInventory();
+            renderMetricsUI();
+            renderLogs();
+            renderHarvestUI();
+
+            document.getElementById('stats-summary').innerText = 
+                `Tracking ${state.crops.length} Crop Type(s) | ${state.harvests.length} Harvest Records`;
+
+            renderChart();
+        }
+
+        window.addEventListener('load', () => {
+            init();
+            
+            const chartCard = document.getElementById('chart-card');
+            if (chartCard && 'ResizeObserver' in window) {
+                new ResizeObserver(() => {
+                    window.requestAnimationFrame(renderChart);
+                }).observe(chartCard);
+            }
+        });
+
+        window.addEventListener('resize', () => {
             window.requestAnimationFrame(renderChart);
-        }).observe(chartCard);
-    }
-});
-
-window.addEventListener('resize', () => {
-    window.requestAnimationFrame(renderChart);
-});
+        });
     </script>
-
-
-
-
-<div id="1p-menu-live-region" role="status" aria-live="polite" aria-atomic="true" aria-relevant="all" style="clip: rect(0px, 0px, 0px, 0px); clip-path: inset(50%); height: 1px; overflow: hidden; position: fixed; top: 0px; left: 0px; white-space: nowrap; width: 1px; overflow-wrap: normal;">1Password menu is available. Press down arrow to select.</div></body></html>
+</body>
+</html>
