@@ -2330,18 +2330,26 @@ async function saveDashboardToFile() {
     const btn = document.getElementById('save-file-btn');
     if (!btn || btn.disabled) return;
 
-    const WORKER_URL = "https://garden-dashboard-sync.joseph-roscioli.workers.dev"; // Your exact Cloudflare Worker URL
+    const WORKER_URL = "https://YOUR_WORKER_NAME.YOUR_SUBDOMAIN.workers.dev"; // Your exact Cloudflare Worker URL
 
     try {
-        // 1. Temporarily ensure clean state BEFORE capturing outerHTML
+        // 1. Temporarily ensure clean DOM state BEFORE capturing outerHTML
         btn.innerText = "💾 Save & Sync to GitHub";
         btn.disabled = false;
         btn.removeAttribute('disabled');
 
-        // 2. Capture clean HTML string for the repository
-        const updatedHtml = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
+        // 2. Capture the raw HTML string
+        let updatedHtml = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
 
-        // 3. Set visual loading state for active network request
+        // 3. ✨ THE CRITICAL FIX ✨
+        // Inject the latest live JavaScript memory back into the script tag string!
+        updatedHtml = updatedHtml.replace(/const initialCrops = .*/, `const initialCrops = ${JSON.stringify(state.crops)};`);
+        updatedHtml = updatedHtml.replace(/const initialMetricDefs = .*/, `const initialMetricDefs = ${JSON.stringify(state.metricDefs)};`);
+        updatedHtml = updatedHtml.replace(/const initialMeasurements = .*/, `const initialMeasurements = ${JSON.stringify(state.measurements)};`);
+        updatedHtml = updatedHtml.replace(/const initialLogs = .*/, `const initialLogs = ${JSON.stringify(state.logs)};`);
+        updatedHtml = updatedHtml.replace(/const initialHarvests = .*/, `const initialHarvests = ${JSON.stringify(state.harvests)};`);
+
+        // 4. Set visual loading state for active network request
         btn.innerText = "⏳ Syncing...";
         btn.disabled = true;
 
