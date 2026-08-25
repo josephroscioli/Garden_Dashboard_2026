@@ -380,14 +380,14 @@
     </header>
 
     <div class="nav-tabs">
-        <button class="tab-btn active" onclick="switchTab('inventory')">📦 Crop Inventory</button>
+        <button class="tab-btn" onclick="switchTab('inventory')">📦 Crop Inventory</button>
         <button class="tab-btn" onclick="switchTab('metrics')">📈 Metrics</button>
         <button class="tab-btn" onclick="switchTab('logs')">📝 Field Logs</button>
-        <button class="tab-btn" onclick="switchTab('harvest')">🧺 Harvest</button>
+        <button class="tab-btn active" onclick="switchTab('harvest')">🧺 Harvest</button>
     </div>
 
     <!-- TAB 1: CROP INVENTORY -->
-    <div id="tab-inventory" class="tab-content active">
+    <div id="tab-inventory" class="tab-content">
         <div class="grid">
             <div class="card">
                 <h2 id="crop-form-title">Add New Crop</h2>
@@ -439,7 +439,7 @@
                     <td>2026-05-15</td>
                     <td>16</td>
                     <td>2026-07-27</td>
-                    <td><span class="badge">18 ears, 1 a, 1 c</span></td>
+                    <td><span class="badge">6 ears, 4 Count, 12 Ears, 1 B, 1 E</span></td>
                     <td class="actions-cell">
                         <button class="icon-btn" onclick="editCrop('crop_corn')" title="Edit">✏️</button>
                         <button class="icon-btn delete" onclick="deleteCrop('crop_corn')" title="Hard Remove">🗑️</button>
@@ -1501,7 +1501,7 @@
     </div>
 
     <!-- TAB 4: HARVEST -->
-    <div id="tab-harvest" class="tab-content">
+    <div id="tab-harvest" class="tab-content active">
         <div class="grid">
             <div class="card">
                 <h2 id="harvest-form-title">Log Harvest</h2>
@@ -1545,34 +1545,34 @@
                         <tbody id="harvest-table-body"><tr>
                     <td>2026-08-25</td>
                     <td>Corn</td>
-                    <td><strong>10 ears</strong></td>
+                    <td><strong>12 Ears</strong></td>
                     <td class="actions-cell">
-                        <button class="icon-btn" onclick="editHarvest('_d228609r8')">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteHarvest('_d228609r8')">🗑️</button>
+                        <button class="icon-btn" onclick="editHarvest('_91rbd0v6k')">✏️</button>
+                        <button class="icon-btn delete" onclick="deleteHarvest('_91rbd0v6k')">🗑️</button>
                     </td>
                 </tr><tr>
                     <td>2026-08-25</td>
                     <td>Corn</td>
-                    <td><strong>2 ears</strong></td>
+                    <td><strong>1 B</strong></td>
                     <td class="actions-cell">
-                        <button class="icon-btn" onclick="editHarvest('_l3h791lrp')">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteHarvest('_l3h791lrp')">🗑️</button>
+                        <button class="icon-btn" onclick="editHarvest('_3z6t0v34q')">✏️</button>
+                        <button class="icon-btn delete" onclick="deleteHarvest('_3z6t0v34q')">🗑️</button>
                     </td>
                 </tr><tr>
                     <td>2026-08-25</td>
                     <td>Corn</td>
-                    <td><strong>1 a</strong></td>
+                    <td><strong>1 E</strong></td>
                     <td class="actions-cell">
-                        <button class="icon-btn" onclick="editHarvest('_ddtniv68r')">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteHarvest('_ddtniv68r')">🗑️</button>
+                        <button class="icon-btn" onclick="editHarvest('_506azl5qa')">✏️</button>
+                        <button class="icon-btn delete" onclick="deleteHarvest('_506azl5qa')">🗑️</button>
                     </td>
                 </tr><tr>
-                    <td>2026-08-25</td>
+                    <td>2026-08-24</td>
                     <td>Corn</td>
-                    <td><strong>1 c</strong></td>
+                    <td><strong>4 Count</strong></td>
                     <td class="actions-cell">
-                        <button class="icon-btn" onclick="editHarvest('_cbqt7sr6e')">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteHarvest('_cbqt7sr6e')">🗑️</button>
+                        <button class="icon-btn" onclick="editHarvest('_v04si91o8')">✏️</button>
+                        <button class="icon-btn delete" onclick="deleteHarvest('_v04si91o8')">🗑️</button>
                     </td>
                 </tr><tr>
                     <td>2026-08-22</td>
