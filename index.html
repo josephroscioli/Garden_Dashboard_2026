@@ -2337,7 +2337,7 @@ async function saveDashboardToFile() {
         // 2. Safely encode to base64
         const base64Content = utf8ToBase64(updatedHtml);
 
-        // 3. Get current file SHA from GitHub API (required for updates)
+        // 3. Get current file SHA from GitHub API
         const getUrl = `https://api.github.com/repos/${GITHUB_CONFIG.username}/${GITHUB_CONFIG.repo}/contents/${GITHUB_CONFIG.filePath}?ref=${GITHUB_CONFIG.branch}`;
         
         const getResponse = await fetch(getUrl, {
@@ -2348,7 +2348,14 @@ async function saveDashboardToFile() {
         });
 
         if (!getResponse.ok) {
-            throw new Error(`GitHub API Fetch Failed (${getResponse.status}): ${getResponse.statusText}`);
+            const errData = await getResponse.json().catch(() => ({}));
+            if (getResponse.status === 404) {
+                throw new Error(`404 Not Found. Check repository name ('${GITHUB_CONFIG.repo}'), branch ('${GITHUB_CONFIG.branch}'), and file path ('${GITHUB_CONFIG.filePath}').`);
+            } else if (getResponse.status === 401) {
+                throw new Error(`401 Unauthorized. Your Personal Access Token (PAT) is invalid or expired.`);
+            } else {
+                throw new Error(`API Error (${getResponse.status}): ${errData.message || getResponse.statusText}`);
+            }
         }
 
         const fileData = await getResponse.json();
@@ -2374,15 +2381,15 @@ async function saveDashboardToFile() {
         });
 
         if (!commitResponse.ok) {
-            throw new Error(`GitHub Commit Failed (${commitResponse.status}): ${commitResponse.statusText}`);
+            const errData = await commitResponse.json().catch(() => ({}));
+            throw new Error(`Commit Failed (${commitResponse.status}): ${errData.message || commitResponse.statusText}`);
         }
 
-        // 5. Success Feedback
         btn.innerText = "✅ Committed to Git!";
         btn.style.background = "#c8e6c9";
     } catch (err) {
         console.error("Sync Error:", err);
-        alert(`Failed to auto-update GitHub repository: ${err.message}`);
+        alert(`Failed to auto-update GitHub repository:\n${err.message}`);
         btn.innerText = "❌ Sync Failed";
         btn.style.background = "#ffebee";
     } finally {
