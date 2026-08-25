@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-08-25 19:26",
+  "lastUpdated": "2026-08-25 19:31",
   "crops": [
     {
       "id": "crop_corn",
@@ -791,7 +791,7 @@
       "date": "2026-08-25",
       "cropId": "crop_corn",
       "qty": 10,
-      "unit": "eerrr"
+      "unit": "ears"
     }
   ]
 }
