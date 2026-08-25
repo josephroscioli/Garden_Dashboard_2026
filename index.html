@@ -2330,7 +2330,7 @@ async function saveDashboardToFile() {
     const btn = document.getElementById('save-file-btn');
     if (!btn || btn.disabled) return;
 
-    const WORKER_URL = "https://YOUR_WORKER_NAME.YOUR_SUBDOMAIN.workers.dev"; // Your exact Cloudflare Worker URL
+    const WORKER_URL = "https://garden-dashboard-sync.joseph-roscioli.workers.dev"; // Your exact Cloudflare Worker URL
 
     try {
         // 1. Temporarily ensure clean DOM state BEFORE capturing outerHTML
