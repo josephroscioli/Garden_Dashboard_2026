@@ -375,9 +375,8 @@
     <h1>🌱 Garden Dashboard</h1>
     <div style="display: flex; align-items: center; gap: 12px;">
         <div id="stats-summary" style="font-size: 0.9rem; color: var(--text-light);">Tracking 8 Crop Type(s) | 8 Harvest Records</div>
-        <button class="btn btn-secondary" onclick="forceReloadLatest()">🔄 Load Latest from Cloud</button>
-        <button class="btn btn-secondary" id="save-file-btn" onclick="saveDashboardToFile()" disabled="">⏳ Syncing...</button>
-    </div>
+		<button class="btn btn-secondary" onclick="forceReloadLatest()">🔄 Load Latest from Cloud</button>
+		<button class="btn btn-secondary" id="save-file-btn" onclick="saveDashboardToFile()">💾 Save & Sync to GitHub</button>    </div>
 	</header>
 
     <div class="nav-tabs">
@@ -2325,18 +2324,25 @@ function forceReloadLatest() {
     window.location.href = window.location.pathname + cacheBuster;
 }
 
-// --- SAFE GUARDED SAVE FUNCTION ---
+// --- STRICT MANUAL-ONLY SAVE FUNCTION ---
 async function saveDashboardToFile() {
     const btn = document.getElementById('save-file-btn');
-    if (!btn || btn.disabled) return; // Prevent concurrent loops
+    if (!btn || btn.disabled) return;
 
-    btn.innerText = "⏳ Syncing...";
-    btn.disabled = true;
-
-    const WORKER_URL = "https://garden-dashboard-sync.joseph-roscioli.workers.dev"; // Paste exact Worker URL
+    const WORKER_URL = "https://YOUR_WORKER_NAME.YOUR_SUBDOMAIN.workers.dev"; // Your exact Cloudflare Worker URL
 
     try {
+        // 1. Temporarily ensure clean state BEFORE capturing outerHTML
+        btn.innerText = "💾 Save & Sync to GitHub";
+        btn.disabled = false;
+        btn.removeAttribute('disabled');
+
+        // 2. Capture clean HTML string for the repository
         const updatedHtml = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
+
+        // 3. Set visual loading state for active network request
+        btn.innerText = "⏳ Syncing...";
+        btn.disabled = true;
 
         const res = await fetch(WORKER_URL, {
             method: "POST",
@@ -2363,27 +2369,27 @@ async function saveDashboardToFile() {
             btn.innerText = "💾 Save & Sync to GitHub";
             btn.style.background = "#eceff1";
             btn.disabled = false;
+            btn.removeAttribute('disabled');
         }, 3000);
     }
 }
 
-        // Global Orchestrator
-        function renderAll() {
-            renderInventory();
-            renderMetricsUI();
-            renderLogs();
-            renderHarvestUI();
+// Global Orchestrator
+function renderAll() {
+    renderInventory();
+    renderMetricsUI();
+    renderLogs();
+    renderHarvestUI();
 
-            document.getElementById('stats-summary').innerText = 
-                `Tracking ${state.crops.length} Crop Type(s) | ${state.harvests.length} Harvest Records`;
+    document.getElementById('stats-summary').innerText = 
+        `Tracking ${state.crops.length} Crop Type(s) | ${state.harvests.length} Harvest Records`;
 
-            renderChart();
-        }
+    renderChart();
+}
 
-        window.addEventListener('load', () => {
+window.addEventListener('load', () => {
     init();
     
-    // Safely observe resize only after full DOM load
     const chartCard = document.getElementById('chart-card');
     if (chartCard && 'ResizeObserver' in window) {
         new ResizeObserver(() => {
