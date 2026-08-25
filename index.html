@@ -374,20 +374,20 @@
     <header>
         <h1>🌱 Garden Dashboard</h1>
         <div style="display: flex; align-items: center; gap: 16px;">
-            <div id="stats-summary" style="font-size: 0.9rem; color: var(--text-light);">Tracking 8 Crop Type(s) | 8 Harvest Records</div>
-            <button class="btn btn-secondary" id="save-file-btn" onclick="saveDashboardToFile()" disabled="">⏳ Syncing...</button>
+            <div id="stats-summary" style="font-size: 0.9rem; color: var(--text-light);">Tracking 8 Crop Type(s) | 9 Harvest Records</div>
+            <button class="btn btn-secondary" id="save-file-btn" onclick="saveDashboardToFile()" disabled="" style="background: rgb(236, 239, 241);">⏳ Syncing...</button>
         </div>
     </header>
 
     <div class="nav-tabs">
-        <button class="tab-btn active" onclick="switchTab('inventory')">📦 Crop Inventory</button>
+        <button class="tab-btn" onclick="switchTab('inventory')">📦 Crop Inventory</button>
         <button class="tab-btn" onclick="switchTab('metrics')">📈 Metrics</button>
         <button class="tab-btn" onclick="switchTab('logs')">📝 Field Logs</button>
-        <button class="tab-btn" onclick="switchTab('harvest')">🧺 Harvest</button>
+        <button class="tab-btn active" onclick="switchTab('harvest')">🧺 Harvest</button>
     </div>
 
     <!-- TAB 1: CROP INVENTORY -->
-    <div id="tab-inventory" class="tab-content active">
+    <div id="tab-inventory" class="tab-content">
         <div class="grid">
             <div class="card">
                 <h2 id="crop-form-title">Add New Crop</h2>
@@ -439,7 +439,7 @@
                     <td>2026-05-15</td>
                     <td>16</td>
                     <td>2026-07-27</td>
-                    <td><span class="badge">16 ears</span></td>
+                    <td><span class="badge">18 ears</span></td>
                     <td class="actions-cell">
                         <button class="icon-btn" onclick="editCrop('crop_corn')" title="Edit">✏️</button>
                         <button class="icon-btn delete" onclick="deleteCrop('crop_corn')" title="Hard Remove">🗑️</button>
@@ -1501,12 +1501,12 @@
     </div>
 
     <!-- TAB 4: HARVEST -->
-    <div id="tab-harvest" class="tab-content">
+    <div id="tab-harvest" class="tab-content active">
         <div class="grid">
             <div class="card">
                 <h2 id="harvest-form-title">Log Harvest</h2>
                 <form id="harvest-form" onsubmit="handleHarvestSubmit(event)">
-                    <input type="hidden" id="harvest-id">
+                    <input type="hidden" id="harvest-id" value="">
                     <div class="form-group">
                         <label>Date Harvested</label>
                         <input type="date" id="harvest-date" required="">
@@ -1549,6 +1549,14 @@
                     <td class="actions-cell">
                         <button class="icon-btn" onclick="editHarvest('_d228609r8')">✏️</button>
                         <button class="icon-btn delete" onclick="deleteHarvest('_d228609r8')">🗑️</button>
+                    </td>
+                </tr><tr>
+                    <td>2026-08-25</td>
+                    <td>Corn</td>
+                    <td><strong>2 ears</strong></td>
+                    <td class="actions-cell">
+                        <button class="icon-btn" onclick="editHarvest('_l3h791lrp')">✏️</button>
+                        <button class="icon-btn delete" onclick="deleteHarvest('_l3h791lrp')">🗑️</button>
                     </td>
                 </tr><tr>
                     <td>2026-08-22</td>
@@ -2364,4 +2372,4 @@ async function saveDashboardToFile() {
     </script>
 
 
-</body></html>
+<div id="1p-menu-live-region" role="status" aria-live="polite" aria-atomic="true" aria-relevant="all" style="clip: rect(0px, 0px, 0px, 0px); clip-path: inset(50%); height: 1px; overflow: hidden; position: fixed; top: 0px; left: 0px; white-space: nowrap; width: 1px; overflow-wrap: normal;">1Password menu is available. Press down arrow to select.</div></body></html>
