@@ -3,6 +3,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Garden Dashboard</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌱</text></svg>">
     <style>
         :root {
             --primary: #2e7d32;
@@ -669,6 +670,15 @@
                     <select id="chart-filter-metric" onchange="renderChart()"><option value="m_height">Height (inches)</option></select>
                 </div>
                 <div class="form-group">
+                    <label>X-Min Date</label>
+                    <input type="date" id="chart-xmin" onchange="renderChart()">
+                </div>
+                <div class="form-group">
+                    <label>X-Max Date</label>
+                    <input type="date" id="chart-xmax" onchange="renderChart()">
+                </div>
+                <button class="btn btn-secondary" style="margin-top: auto;" onclick="autoscaleXChart()">Autoscale X</button>
+                <div class="form-group">
                     <label>Y-Min</label>
                     <input type="number" id="chart-ymin" placeholder="Auto" onchange="renderChart()">
                 </div>
@@ -676,7 +686,7 @@
                     <label>Y-Max</label>
                     <input type="number" id="chart-ymax" placeholder="Auto" onchange="renderChart()">
                 </div>
-                <button class="btn btn-secondary" style="margin-top: auto;" onclick="autoscaleChart()">Autoscale</button>
+                <button class="btn btn-secondary" style="margin-top: auto;" onclick="autoscaleYChart()">Autoscale Y</button>
             </div>
             <canvas id="metricsChart" width="2620" height="1263"></canvas>
         </div>
@@ -1786,11 +1796,15 @@
             if (isNaN(yMaxManual)) maxY = Math.ceil(maxY * 1.1);
 
             const dates = filtered.map(m => new Date(m.date).getTime());
-            let minX = Math.min(...dates);
-            let maxX = Math.max(...dates);
-            if (minX === maxX) {
-                minX -= 86400000;
-                maxX += 86400000;
+            let xMinVal = document.getElementById('chart-xmin').value;
+            let xMaxVal = document.getElementById('chart-xmax').value;
+
+            let minX = xMinVal ? new Date(xMinVal + 'T00:00:00').getTime() : Math.min(...dates);
+            let maxX = xMaxVal ? new Date(xMaxVal + 'T23:59:59').getTime() : Math.max(...dates);
+
+            if (minX >= maxX) {
+                minX = Math.min(...dates) - 86400000;
+                maxX = Math.max(...dates) + 86400000;
             }
 
             ctx.strokeStyle = "#e0e6ed";
@@ -1858,7 +1872,13 @@
             });
         }
 
-        function autoscaleChart() {
+        function autoscaleXChart() {
+            document.getElementById('chart-xmin').value = '';
+            document.getElementById('chart-xmax').value = '';
+            renderChart();
+        }
+
+        function autoscaleYChart() {
             document.getElementById('chart-ymin').value = '';
             document.getElementById('chart-ymax').value = '';
             renderChart();
