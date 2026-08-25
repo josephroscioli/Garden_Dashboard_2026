@@ -2315,24 +2315,31 @@ async function saveDashboardToFile() {
     btn.innerText = "⏳ Syncing...";
     btn.disabled = true;
 
+    // Paste your exact Cloudflare Worker URL here (MUST start with https://)
+    const WORKER_URL = "https://garden-dashboard-sync.joseph-roscioli.workers.dev";
+
     try {
         const updatedHtml = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
 
-        const res = await fetch("https://YOUR_WORKER_NAME.YOUR_SUBDOMAIN.workers.dev", {
+        const res = await fetch(WORKER_URL, {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            mode: "cors",
+            headers: {
+                "Content-Type": "application/json"
+            },
             body: JSON.stringify({ html: updatedHtml })
         });
 
-        const data = await res.json();
+        const data = await res.json().catch(() => ({}));
 
         if (!res.ok || data.error) {
-            throw new Error(data.error || "Serverless Proxy Error");
+            throw new Error(data.error || `HTTP ${res.status}: ${res.statusText}`);
         }
 
         btn.innerText = "✅ Committed to Git!";
         btn.style.background = "#c8e6c9";
     } catch (err) {
+        console.error("Save Error:", err);
         alert("Sync failed: " + err.message);
         btn.innerText = "❌ Sync Failed";
         btn.style.background = "#ffebee";
