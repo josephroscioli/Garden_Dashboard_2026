@@ -2305,91 +2305,26 @@
 
         
 // --- AUTO-COMMIT DIRECTLY TO GITHUB REPOSITORY ---
-const GITHUB_CONFIG = {
-    username: "josephroscioli", // Exact GitHub username
-    repo: "Garden_Dashboard_2026",           // Exact repo name (case sensitive)
-    branch: "main",                   // Branch name
-    filePath: "index.html",           // File name in GitHub
-    token: "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"  // Your Classic PAT with 'repo' scope
-};
-
-function utf8ToBase64(str) {
-    const bytes = new TextEncoder().encode(str);
-    let binary = '';
-    const chunkSize = 8192;
-    for (let i = 0; i < bytes.length; i += chunkSize) {
-        const chunk = bytes.subarray(i, i + chunkSize);
-        binary += String.fromCharCode.apply(null, chunk);
-    }
-    return btoa(binary);
-}
-
 async function saveDashboardToFile() {
     const btn = document.getElementById('save-file-btn');
-    btn.innerText = "⏳ Committing to GitHub...";
+    btn.innerText = "⏳ Syncing...";
     btn.disabled = true;
-
-    // Clean any accidental whitespace/quotes from token or username
-    const cleanToken = GITHUB_CONFIG.token.trim();
-    const cleanUser = GITHUB_CONFIG.username.trim();
-    const cleanRepo = GITHUB_CONFIG.repo.trim();
 
     try {
         const updatedHtml = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
-        const base64Content = utf8ToBase64(updatedHtml);
 
-        const apiHeaders = {
-            "Authorization": `token ${cleanToken}`,
-            "Accept": "application/vnd.github.v3+json",
-            "Content-Type": "application/json"
-        };
-
-        // 1. Fetch File SHA from GitHub API
-        const getUrl = `https://api.github.com/repos/${cleanUser}/${cleanRepo}/contents/${GITHUB_CONFIG.filePath}?ref=${GITHUB_CONFIG.branch}`;
-        
-        const getResponse = await fetch(getUrl, {
-            method: "GET",
-            headers: apiHeaders
+        const res = await fetch("HTTPS://garden-dashboard-sync.joseph-roscioli.workers.dev", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ html: updatedHtml })
         });
 
-        if (!getResponse.ok) {
-            const errBody = await getResponse.json().catch(() => ({}));
-            if (getResponse.status === 401) {
-                throw new Error("401 Unauthorized: GitHub rejected the token. If opening the live GitHub Pages site, ensure you have pushed this new code file to your repository first!");
-            } else if (getResponse.status === 404) {
-                throw new Error(`404 Not Found: Check that repo '${cleanRepo}' and file '${GITHUB_CONFIG.filePath}' exist.`);
-            } else {
-                throw new Error(`API Error (${getResponse.status}): ${errBody.message || getResponse.statusText}`);
-            }
-        }
-
-        const fileData = await getResponse.json();
-
-        // 2. Commit Update to GitHub
-        const commitUrl = `https://api.github.com/repos/${cleanUser}/${cleanRepo}/contents/${GITHUB_CONFIG.filePath}`;
-        const commitBody = {
-            message: `Auto-update garden log data (${new Date().toLocaleDateString()})`,
-            content: base64Content,
-            sha: fileData.sha,
-            branch: GITHUB_CONFIG.branch
-        };
-
-        const commitResponse = await fetch(commitUrl, {
-            method: "PUT",
-            headers: apiHeaders,
-            body: JSON.stringify(commitBody)
-        });
-
-        if (!commitResponse.ok) {
-            const errBody = await commitResponse.json().catch(() => ({}));
-            throw new Error(`Commit Failed (${commitResponse.status}): ${errBody.message || commitResponse.statusText}`);
-        }
+        if (!res.ok) throw new Error("Serverless Proxy Error");
 
         btn.innerText = "✅ Committed to Git!";
         btn.style.background = "#c8e6c9";
     } catch (err) {
-        console.error("Sync Error:", err);
-        alert(`GitHub Auto-Sync Error:\n${err.message}`);
+        alert("Sync failed: " + err.message);
         btn.innerText = "❌ Sync Failed";
         btn.style.background = "#ffebee";
     } finally {
@@ -2397,7 +2332,7 @@ async function saveDashboardToFile() {
             btn.innerText = "💾 Save & Sync to GitHub";
             btn.style.background = "#eceff1";
             btn.disabled = false;
-        }, 3500);
+        }, 3000);
     }
 }
 
