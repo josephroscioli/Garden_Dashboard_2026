@@ -479,19 +479,19 @@
     </header>
 
     <div class="nav-tabs">
-        <button class="tab-btn" onclick="switchTab('inventory', this)">📦 Inventory</button>
+        <button class="tab-btn active" onclick="switchTab('inventory', this)">📦 Inventory</button>
         <button class="tab-btn" onclick="switchTab('metrics', this)">📈 Metrics</button>
         <button class="tab-btn" onclick="switchTab('logs', this)">📝 Logs</button>
-        <button class="tab-btn active" onclick="switchTab('harvest', this)">🧺 Harvest</button>
+        <button class="tab-btn" onclick="switchTab('harvest', this)">🧺 Harvest</button>
     </div>
 
     <!-- TAB 1: CROP INVENTORY -->
-    <div id="tab-inventory" class="tab-content">
+    <div id="tab-inventory" class="tab-content active">
         <div class="grid">
             <div class="card">
                 <h2 id="crop-form-title">Add New Crop</h2>
                 <form id="crop-form" onsubmit="handleCropSubmit(event)">
-                    <input type="hidden" id="crop-id">
+                    <input type="hidden" id="crop-id" value="">
                     <div class="form-group">
                         <label>Crop Name</label>
                         <input type="text" id="crop-name" placeholder="e.g. Early Girl Tomato" required="">
@@ -514,7 +514,7 @@
                     </div>
                     <div style="display: flex; gap: 8px;">
                         <button type="submit" class="btn" id="crop-save-btn">Save Crop</button>
-                        <button type="button" class="btn btn-secondary" id="crop-cancel-btn" style="display:none;" onclick="resetCropForm()">Cancel</button>
+                        <button type="button" class="btn btn-secondary" id="crop-cancel-btn" style="display: none;" onclick="resetCropForm()">Cancel</button>
                     </div>
                 </form>
             </div>
@@ -535,7 +535,7 @@
                         <tbody id="inventory-table-body"><tr>
                     <td><strong>Corn</strong></td>
                     <td>05-15</td>
-                    <td>16</td>
+                    <td>60</td>
                     <td><span class="badge">6 ears</span></td>
                     <td class="actions-cell">
                         <button class="icon-btn" onclick="editCrop('crop_corn')" title="Edit">✏️</button>
@@ -657,7 +657,7 @@
             </div>
         </div>
 
-        <div class="chart-container" id="chart-card">
+        <div class="chart-container" id="chart-card" style="height: 798px;">
             <h2>Metric Visualization</h2>
             <div class="chart-controls">
                 <div class="form-group">
@@ -678,7 +678,7 @@
                 </div>
                 <button class="btn btn-secondary" style="margin-top: auto;" onclick="autoscaleChart()">Autoscale</button>
             </div>
-            <canvas id="metricsChart" width="1020" height="543"></canvas>
+            <canvas id="metricsChart" width="2620" height="1263"></canvas>
         </div>
 
         <div class="card">
@@ -1295,7 +1295,7 @@
     </div>
 
     <!-- TAB 4: HARVEST -->
-    <div id="tab-harvest" class="tab-content active">
+    <div id="tab-harvest" class="tab-content">
         <div class="grid">
             <div class="card">
                 <h2 id="harvest-form-title">Log Harvest</h2>
@@ -1405,8 +1405,8 @@
 
     <script>
         // --- DATA STORE POPULATED FROM PREVIOUS DASHBOARD ---
-        const initialLastUpdated = "2026-08-25 15:22";
-        const initialCrops = [{"id":"crop_corn","name":"Corn","datePlanted":"2026-05-15","amountPlanted":16,"dateRipening":"2026-07-27"},{"id":"crop_cucumbers","name":"Cucumbers","datePlanted":"2026-05-20","amountPlanted":4,"dateRipening":"2026-07-16"},{"id":"crop_tomatoes","name":"Tomatoes","datePlanted":"2026-05-15","amountPlanted":6,"dateRipening":"2026-08-15"},{"id":"crop_beans1","name":"Green Bush Beans (1st Sow)","datePlanted":"2026-05-15","amountPlanted":12,"dateRipening":"2026-07-15"},{"id":"crop_carrots","name":"Carrots","datePlanted":"2026-05-15","amountPlanted":20,"dateRipening":"2026-08-01"},{"id":"crop_potatoes","name":"Yellow Potatoes","datePlanted":"2026-05-10","amountPlanted":6,"dateRipening":"2026-08-15"},{"id":"crop_beans2","name":"Green Bush Beans (2nd Sow)","datePlanted":"2026-06-15","amountPlanted":12,"dateRipening":"2026-08-01"},{"id":"crop_peas","name":"Peas (First-sown)","datePlanted":"2026-04-15","amountPlanted":10,"dateRipening":"2026-06-15"}];
+        const initialLastUpdated = "2026-08-25 15:27";
+        const initialCrops = [{"id":"crop_corn","name":"Corn","datePlanted":"2026-05-15","amountPlanted":"60","dateRipening":"2026-07-27"},{"id":"crop_cucumbers","name":"Cucumbers","datePlanted":"2026-05-20","amountPlanted":4,"dateRipening":"2026-07-16"},{"id":"crop_tomatoes","name":"Tomatoes","datePlanted":"2026-05-15","amountPlanted":6,"dateRipening":"2026-08-15"},{"id":"crop_beans1","name":"Green Bush Beans (1st Sow)","datePlanted":"2026-05-15","amountPlanted":12,"dateRipening":"2026-07-15"},{"id":"crop_carrots","name":"Carrots","datePlanted":"2026-05-15","amountPlanted":20,"dateRipening":"2026-08-01"},{"id":"crop_potatoes","name":"Yellow Potatoes","datePlanted":"2026-05-10","amountPlanted":6,"dateRipening":"2026-08-15"},{"id":"crop_beans2","name":"Green Bush Beans (2nd Sow)","datePlanted":"2026-06-15","amountPlanted":12,"dateRipening":"2026-08-01"},{"id":"crop_peas","name":"Peas (First-sown)","datePlanted":"2026-04-15","amountPlanted":10,"dateRipening":"2026-06-15"}];
         const initialMetricDefs = [{"id":"m_height","name":"Height","unit":"inches"}];
         const initialMeasurements = [{"id":"meas_1","cropId":"crop_tomatoes","metricId":"m_height","date":"2026-06-06","value":16},{"id":"meas_2","cropId":"crop_tomatoes","metricId":"m_height","date":"2026-06-11","value":18},{"id":"meas_3","cropId":"crop_tomatoes","metricId":"m_height","date":"2026-06-17","value":24},{"id":"meas_4","cropId":"crop_tomatoes","metricId":"m_height","date":"2026-06-22","value":29},{"id":"meas_5","cropId":"crop_tomatoes","metricId":"m_height","date":"2026-06-27","value":34},{"id":"meas_6","cropId":"crop_tomatoes","metricId":"m_height","date":"2026-07-03","value":45},{"id":"meas_7","cropId":"crop_tomatoes","metricId":"m_height","date":"2026-07-09","value":41},{"id":"meas_8","cropId":"crop_tomatoes","metricId":"m_height","date":"2026-07-16","value":50},{"id":"meas_9","cropId":"crop_tomatoes","metricId":"m_height","date":"2026-07-24","value":52},{"id":"meas_10","cropId":"crop_tomatoes","metricId":"m_height","date":"2026-08-01","value":57},{"id":"meas_11","cropId":"crop_tomatoes","metricId":"m_height","date":"2026-08-08","value":53},{"id":"meas_12","cropId":"crop_tomatoes","metricId":"m_height","date":"2026-08-16","value":57},{"id":"meas_13","cropId":"crop_tomatoes","metricId":"m_height","date":"2026-08-22","value":52},{"id":"meas_14","cropId":"crop_potatoes","metricId":"m_height","date":"2026-06-11","value":16},{"id":"meas_15","cropId":"crop_potatoes","metricId":"m_height","date":"2026-06-17","value":18},{"id":"meas_16","cropId":"crop_potatoes","metricId":"m_height","date":"2026-06-22","value":19},{"id":"meas_17","cropId":"crop_potatoes","metricId":"m_height","date":"2026-06-27","value":18},{"id":"meas_18","cropId":"crop_potatoes","metricId":"m_height","date":"2026-07-03","value":15},{"id":"meas_19","cropId":"crop_potatoes","metricId":"m_height","date":"2026-07-09","value":19},{"id":"meas_20","cropId":"crop_potatoes","metricId":"m_height","date":"2026-07-16","value":17},{"id":"meas_21","cropId":"crop_potatoes","metricId":"m_height","date":"2026-07-24","value":16},{"id":"meas_22","cropId":"crop_potatoes","metricId":"m_height","date":"2026-08-01","value":18},{"id":"meas_23","cropId":"crop_potatoes","metricId":"m_height","date":"2026-08-08","value":17},{"id":"meas_24","cropId":"crop_potatoes","metricId":"m_height","date":"2026-08-16","value":18},{"id":"meas_25","cropId":"crop_potatoes","metricId":"m_height","date":"2026-08-22","value":16},{"id":"meas_26","cropId":"crop_corn","metricId":"m_height","date":"2026-06-06","value":4},{"id":"meas_27","cropId":"crop_corn","metricId":"m_height","date":"2026-06-11","value":9},{"id":"meas_28","cropId":"crop_corn","metricId":"m_height","date":"2026-06-17","value":16},{"id":"meas_29","cropId":"crop_corn","metricId":"m_height","date":"2026-06-22","value":16},{"id":"meas_30","cropId":"crop_corn","metricId":"m_height","date":"2026-06-27","value":28},{"id":"meas_31","cropId":"crop_corn","metricId":"m_height","date":"2026-07-03","value":46},{"id":"meas_32","cropId":"crop_corn","metricId":"m_height","date":"2026-07-09","value":50},{"id":"meas_33","cropId":"crop_corn","metricId":"m_height","date":"2026-07-16","value":67},{"id":"meas_34","cropId":"crop_corn","metricId":"m_height","date":"2026-07-24","value":72},{"id":"meas_35","cropId":"crop_corn","metricId":"m_height","date":"2026-08-01","value":99},{"id":"meas_36","cropId":"crop_corn","metricId":"m_height","date":"2026-08-08","value":103},{"id":"meas_37","cropId":"crop_corn","metricId":"m_height","date":"2026-08-16","value":108},{"id":"meas_38","cropId":"crop_corn","metricId":"m_height","date":"2026-08-22","value":104},{"id":"meas_39","cropId":"crop_cucumbers","metricId":"m_height","date":"2026-06-11","value":5},{"id":"meas_40","cropId":"crop_cucumbers","metricId":"m_height","date":"2026-06-17","value":9},{"id":"meas_41","cropId":"crop_cucumbers","metricId":"m_height","date":"2026-06-22","value":10},{"id":"meas_42","cropId":"crop_cucumbers","metricId":"m_height","date":"2026-06-27","value":16},{"id":"meas_43","cropId":"crop_cucumbers","metricId":"m_height","date":"2026-07-03","value":28},{"id":"meas_44","cropId":"crop_cucumbers","metricId":"m_height","date":"2026-07-09","value":50},{"id":"meas_45","cropId":"crop_cucumbers","metricId":"m_height","date":"2026-07-16","value":64},{"id":"meas_46","cropId":"crop_cucumbers","metricId":"m_height","date":"2026-07-24","value":57},{"id":"meas_47","cropId":"crop_beans1","metricId":"m_height","date":"2026-06-17","value":2},{"id":"meas_48","cropId":"crop_beans1","metricId":"m_height","date":"2026-06-22","value":9},{"id":"meas_49","cropId":"crop_beans1","metricId":"m_height","date":"2026-06-27","value":8},{"id":"meas_50","cropId":"crop_beans1","metricId":"m_height","date":"2026-07-03","value":16},{"id":"meas_51","cropId":"crop_beans1","metricId":"m_height","date":"2026-07-09","value":14},{"id":"meas_52","cropId":"crop_beans1","metricId":"m_height","date":"2026-07-16","value":17},{"id":"meas_53","cropId":"crop_beans1","metricId":"m_height","date":"2026-07-24","value":18},{"id":"meas_54","cropId":"crop_beans1","metricId":"m_height","date":"2026-08-01","value":22},{"id":"meas_55","cropId":"crop_beans1","metricId":"m_height","date":"2026-08-08","value":25},{"id":"meas_56","cropId":"crop_beans1","metricId":"m_height","date":"2026-08-16","value":25},{"id":"meas_57","cropId":"crop_beans1","metricId":"m_height","date":"2026-08-22","value":26},{"id":"meas_58","cropId":"crop_carrots","metricId":"m_height","date":"2026-06-11","value":4.5},{"id":"meas_59","cropId":"crop_carrots","metricId":"m_height","date":"2026-06-17","value":5},{"id":"meas_60","cropId":"crop_carrots","metricId":"m_height","date":"2026-06-22","value":8},{"id":"meas_61","cropId":"crop_carrots","metricId":"m_height","date":"2026-06-27","value":7},{"id":"meas_62","cropId":"crop_carrots","metricId":"m_height","date":"2026-07-03","value":12},{"id":"meas_63","cropId":"crop_carrots","metricId":"m_height","date":"2026-07-09","value":10},{"id":"meas_64","cropId":"crop_carrots","metricId":"m_height","date":"2026-07-16","value":12},{"id":"meas_65","cropId":"crop_carrots","metricId":"m_height","date":"2026-07-24","value":17},{"id":"meas_66","cropId":"crop_carrots","metricId":"m_height","date":"2026-08-01","value":19},{"id":"meas_67","cropId":"crop_carrots","metricId":"m_height","date":"2026-08-08","value":22},{"id":"meas_68","cropId":"crop_carrots","metricId":"m_height","date":"2026-08-16","value":21},{"id":"meas_69","cropId":"crop_carrots","metricId":"m_height","date":"2026-08-22","value":24},{"id":"meas_70","cropId":"crop_beans2","metricId":"m_height","date":"2026-07-03","value":10},{"id":"meas_71","cropId":"crop_beans2","metricId":"m_height","date":"2026-07-09","value":7},{"id":"meas_72","cropId":"crop_beans2","metricId":"m_height","date":"2026-07-16","value":10},{"id":"meas_73","cropId":"crop_beans2","metricId":"m_height","date":"2026-07-24","value":21},{"id":"meas_74","cropId":"crop_beans2","metricId":"m_height","date":"2026-08-01","value":16},{"id":"meas_75","cropId":"crop_beans2","metricId":"m_height","date":"2026-08-08","value":16},{"id":"meas_76","cropId":"crop_beans2","metricId":"m_height","date":"2026-08-16","value":17},{"id":"meas_77","cropId":"crop_beans2","metricId":"m_height","date":"2026-08-22","value":18}];
         const initialLogs = [{"id":"log_1","date":"2026-08-22","tags":["crop_potatoes"],"notes":"[Crop Status] Potato harvest weight: 2 lbs 14 oz."},{"id":"log_2","date":"2026-08-22","tags":["crop_tomatoes","crop_beans1","crop_beans2","crop_potatoes","crop_carrots","crop_corn"],"notes":"[Crop Status] Big harvest day! Harvested many tomatoes and green beans (both actively producing). Harvested 3 potato plants (2 volunteer, 1 intentional) yielding 2 lbs 13 oz total of large tubers. Heights logged: Carrots (24\"), 1st Sow Beans (26\"), 2nd Sow Beans (18\"), Tomatoes (52\"), Potatoes (16\"), Corn (104\")."},{"id":"log_3","date":"2026-08-16","tags":["crop_corn","crop_tomatoes","crop_beans2"],"notes":"[Crop Status] First amazing sweet corn harvested! Corn height reached 108\". Tomatoes rebounded to 57\", and 2nd Sow Bush Beans reached 17\"."},{"id":"log_4","date":"2026-08-08","tags":["crop_corn","crop_carrots","crop_beans1"],"notes":"[Crop Status] Sweet Corn surged past 100\" reaching 103\". Carrots (22\") and 1st Sow Bush Beans (25\") showing continued vertical progress."},{"id":"log_5","date":"2026-07-27","tags":["crop_corn"],"notes":"[Corn Milestones] Corn started silking on Monday, July 27, supported by deep-soaking irrigation interventions."},{"id":"log_6","date":"2026-07-16","tags":["crop_corn","crop_cucumbers","crop_tomatoes","crop_potatoes"],"notes":"[Crop Status] Major heat-driven growth explosion logged across corn (67\"), cucumbers (64\"), and tomatoes (50\"). Potatoes showing flowers and potato berries, signaling transition to active underground tuber-bulking phase. First cucumbers harvested."},{"id":"log_7","date":"2026-07-12","tags":["crop_corn","crop_tomatoes","crop_carrots"],"notes":"[Crop Status] Audibled from fish fertilizer drench to dry pellet side-dressing due to restrictive mature crop canopy density. Completed targeted Coop Poop distributions across corn, tomatoes, and carrots."},{"id":"log_8","date":"2026-07-08","tags":["ALL"],"notes":"[Precipitation] Massive storm delivered 2.1\" of rainfall on July 8. Irrigation manually shut off to avoid waterlogging the sub-surface soil."},{"id":"log_9","date":"2026-07-05","tags":["crop_peas"],"notes":"[Crop Status] Peas Cleared: Spring pea vines removed. Soil preparing for late-summer planting strategy."},{"id":"log_10","date":"2026-07-12","tags":["ALL"],"notes":"[Soaker Hose System] Transitioned out of full standby into a defensive watering interval of once every 2 days (1-hour deep soak) to counter local cucumber root saturation."},{"id":"log_11","date":"2026-06-29","tags":["crop_corn","crop_cucumbers"],"notes":"[Beneficial Nematodes] 2 million units deployed via Chapin G362D sprayer at dusk across 16 corn clusters and cucumber footprint."},{"id":"log_12","date":"2026-07-09","tags":["ALL"],"notes":"[Pest Defense] Baby rabbits breached perimeter; physical fence gap reinforcement updated."},{"id":"log_13","date":"2026-07-01","tags":["crop_cucumbers"],"notes":"[Pest Warning] Spotted yellow and green cucumber beetles. Bacterial wilt & leaf mottling observed."},{"id":"_c4782r9nj","date":"2026-08-25","tags":["crop_corn"],"notes":"Noticed corn dropped from 108\" to 104\", because of weight of corn."},{"id":"_j4khf49do","date":"2026-08-25","tags":["crop_carrots"],"notes":"7 carrots have gone to seed. Will see if the underlying carrots are still good."}];
@@ -2217,4 +2217,4 @@
         });
     </script>
 
-</body></html>
+<div id="1p-menu-live-region" role="status" aria-live="polite" aria-atomic="true" aria-relevant="all" style="clip: rect(0px, 0px, 0px, 0px); clip-path: inset(50%); height: 1px; overflow: hidden; position: fixed; top: 0px; left: 0px; white-space: nowrap; width: 1px; overflow-wrap: normal;">1Password menu is available. Press down arrow to select.</div></body></html>
