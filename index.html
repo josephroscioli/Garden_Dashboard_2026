@@ -2306,14 +2306,13 @@
         
 // --- AUTO-COMMIT DIRECTLY TO GITHUB REPOSITORY ---
 const GITHUB_CONFIG = {
-    username: "josephroscioli", // e.g., "johndoe"
-    repo: "Garden_Dashboard_2026",         // Your repository name
-    branch: "main",                   // Default branch
-    filePath: "index.html",           // Target file in repo
-    token: "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" // Paste your PAT here
+    username: "josephroscioli", // Exact GitHub username
+    repo: "Garden_Dashboard_2026",           // Exact repo name (case sensitive)
+    branch: "main",                   // Branch name
+    filePath: "index.html",           // File name in GitHub
+    token: "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"  // Your Classic PAT with 'repo' scope
 };
 
-// Helper: Convert UTF-8 string to Base64 safely without stack overflow
 function utf8ToBase64(str) {
     const bytes = new TextEncoder().encode(str);
     let binary = '';
@@ -2330,66 +2329,67 @@ async function saveDashboardToFile() {
     btn.innerText = "⏳ Committing to GitHub...";
     btn.disabled = true;
 
+    // Clean any accidental whitespace/quotes from token or username
+    const cleanToken = GITHUB_CONFIG.token.trim();
+    const cleanUser = GITHUB_CONFIG.username.trim();
+    const cleanRepo = GITHUB_CONFIG.repo.trim();
+
     try {
-        // 1. Get current DOM state as HTML string
         const updatedHtml = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
-        
-        // 2. Safely encode to base64
         const base64Content = utf8ToBase64(updatedHtml);
 
-        // 3. Get current file SHA from GitHub API
-        const getUrl = `https://api.github.com/repos/${GITHUB_CONFIG.username}/${GITHUB_CONFIG.repo}/contents/${GITHUB_CONFIG.filePath}?ref=${GITHUB_CONFIG.branch}`;
+        const apiHeaders = {
+            "Authorization": `token ${cleanToken}`,
+            "Accept": "application/vnd.github.v3+json",
+            "Content-Type": "application/json"
+        };
+
+        // 1. Fetch File SHA from GitHub API
+        const getUrl = `https://api.github.com/repos/${cleanUser}/${cleanRepo}/contents/${GITHUB_CONFIG.filePath}?ref=${GITHUB_CONFIG.branch}`;
         
         const getResponse = await fetch(getUrl, {
-            headers: {
-                "Authorization": `Bearer ${GITHUB_CONFIG.token}`,
-                "Accept": "application/vnd.github.v3+json"
-            }
+            method: "GET",
+            headers: apiHeaders
         });
 
         if (!getResponse.ok) {
-            const errData = await getResponse.json().catch(() => ({}));
-            if (getResponse.status === 404) {
-                throw new Error(`404 Not Found. Check repository name ('${GITHUB_CONFIG.repo}'), branch ('${GITHUB_CONFIG.branch}'), and file path ('${GITHUB_CONFIG.filePath}').`);
-            } else if (getResponse.status === 401) {
-                throw new Error(`401 Unauthorized. Your Personal Access Token (PAT) is invalid or expired.`);
+            const errBody = await getResponse.json().catch(() => ({}));
+            if (getResponse.status === 401) {
+                throw new Error("401 Unauthorized: GitHub rejected the token. If opening the live GitHub Pages site, ensure you have pushed this new code file to your repository first!");
+            } else if (getResponse.status === 404) {
+                throw new Error(`404 Not Found: Check that repo '${cleanRepo}' and file '${GITHUB_CONFIG.filePath}' exist.`);
             } else {
-                throw new Error(`API Error (${getResponse.status}): ${errData.message || getResponse.statusText}`);
+                throw new Error(`API Error (${getResponse.status}): ${errBody.message || getResponse.statusText}`);
             }
         }
 
         const fileData = await getResponse.json();
-        const sha = fileData.sha;
 
-        // 4. Push update to GitHub repository
-        const commitUrl = `https://api.github.com/repos/${GITHUB_CONFIG.username}/${GITHUB_CONFIG.repo}/contents/${GITHUB_CONFIG.filePath}`;
+        // 2. Commit Update to GitHub
+        const commitUrl = `https://api.github.com/repos/${cleanUser}/${cleanRepo}/contents/${GITHUB_CONFIG.filePath}`;
         const commitBody = {
             message: `Auto-update garden log data (${new Date().toLocaleDateString()})`,
             content: base64Content,
-            sha: sha,
+            sha: fileData.sha,
             branch: GITHUB_CONFIG.branch
         };
 
         const commitResponse = await fetch(commitUrl, {
             method: "PUT",
-            headers: {
-                "Authorization": `Bearer ${GITHUB_CONFIG.token}`,
-                "Content-Type": "application/json",
-                "Accept": "application/vnd.github.v3+json"
-            },
+            headers: apiHeaders,
             body: JSON.stringify(commitBody)
         });
 
         if (!commitResponse.ok) {
-            const errData = await commitResponse.json().catch(() => ({}));
-            throw new Error(`Commit Failed (${commitResponse.status}): ${errData.message || commitResponse.statusText}`);
+            const errBody = await commitResponse.json().catch(() => ({}));
+            throw new Error(`Commit Failed (${commitResponse.status}): ${errBody.message || commitResponse.statusText}`);
         }
 
         btn.innerText = "✅ Committed to Git!";
         btn.style.background = "#c8e6c9";
     } catch (err) {
         console.error("Sync Error:", err);
-        alert(`Failed to auto-update GitHub repository:\n${err.message}`);
+        alert(`GitHub Auto-Sync Error:\n${err.message}`);
         btn.innerText = "❌ Sync Failed";
         btn.style.background = "#ffebee";
     } finally {
@@ -2397,7 +2397,7 @@ async function saveDashboardToFile() {
             btn.innerText = "💾 Save & Sync to GitHub";
             btn.style.background = "#eceff1";
             btn.disabled = false;
-        }, 3000);
+        }, 3500);
     }
 }
 
