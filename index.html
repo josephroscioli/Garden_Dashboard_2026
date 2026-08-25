@@ -374,8 +374,8 @@
     <header>
         <h1>🌱 Garden Dashboard</h1>
         <div style="display: flex; align-items: center; gap: 16px;">
-            <div id="stats-summary" style="font-size: 0.9rem; color: var(--text-light);">Tracking 8 Crop Type(s) | 11 Harvest Records</div>
-            <button class="btn btn-secondary" id="save-file-btn" onclick="saveDashboardToFile()" disabled="">⏳ Syncing...</button>
+            <div id="stats-summary" style="font-size: 0.9rem; color: var(--text-light);">Tracking 8 Crop Type(s) | 12 Harvest Records</div>
+            <button class="btn btn-secondary" id="save-file-btn" onclick="saveDashboardToFile()" disabled="" style="background: rgb(236, 239, 241);">⏳ Syncing...</button>
         </div>
     </header>
 
@@ -439,7 +439,7 @@
                     <td>2026-05-15</td>
                     <td>16</td>
                     <td>2026-07-27</td>
-                    <td><span class="badge">6 ears, 4 Count, 12 Ears, 1 B, 1 E</span></td>
+                    <td><span class="badge">6 ears, 4 Count, 12 Ears, 1 B, 1 E, 10 Aa</span></td>
                     <td class="actions-cell">
                         <button class="icon-btn" onclick="editCrop('crop_corn')" title="Edit">✏️</button>
                         <button class="icon-btn delete" onclick="deleteCrop('crop_corn')" title="Hard Remove">🗑️</button>
@@ -1506,7 +1506,7 @@
             <div class="card">
                 <h2 id="harvest-form-title">Log Harvest</h2>
                 <form id="harvest-form" onsubmit="handleHarvestSubmit(event)">
-                    <input type="hidden" id="harvest-id">
+                    <input type="hidden" id="harvest-id" value="">
                     <div class="form-group">
                         <label>Date Harvested</label>
                         <input type="date" id="harvest-date" required="">
@@ -1565,6 +1565,14 @@
                     <td class="actions-cell">
                         <button class="icon-btn" onclick="editHarvest('_506azl5qa')">✏️</button>
                         <button class="icon-btn delete" onclick="deleteHarvest('_506azl5qa')">🗑️</button>
+                    </td>
+                </tr><tr>
+                    <td>2026-08-25</td>
+                    <td>Corn</td>
+                    <td><strong>10 Aa</strong></td>
+                    <td class="actions-cell">
+                        <button class="icon-btn" onclick="editHarvest('_ak63vstc5')">✏️</button>
+                        <button class="icon-btn delete" onclick="deleteHarvest('_ak63vstc5')">🗑️</button>
                     </td>
                 </tr><tr>
                     <td>2026-08-24</td>
