@@ -473,9 +473,10 @@
             <div id="stats-summary" style="font-size: 0.8rem; color: var(--text-light); margin-top: 2px;">Tracking 8 Crop Type(s) | 6 Harvest Records</div>
         </div>
         <div class="header-controls">
-            <div id="last-updated-display" class="last-updated">Last Synced: 2026-08-25 15:27</div>
+            <div id="last-updated-display" class="last-updated">Last Synced: Loading...</div>
             <button class="btn btn-secondary" onclick="forceReloadLatest()">🔄 Load Latest</button>
-            <button class="btn btn-secondary" id="save-file-btn" onclick="saveDashboardToFile()" style="background: rgb(236, 239, 241);">💾 Save &amp; Sync to GitHub</button>
+            <button class="btn btn-secondary" id="save-file-btn" onclick="saveDashboardToFile()">💾 Save &amp; Sync</button>
+            <button class="btn btn-secondary" onclick="openSettingsModal()">⚙️ Utilities</button>
         </div>
     </header>
 
@@ -1402,6 +1403,42 @@
     </div>
 
     <!-- HARD DELETION CONFIRMATION MODAL -->
+    
+    <!-- SETTINGS & UTILITIES MODAL -->
+    <div class="modal" id="settings-modal">
+        <div class="modal-content" style="max-width: 550px;">
+            <h2 style="margin-bottom: 12px; color: var(--primary-dark);">⚙️ Dashboard Utilities &amp; Archiving</h2>
+            
+            <div style="border-bottom: 1px solid var(--border); padding-bottom: 12px; margin-bottom: 12px;">
+                <h3 style="font-size: 0.95rem; margin-bottom: 6px;">1. Archive Current Season</h3>
+                <p style="font-size: 0.8rem; color: var(--text-light); margin-bottom: 8px;">Save active data to a named JSON file (e.g. <code>2026</code> becomes <code>archive/2026_data.json</code> or downloaded locally).</p>
+                <div style="display: flex; gap: 8px;">
+                    <input type="text" id="archive-name" placeholder="e.g. 2026" style="flex: 1;">
+                    <button class="btn" onclick="archiveCurrentSeason()">📦 Archive Season</button>
+                </div>
+            </div>
+
+            <div style="border-bottom: 1px solid var(--border); padding-bottom: 12px; margin-bottom: 12px;">
+                <h3 style="font-size: 0.95rem; margin-bottom: 6px;">2. Load Historical Dataset</h3>
+                <p style="font-size: 0.8rem; color: var(--text-light); margin-bottom: 8px;">Load a past season's data file into the dashboard to review historical records.</p>
+                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                    <input type="file" id="load-json-file" accept=".json" style="flex: 1;">
+                    <button class="btn btn-secondary" onclick="loadHistoricalFile()">📂 Load File</button>
+                </div>
+            </div>
+
+            <div style="padding-bottom: 8px;">
+                <h3 style="font-size: 0.95rem; color: var(--danger); margin-bottom: 6px;">3. Reset / Clear Active Data</h3>
+                <p style="font-size: 0.8rem; color: var(--text-light); margin-bottom: 8px;">Clear all active crop, metric, log, and harvest records to start fresh for a new season (e.g., 2027).</p>
+                <button class="btn btn-danger" onclick="confirmResetAllData()">🧹 Reset Active Season Data</button>
+            </div>
+
+            <div class="modal-footer" style="margin-top: 12px;">
+                <button class="btn btn-secondary" onclick="closeSettingsModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
     <div class="modal" id="delete-modal">
         <div class="modal-content">
             <h3 style="color: var(--danger); margin-bottom: 8px;">⚠️ High Protection Action</h3>
@@ -1414,33 +1451,16 @@
     </div>
 
     <script>
-        // --- DATA STORE POPULATED FROM PREVIOUS DASHBOARD ---
-        const initialLastUpdated = "2026-08-25 15:28";
-        const initialCrops = [{"id":"crop_corn","name":"Corn","datePlanted":"2026-05-15","amountPlanted":"60","dateRipening":"2026-07-27"},{"id":"crop_cucumbers","name":"Cucumbers","datePlanted":"2026-05-20","amountPlanted":"16","dateRipening":"2026-07-16"},{"id":"crop_tomatoes","name":"Tomatoes","datePlanted":"2026-05-15","amountPlanted":"3","dateRipening":"2026-08-15"},{"id":"crop_beans1","name":"Green Bush Beans (1st Sow)","datePlanted":"2026-05-15","amountPlanted":"20","dateRipening":"2026-07-15"},{"id":"crop_carrots","name":"Carrots","datePlanted":"2026-05-15","amountPlanted":"100","dateRipening":"2026-08-01"},{"id":"crop_potatoes","name":"Yellow Potatoes","datePlanted":"2026-05-10","amountPlanted":"50","dateRipening":"2026-08-15"},{"id":"crop_beans2","name":"Green Bush Beans (2nd Sow)","datePlanted":"2026-06-15","amountPlanted":"20","dateRipening":"2026-08-01"},{"id":"crop_peas","name":"Peas (First-sown)","datePlanted":"2026-04-15","amountPlanted":10,"dateRipening":"2026-06-15"}];
-        const initialMetricDefs = [{"id":"m_height","name":"Height","unit":"inches"}];
-        const initialMeasurements = [{"id":"meas_1","cropId":"crop_tomatoes","metricId":"m_height","date":"2026-06-06","value":16},{"id":"meas_2","cropId":"crop_tomatoes","metricId":"m_height","date":"2026-06-11","value":18},{"id":"meas_3","cropId":"crop_tomatoes","metricId":"m_height","date":"2026-06-17","value":24},{"id":"meas_4","cropId":"crop_tomatoes","metricId":"m_height","date":"2026-06-22","value":29},{"id":"meas_5","cropId":"crop_tomatoes","metricId":"m_height","date":"2026-06-27","value":34},{"id":"meas_6","cropId":"crop_tomatoes","metricId":"m_height","date":"2026-07-03","value":45},{"id":"meas_7","cropId":"crop_tomatoes","metricId":"m_height","date":"2026-07-09","value":41},{"id":"meas_8","cropId":"crop_tomatoes","metricId":"m_height","date":"2026-07-16","value":50},{"id":"meas_9","cropId":"crop_tomatoes","metricId":"m_height","date":"2026-07-24","value":52},{"id":"meas_10","cropId":"crop_tomatoes","metricId":"m_height","date":"2026-08-01","value":57},{"id":"meas_11","cropId":"crop_tomatoes","metricId":"m_height","date":"2026-08-08","value":53},{"id":"meas_12","cropId":"crop_tomatoes","metricId":"m_height","date":"2026-08-16","value":57},{"id":"meas_13","cropId":"crop_tomatoes","metricId":"m_height","date":"2026-08-22","value":52},{"id":"meas_14","cropId":"crop_potatoes","metricId":"m_height","date":"2026-06-11","value":16},{"id":"meas_15","cropId":"crop_potatoes","metricId":"m_height","date":"2026-06-17","value":18},{"id":"meas_16","cropId":"crop_potatoes","metricId":"m_height","date":"2026-06-22","value":19},{"id":"meas_17","cropId":"crop_potatoes","metricId":"m_height","date":"2026-06-27","value":18},{"id":"meas_18","cropId":"crop_potatoes","metricId":"m_height","date":"2026-07-03","value":15},{"id":"meas_19","cropId":"crop_potatoes","metricId":"m_height","date":"2026-07-09","value":19},{"id":"meas_20","cropId":"crop_potatoes","metricId":"m_height","date":"2026-07-16","value":17},{"id":"meas_21","cropId":"crop_potatoes","metricId":"m_height","date":"2026-07-24","value":16},{"id":"meas_22","cropId":"crop_potatoes","metricId":"m_height","date":"2026-08-01","value":18},{"id":"meas_23","cropId":"crop_potatoes","metricId":"m_height","date":"2026-08-08","value":17},{"id":"meas_24","cropId":"crop_potatoes","metricId":"m_height","date":"2026-08-16","value":18},{"id":"meas_25","cropId":"crop_potatoes","metricId":"m_height","date":"2026-08-22","value":16},{"id":"meas_26","cropId":"crop_corn","metricId":"m_height","date":"2026-06-06","value":4},{"id":"meas_27","cropId":"crop_corn","metricId":"m_height","date":"2026-06-11","value":9},{"id":"meas_28","cropId":"crop_corn","metricId":"m_height","date":"2026-06-17","value":16},{"id":"meas_29","cropId":"crop_corn","metricId":"m_height","date":"2026-06-22","value":16},{"id":"meas_30","cropId":"crop_corn","metricId":"m_height","date":"2026-06-27","value":28},{"id":"meas_31","cropId":"crop_corn","metricId":"m_height","date":"2026-07-03","value":46},{"id":"meas_32","cropId":"crop_corn","metricId":"m_height","date":"2026-07-09","value":50},{"id":"meas_33","cropId":"crop_corn","metricId":"m_height","date":"2026-07-16","value":67},{"id":"meas_34","cropId":"crop_corn","metricId":"m_height","date":"2026-07-24","value":72},{"id":"meas_35","cropId":"crop_corn","metricId":"m_height","date":"2026-08-01","value":99},{"id":"meas_36","cropId":"crop_corn","metricId":"m_height","date":"2026-08-08","value":103},{"id":"meas_37","cropId":"crop_corn","metricId":"m_height","date":"2026-08-16","value":108},{"id":"meas_38","cropId":"crop_corn","metricId":"m_height","date":"2026-08-22","value":104},{"id":"meas_39","cropId":"crop_cucumbers","metricId":"m_height","date":"2026-06-11","value":5},{"id":"meas_40","cropId":"crop_cucumbers","metricId":"m_height","date":"2026-06-17","value":9},{"id":"meas_41","cropId":"crop_cucumbers","metricId":"m_height","date":"2026-06-22","value":10},{"id":"meas_42","cropId":"crop_cucumbers","metricId":"m_height","date":"2026-06-27","value":16},{"id":"meas_43","cropId":"crop_cucumbers","metricId":"m_height","date":"2026-07-03","value":28},{"id":"meas_44","cropId":"crop_cucumbers","metricId":"m_height","date":"2026-07-09","value":50},{"id":"meas_45","cropId":"crop_cucumbers","metricId":"m_height","date":"2026-07-16","value":64},{"id":"meas_46","cropId":"crop_cucumbers","metricId":"m_height","date":"2026-07-24","value":57},{"id":"meas_47","cropId":"crop_beans1","metricId":"m_height","date":"2026-06-17","value":2},{"id":"meas_48","cropId":"crop_beans1","metricId":"m_height","date":"2026-06-22","value":9},{"id":"meas_49","cropId":"crop_beans1","metricId":"m_height","date":"2026-06-27","value":8},{"id":"meas_50","cropId":"crop_beans1","metricId":"m_height","date":"2026-07-03","value":16},{"id":"meas_51","cropId":"crop_beans1","metricId":"m_height","date":"2026-07-09","value":14},{"id":"meas_52","cropId":"crop_beans1","metricId":"m_height","date":"2026-07-16","value":17},{"id":"meas_53","cropId":"crop_beans1","metricId":"m_height","date":"2026-07-24","value":18},{"id":"meas_54","cropId":"crop_beans1","metricId":"m_height","date":"2026-08-01","value":22},{"id":"meas_55","cropId":"crop_beans1","metricId":"m_height","date":"2026-08-08","value":25},{"id":"meas_56","cropId":"crop_beans1","metricId":"m_height","date":"2026-08-16","value":25},{"id":"meas_57","cropId":"crop_beans1","metricId":"m_height","date":"2026-08-22","value":26},{"id":"meas_58","cropId":"crop_carrots","metricId":"m_height","date":"2026-06-11","value":4.5},{"id":"meas_59","cropId":"crop_carrots","metricId":"m_height","date":"2026-06-17","value":5},{"id":"meas_60","cropId":"crop_carrots","metricId":"m_height","date":"2026-06-22","value":8},{"id":"meas_61","cropId":"crop_carrots","metricId":"m_height","date":"2026-06-27","value":7},{"id":"meas_62","cropId":"crop_carrots","metricId":"m_height","date":"2026-07-03","value":12},{"id":"meas_63","cropId":"crop_carrots","metricId":"m_height","date":"2026-07-09","value":10},{"id":"meas_64","cropId":"crop_carrots","metricId":"m_height","date":"2026-07-16","value":12},{"id":"meas_65","cropId":"crop_carrots","metricId":"m_height","date":"2026-07-24","value":17},{"id":"meas_66","cropId":"crop_carrots","metricId":"m_height","date":"2026-08-01","value":19},{"id":"meas_67","cropId":"crop_carrots","metricId":"m_height","date":"2026-08-08","value":22},{"id":"meas_68","cropId":"crop_carrots","metricId":"m_height","date":"2026-08-16","value":21},{"id":"meas_69","cropId":"crop_carrots","metricId":"m_height","date":"2026-08-22","value":24},{"id":"meas_70","cropId":"crop_beans2","metricId":"m_height","date":"2026-07-03","value":10},{"id":"meas_71","cropId":"crop_beans2","metricId":"m_height","date":"2026-07-09","value":7},{"id":"meas_72","cropId":"crop_beans2","metricId":"m_height","date":"2026-07-16","value":10},{"id":"meas_73","cropId":"crop_beans2","metricId":"m_height","date":"2026-07-24","value":21},{"id":"meas_74","cropId":"crop_beans2","metricId":"m_height","date":"2026-08-01","value":16},{"id":"meas_75","cropId":"crop_beans2","metricId":"m_height","date":"2026-08-08","value":16},{"id":"meas_76","cropId":"crop_beans2","metricId":"m_height","date":"2026-08-16","value":17},{"id":"meas_77","cropId":"crop_beans2","metricId":"m_height","date":"2026-08-22","value":18}];
-        const initialLogs = [{"id":"log_1","date":"2026-08-22","tags":["crop_potatoes"],"notes":"[Crop Status] Potato harvest weight: 2 lbs 14 oz."},{"id":"log_2","date":"2026-08-22","tags":["crop_tomatoes","crop_beans1","crop_beans2","crop_potatoes","crop_carrots","crop_corn"],"notes":"[Crop Status] Big harvest day! Harvested many tomatoes and green beans (both actively producing). Harvested 3 potato plants (2 volunteer, 1 intentional) yielding 2 lbs 13 oz total of large tubers. Heights logged: Carrots (24\"), 1st Sow Beans (26\"), 2nd Sow Beans (18\"), Tomatoes (52\"), Potatoes (16\"), Corn (104\")."},{"id":"log_3","date":"2026-08-16","tags":["crop_corn","crop_tomatoes","crop_beans2"],"notes":"[Crop Status] First amazing sweet corn harvested! Corn height reached 108\". Tomatoes rebounded to 57\", and 2nd Sow Bush Beans reached 17\"."},{"id":"log_4","date":"2026-08-08","tags":["crop_corn","crop_carrots","crop_beans1"],"notes":"[Crop Status] Sweet Corn surged past 100\" reaching 103\". Carrots (22\") and 1st Sow Bush Beans (25\") showing continued vertical progress."},{"id":"log_5","date":"2026-07-27","tags":["crop_corn"],"notes":"[Corn Milestones] Corn started silking on Monday, July 27, supported by deep-soaking irrigation interventions."},{"id":"log_6","date":"2026-07-16","tags":["crop_corn","crop_cucumbers","crop_tomatoes","crop_potatoes"],"notes":"[Crop Status] Major heat-driven growth explosion logged across corn (67\"), cucumbers (64\"), and tomatoes (50\"). Potatoes showing flowers and potato berries, signaling transition to active underground tuber-bulking phase. First cucumbers harvested."},{"id":"log_7","date":"2026-07-12","tags":["crop_corn","crop_tomatoes","crop_carrots"],"notes":"[Crop Status] Audibled from fish fertilizer drench to dry pellet side-dressing due to restrictive mature crop canopy density. Completed targeted Coop Poop distributions across corn, tomatoes, and carrots."},{"id":"log_8","date":"2026-07-08","tags":["ALL"],"notes":"[Precipitation] Massive storm delivered 2.1\" of rainfall on July 8. Irrigation manually shut off to avoid waterlogging the sub-surface soil."},{"id":"log_9","date":"2026-07-05","tags":["crop_peas"],"notes":"[Crop Status] Peas Cleared: Spring pea vines removed. Soil preparing for late-summer planting strategy."},{"id":"log_10","date":"2026-07-12","tags":["ALL"],"notes":"[Soaker Hose System] Transitioned out of full standby into a defensive watering interval of once every 2 days (1-hour deep soak) to counter local cucumber root saturation."},{"id":"log_11","date":"2026-06-29","tags":["crop_corn","crop_cucumbers"],"notes":"[Beneficial Nematodes] 2 million units deployed via Chapin G362D sprayer at dusk across 16 corn clusters and cucumber footprint."},{"id":"log_12","date":"2026-07-09","tags":["ALL"],"notes":"[Pest Defense] Baby rabbits breached perimeter; physical fence gap reinforcement updated."},{"id":"log_13","date":"2026-07-01","tags":["crop_cucumbers"],"notes":"[Pest Warning] Spotted yellow and green cucumber beetles. Bacterial wilt & leaf mottling observed."},{"id":"_c4782r9nj","date":"2026-08-25","tags":["crop_corn"],"notes":"Noticed corn dropped from 108\" to 104\", because of weight of corn."},{"id":"_j4khf49do","date":"2026-08-25","tags":["crop_carrots"],"notes":"7 carrots have gone to seed. Will see if the underlying carrots are still good."}];
-        const initialHarvests = [{"id":"h_1","date":"2026-08-22","cropId":"crop_potatoes","qty":2.875,"unit":"lbs"},{"id":"h_3","date":"2026-08-22","cropId":"crop_tomatoes","qty":100,"unit":"count"},{"id":"h_4","date":"2026-08-22","cropId":"crop_beans1","qty":1.5,"unit":"lbs"},{"id":"h_5","date":"2026-08-22","cropId":"crop_beans2","qty":1,"unit":"lbs"},{"id":"h_6","date":"2026-08-16","cropId":"crop_corn","qty":6,"unit":"ears"},{"id":"h_7","date":"2026-07-16","cropId":"crop_cucumbers","qty":10,"unit":"count"}];
-
         let state = {
-            crops: initialCrops,
-            metricDefs: initialMetricDefs,
-            measurements: initialMeasurements,
-            logs: initialLogs,
-            harvests: initialHarvests
+            lastUpdated: "Loading...",
+            crops: [],
+            metricDefs: [],
+            measurements: [],
+            logs: [],
+            harvests: []
         };
 
         let pendingDeleteFn = null;
-
-        function saveState() {
-            localStorage.setItem('gd_crops', JSON.stringify(state.crops));
-            localStorage.setItem('gd_metricDefs', JSON.stringify(state.metricDefs));
-            localStorage.setItem('gd_measurements', JSON.stringify(state.measurements));
-            localStorage.setItem('gd_logs', JSON.stringify(state.logs));
-            localStorage.setItem('gd_harvests', JSON.stringify(state.harvests));
-            
-            renderAll();
-        }
 
         // --- NAVIGATION ---
         function switchTab(tabId, btnEl) {
@@ -1464,6 +1484,122 @@
             }
         }
 
+        // --- FETCH DECOUPLED JSON DATA ---
+        async function fetchRepoData() {
+            try {
+                const res = await fetch('./data.json?v=' + new Date().getTime());
+                if (!res.ok) throw new Error("Could not fetch data.json");
+                const data = await res.json();
+
+                state = {
+                    lastUpdated: data.lastUpdated || new Date().toISOString().replace('T', ' ').slice(0, 16),
+                    crops: data.crops || [],
+                    metricDefs: data.metricDefs || [],
+                    measurements: data.measurements || [],
+                    logs: data.logs || [],
+                    harvests: data.harvests || []
+                };
+
+                saveLocalState();
+                renderAll();
+            } catch (err) {
+                console.warn("Server fetch failed, loading from local cache:", err);
+                loadLocalState();
+            }
+        }
+
+        function saveLocalState() {
+            localStorage.setItem('gd_state', JSON.stringify(state));
+            document.getElementById('last-updated-display').innerText = `Last Synced: ${state.lastUpdated}`;
+        }
+
+        function loadLocalState() {
+            const stored = localStorage.getItem('gd_state');
+            if (stored) {
+                state = JSON.parse(stored);
+            }
+            document.getElementById('last-updated-display').innerText = `Last Synced: ${state.lastUpdated || 'Offline'}`;
+            renderAll();
+        }
+
+        function saveState() {
+            saveLocalState();
+            renderAll();
+        }
+
+        // --- MODALS & UTILITIES ---
+        function openSettingsModal() {
+            document.getElementById('settings-modal').classList.add('active');
+        }
+
+        function closeSettingsModal() {
+            document.getElementById('settings-modal').classList.remove('active');
+        }
+
+        function archiveCurrentSeason() {
+            const name = document.getElementById('archive-name').value.trim() || 'season';
+            const fileName = `${name}_data.json`;
+            const jsonStr = JSON.stringify(state, null, 2);
+
+            const blob = new Blob([jsonStr], { type: "application/json" });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = fileName;
+            link.click();
+            URL.revokeObjectURL(link.href);
+
+            alert(`Archived current dataset as ${fileName}!`);
+        }
+
+        function loadHistoricalFile() {
+            const input = document.getElementById('load-json-file');
+            if (!input.files || !input.files[0]) {
+                alert("Please select a valid .json dataset file first.");
+                return;
+            }
+
+            const file = input.files[0];
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const loadedData = JSON.parse(e.target.result);
+                    state = {
+                        lastUpdated: loadedData.lastUpdated || 'Historical Load',
+                        crops: loadedData.crops || [],
+                        metricDefs: loadedData.metricDefs || [],
+                        measurements: loadedData.measurements || [],
+                        logs: loadedData.logs || [],
+                        harvests: loadedData.harvests || []
+                    };
+                    saveState();
+                    closeSettingsModal();
+                    alert(`Successfully loaded historical dataset from ${file.name}`);
+                } catch (err) {
+                    alert("Error parsing JSON file: " + err.message);
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function confirmResetAllData() {
+            promptHardDelete(
+                "Are you sure you want to CLEAR ALL CURRENT DATA? Make sure you have archived your current season data first!",
+                () => {
+                    state = {
+                        lastUpdated: new Date().toISOString().replace('T', ' ').slice(0, 16),
+                        crops: [],
+                        metricDefs: [],
+                        measurements: [],
+                        logs: [],
+                        harvests: []
+                    };
+                    saveState();
+                    closeSettingsModal();
+                    alert("All active season data has been reset.");
+                }
+            );
+        }
+
         // --- INIT & UTILS ---
         function init() {
             const today = new Date().toISOString().split('T')[0];
@@ -1473,9 +1609,7 @@
                 if (el && !el.value) el.value = today;
             });
 
-            document.getElementById('last-updated-display').innerText = `Last Synced: ${initialLastUpdated}`;
-
-            renderAll();
+            fetchRepoData();
         }
 
         function generateId() {
@@ -2140,11 +2274,10 @@
 
         // --- FORCE RELOAD LATEST FROM GITHUB PAGES ---
         function forceReloadLatest() {
-            const cacheBuster = '?v=' + new Date().getTime();
-            window.location.href = window.location.pathname + cacheBuster;
+            fetchRepoData();
         }
 
-        // --- STRICT MANUAL-ONLY SAVE FUNCTION ---
+        // --- SYNC JSON DIRECTLY VIA WORKER ---
         async function saveDashboardToFile() {
             const btn = document.getElementById('save-file-btn');
             if (!btn || btn.disabled) return;
@@ -2160,27 +2293,16 @@
                 const mins = String(now.getMinutes()).padStart(2, '0');
                 const timestampStr = `${year}-${month}-${day} ${hours}:${mins}`;
 
-                btn.innerText = "💾 Save & Sync to GitHub";
-                btn.disabled = false;
-                btn.removeAttribute('disabled');
+                state.lastUpdated = timestampStr;
 
-                let updatedHtml = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
-
-                updatedHtml = updatedHtml.replace(/const initialLastUpdated = .*/, `const initialLastUpdated = "${timestampStr}";`);
-                updatedHtml = updatedHtml.replace(/const initialCrops = .*/, `const initialCrops = ${JSON.stringify(state.crops)};`);
-                updatedHtml = updatedHtml.replace(/const initialMetricDefs = .*/, `const initialMetricDefs = ${JSON.stringify(state.metricDefs)};`);
-                updatedHtml = updatedHtml.replace(/const initialMeasurements = .*/, `const initialMeasurements = ${JSON.stringify(state.measurements)};`);
-                updatedHtml = updatedHtml.replace(/const initialLogs = .*/, `const initialLogs = ${JSON.stringify(state.logs)};`);
-                updatedHtml = updatedHtml.replace(/const initialHarvests = .*/, `const initialHarvests = ${JSON.stringify(state.harvests)};`);
-
-                btn.innerText = "⏳ Syncing...";
+                btn.innerText = "⏳ Syncing Data...";
                 btn.disabled = true;
 
                 const res = await fetch(WORKER_URL, {
                     method: "POST",
                     mode: "cors",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ html: updatedHtml })
+                    body: JSON.stringify({ data: state })
                 });
 
                 const data = await res.json().catch(() => ({}));
@@ -2189,7 +2311,7 @@
                     throw new Error(data.error || `HTTP ${res.status}: ${res.statusText}`);
                 }
 
-                document.getElementById('last-updated-display').innerText = `Last Synced: ${timestampStr}`;
+                saveState();
 
                 btn.innerText = "✅ Committed!";
                 btn.style.background = "#c8e6c9";
@@ -2200,7 +2322,7 @@
                 btn.style.background = "#ffebee";
             } finally {
                 setTimeout(() => {
-                    btn.innerText = "💾 Save & Sync to GitHub";
+                    btn.innerText = "💾 Save & Sync";
                     btn.style.background = "#eceff1";
                     btn.disabled = false;
                     btn.removeAttribute('disabled');
