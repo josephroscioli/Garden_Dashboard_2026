@@ -2313,13 +2313,17 @@ async function saveDashboardToFile() {
     try {
         const updatedHtml = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
 
-        const res = await fetch("HTTPS://garden-dashboard-sync.joseph-roscioli.workers.dev", {
+        const res = await fetch("https://YOUR_WORKER_NAME.YOUR_SUBDOMAIN.workers.dev", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ html: updatedHtml })
         });
 
-        if (!res.ok) throw new Error("Serverless Proxy Error");
+        const data = await res.json();
+
+        if (!res.ok || data.error) {
+            throw new Error(data.error || "Serverless Proxy Error");
+        }
 
         btn.innerText = "✅ Committed to Git!";
         btn.style.background = "#c8e6c9";
