@@ -283,7 +283,7 @@
             background: var(--surface);
             border-radius: var(--radius);
             padding: 12px;
-            padding-bottom: 24px; /* Extra room for drag handle */
+            padding-bottom: 24px;
             box-shadow: var(--shadow);
             border: 1px solid var(--border);
             resize: vertical;
@@ -292,7 +292,7 @@
             flex-direction: column;
             min-width: 100%;
             min-height: 280px;
-            height: 420px;
+            height: 440px;
             margin-bottom: 16px;
         }
 
@@ -302,7 +302,7 @@
                 padding-bottom: 28px;
                 margin-bottom: 24px;
                 min-height: 320px;
-                height: 450px;
+                height: 480px;
             }
         }
 
@@ -311,7 +311,7 @@
             gap: 8px;
             flex-wrap: wrap;
             align-items: center;
-            margin-bottom: 12px;
+            margin-bottom: 8px;
             background: #f8faf8;
             padding: 8px;
             border-radius: 6px;
@@ -322,6 +322,36 @@
             flex: 1 1 100px;
         }
 
+        /* Chart Dynamic Color Legend */
+        .chart-legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 8px;
+            padding: 4px 6px;
+            align-items: center;
+        }
+
+        .legend-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text);
+            background: #fafafa;
+            padding: 2px 8px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .legend-color-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
         canvas {
             width: 100% !important;
             flex: 1;
@@ -329,7 +359,6 @@
             display: block;
         }
 
-        /* Mobile-Friendly Drag Handle Bar */
         .chart-resize-handle {
             position: absolute;
             bottom: 0;
@@ -342,7 +371,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            touch-action: none; /* Prevents mobile scroll while dragging handle */
+            touch-action: none;
             user-select: none;
         }
 
@@ -596,6 +625,9 @@
                 </div>
                 <button class="btn btn-secondary" style="margin-top: auto;" onclick="autoscaleYChart()">Autoscale Y</button>
             </div>
+
+            <div class="chart-legend" id="chart-legend"></div>
+
             <canvas id="metricsChart"></canvas>
             <div class="chart-resize-handle" id="chart-drag-handle" title="Drag to resize height"></div>
         </div>
@@ -963,7 +995,7 @@
             const onMove = (e) => {
                 if (!isDragging) return;
                 const currentY = e.touches ? e.touches[0].clientY : e.clientY;
-                const newHeight = Math.max(260, startHeight + (currentY - startY));
+                const newHeight = Math.max(280, startHeight + (currentY - startY));
                 card.style.height = `${newHeight}px`;
                 renderChart();
             };
@@ -1240,11 +1272,15 @@
 
         function renderChart() {
             const canvas = document.getElementById('metricsChart');
+            const legendContainer = document.getElementById('chart-legend');
             if (!canvas) return;
             const ctx = canvas.getContext('2d');
 
             const metricSelect = document.getElementById('chart-filter-metric');
-            if (!metricSelect || !metricSelect.value) return;
+            if (!metricSelect || !metricSelect.value) {
+                if (legendContainer) legendContainer.innerHTML = '';
+                return;
+            }
 
             const rect = canvas.getBoundingClientRect();
             if (rect.width === 0 || rect.height === 0) return;
@@ -1268,6 +1304,7 @@
             }
 
             if (filtered.length === 0) {
+                if (legendContainer) legendContainer.innerHTML = '';
                 ctx.fillStyle = "#607d8b";
                 ctx.font = "12px sans-serif";
                 ctx.textAlign = "center";
@@ -1336,10 +1373,22 @@
             const colors = ['#2e7d32', '#f57c00', '#0288d1', '#7b1fa2', '#c2185b', '#00796b'];
             let colorIdx = 0;
 
+            if (legendContainer) legendContainer.innerHTML = '';
+
             Object.keys(cropsData).forEach(cropId => {
                 const pts = cropsData[cropId];
                 const strokeColor = colors[colorIdx % colors.length];
                 colorIdx++;
+
+                const cropObj = state.crops.find(c => c.id === cropId);
+                const cropName = cropObj ? cropObj.name : 'Unknown Crop';
+
+                if (legendContainer) {
+                    const item = document.createElement('div');
+                    item.className = 'legend-item';
+                    item.innerHTML = `<span class="legend-color-dot" style="background-color: ${strokeColor};"></span> ${cropName}`;
+                    legendContainer.appendChild(item);
+                }
 
                 ctx.strokeStyle = strokeColor;
                 ctx.fillStyle = strokeColor;
