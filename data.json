@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-08-25 22:14",
+  "lastUpdated": "2026-08-25 22:20",
   "crops": [
     {
       "id": "crop_corn",
@@ -604,6 +604,20 @@
       "metricId": "m_height",
       "date": "2026-08-22",
       "value": 18
+    },
+    {
+      "id": "_luqparw3j",
+      "cropId": "crop_corn",
+      "metricId": "m_height",
+      "date": "2026-08-26",
+      "value": 3
+    },
+    {
+      "id": "_c9x6uki9s",
+      "cropId": "crop_cucumbers",
+      "metricId": "m_height",
+      "date": "2026-08-26",
+      "value": 1
     }
   ],
   "logs": [
