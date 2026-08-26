@@ -823,7 +823,7 @@
       "date": "2026-08-26",
       "cropId": "crop_tomatoes",
       "qty": 50,
-      "unit": "Count"
+      "unit": "count"
     }
   ]
 }
