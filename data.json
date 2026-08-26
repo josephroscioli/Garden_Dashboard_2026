@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-08-25 22:10",
+  "lastUpdated": "2026-08-25 22:14",
   "crops": [
     {
       "id": "crop_corn",
@@ -604,34 +604,6 @@
       "metricId": "m_height",
       "date": "2026-08-22",
       "value": 18
-    },
-    {
-      "id": "_77b20woan",
-      "cropId": "crop_corn",
-      "metricId": "m_height",
-      "date": "2026-08-26",
-      "value": 125
-    },
-    {
-      "id": "_9m2w33jar",
-      "cropId": "crop_corn",
-      "metricId": "m_height",
-      "date": "2026-08-26",
-      "value": 125
-    },
-    {
-      "id": "_x5r3h88v2",
-      "cropId": "crop_corn",
-      "metricId": "m_height",
-      "date": "2026-08-26",
-      "value": 138
-    },
-    {
-      "id": "_bh33w07fp",
-      "cropId": "crop_corn",
-      "metricId": "m_height",
-      "date": "2026-08-27",
-      "value": 123
     }
   ],
   "logs": [
@@ -769,14 +741,6 @@
         "crop_carrots"
       ],
       "notes": "7 carrots have gone to seed. Will see if the underlying carrots are still good."
-    },
-    {
-      "id": "_l7v2y91ub",
-      "date": "2026-08-26",
-      "tags": [
-        "ALL"
-      ],
-      "notes": "Testy"
     }
   ],
   "harvests": [
@@ -821,13 +785,6 @@
       "cropId": "crop_cucumbers",
       "qty": 10,
       "unit": "count"
-    },
-    {
-      "id": "_6qwj2d5tr",
-      "date": "2026-08-26",
-      "cropId": "crop_corn",
-      "qty": 2,
-      "unit": "Fa"
     }
   ]
 }
