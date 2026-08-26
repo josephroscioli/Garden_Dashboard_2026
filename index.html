@@ -698,10 +698,11 @@
                 <table>
                     <thead>
                         <tr>
-                            <th style="width: 22%;">Date</th>
-                            <th style="width: 30%;">Crop</th>
-                            <th style="width: 28%;">Metric</th>
-                            <th style="width: 20%;">Value</th>
+                            <th style="width: 20%;">Date</th>
+                            <th style="width: 25%;">Crop</th>
+                            <th style="width: 25%;">Metric</th>
+                            <th style="width: 15%;">Value</th>
+                            <th style="width: 15%;">Act</th>
                         </tr>
                     </thead>
                     <tbody id="meas-table-body"><tr>
@@ -1850,7 +1851,7 @@
             tbody.innerHTML = '';
 
             if (state.measurements.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="4" class="empty-state">No measurements logged yet.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="5" class="empty-state">No measurements logged yet.</td></tr>`;
                 return;
             }
 
@@ -1862,10 +1863,14 @@
 
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
-                    <td>${m.date.slice(5)}</td>
+                    <td>${m.date ? m.date.slice(5) : 'N/A'}</td>
                     <td>${crop ? crop.name : '<em>Deleted</em>'}</td>
                     <td>${metric ? `${metric.name}` : 'Unknown'}</td>
                     <td><strong>${m.value}</strong></td>
+                    <td class="actions-cell">
+                        <button class="icon-btn" onclick="editMeas('${m.id}')">✏️</button>
+                        <button class="icon-btn delete" onclick="deleteMeas('${m.id}')">🗑️</button>
+                    </td>
                 `;
                 tbody.appendChild(tr);
             });
