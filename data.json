@@ -1,61 +1,69 @@
 {
-  "lastUpdated": "2026-08-26 08:37",
+  "lastUpdated": "2026-08-26 19:29",
   "crops": [
     {
       "id": "crop_corn",
       "name": "Corn",
       "datePlanted": "2026-05-15",
       "amountPlanted": "65",
-      "dateRipening": "2026-07-27"
+      "dateRipening": "2026-07-27",
+      "harvestUnit": "ears"
     },
     {
       "id": "crop_cucumbers",
       "name": "Cucumbers",
       "datePlanted": "2026-05-20",
       "amountPlanted": "16",
-      "dateRipening": "2026-07-16"
+      "dateRipening": "2026-07-16",
+      "harvestUnit": "count"
     },
     {
       "id": "crop_tomatoes",
       "name": "Tomatoes",
       "datePlanted": "2026-05-15",
       "amountPlanted": "3",
-      "dateRipening": "2026-08-15"
+      "dateRipening": "2026-08-15",
+      "harvestUnit": "count"
     },
     {
       "id": "crop_beans1",
       "name": "Green Bush Beans (1st Sow)",
       "datePlanted": "2026-05-15",
       "amountPlanted": "20",
-      "dateRipening": "2026-07-15"
+      "dateRipening": "2026-07-15",
+      "harvestUnit": "lbs"
     },
     {
       "id": "crop_carrots",
       "name": "Carrots",
       "datePlanted": "2026-05-15",
       "amountPlanted": "100",
-      "dateRipening": "2026-08-01"
+      "dateRipening": "2026-08-01",
+      "harvestUnit": "lbs"
     },
     {
       "id": "crop_potatoes",
       "name": "Yellow Potatoes",
       "datePlanted": "2026-05-10",
       "amountPlanted": "50",
-      "dateRipening": "2026-08-15"
+      "dateRipening": "2026-08-15",
+      "harvestUnit": "lbs"
     },
     {
       "id": "crop_beans2",
       "name": "Green Bush Beans (2nd Sow)",
       "datePlanted": "2026-06-15",
       "amountPlanted": "20",
-      "dateRipening": "2026-08-01"
+      "dateRipening": "2026-08-01",
+      "harvestUnit": "lbs"
     },
     {
       "id": "crop_peas",
       "name": "Peas (First-sown)",
       "datePlanted": "2026-04-15",
       "amountPlanted": 10,
-      "dateRipening": "2026-06-15"
+      "dateRipening": "2026-06-15",
+      "harvestUnit": "lbs"
     }
   ],
   "metricDefs": [
