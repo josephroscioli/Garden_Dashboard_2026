@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-08-26 08:23",
+  "lastUpdated": "2026-08-26 08:37",
   "crops": [
     {
       "id": "crop_corn",
@@ -741,6 +741,16 @@
         "crop_carrots"
       ],
       "notes": "7 carrots have gone to seed. Will see if the underlying carrots are still good."
+    },
+    {
+      "id": "_zmitjff16",
+      "date": "2026-08-26",
+      "tags": [
+        "crop_corn",
+        "crop_tomatoes",
+        "crop_beans2"
+      ],
+      "notes": "BIG HARVEST DAY! 6 ears of corn, 0.8 lbs green beans, many tomatoes, corn is looking great."
     }
   ],
   "harvests": [
