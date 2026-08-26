@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-08-25 22:43",
+  "lastUpdated": "2026-08-26 08:23",
   "crops": [
     {
       "id": "crop_corn",
@@ -785,6 +785,27 @@
       "cropId": "crop_cucumbers",
       "qty": 10,
       "unit": "count"
+    },
+    {
+      "id": "_x4oruwv2n",
+      "date": "2026-08-26",
+      "cropId": "crop_corn",
+      "qty": 6,
+      "unit": "Ears"
+    },
+    {
+      "id": "_k6ok6zjit",
+      "date": "2026-08-26",
+      "cropId": "crop_beans2",
+      "qty": 0.8,
+      "unit": "Lbs"
+    },
+    {
+      "id": "_19g69qw6y",
+      "date": "2026-08-26",
+      "cropId": "crop_tomatoes",
+      "qty": 50,
+      "unit": "Count"
     }
   ]
 }
