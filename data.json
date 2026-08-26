@@ -809,14 +809,14 @@
       "date": "2026-08-26",
       "cropId": "crop_corn",
       "qty": 6,
-      "unit": "Ears"
+      "unit": "ears"
     },
     {
       "id": "_k6ok6zjit",
       "date": "2026-08-26",
       "cropId": "crop_beans2",
       "qty": 0.8,
-      "unit": "Lbs"
+      "unit": "lbs"
     },
     {
       "id": "_19g69qw6y",
