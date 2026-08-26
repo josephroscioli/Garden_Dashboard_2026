@@ -165,6 +165,18 @@
             justify-content: space-between;
         }
 
+        .card-header-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card-header-actions select {
+            padding: 4px 8px;
+            font-size: 0.8rem;
+            width: auto;
+        }
+
         .form-group { margin-bottom: 12px; }
 
         label {
@@ -322,7 +334,6 @@
             flex: 1 1 100px;
         }
 
-        /* Chart Dynamic Color Legend */
         .chart-legend {
             display: flex;
             flex-wrap: wrap;
@@ -519,6 +530,10 @@
                         <input type="date" id="crop-date-ripening">
                     </div>
                     <div class="form-group">
+                        <label>Default Harvest Unit</label>
+                        <input type="text" id="crop-harvest-unit" placeholder="e.g. lbs, count, ears" required="">
+                    </div>
+                    <div class="form-group">
                         <label>Total Harvest Amount <span class="badge-read-only">Auto-updated</span></label>
                         <input type="text" id="crop-harvest-amount" value="0 (managed via Harvest Tab)" disabled="">
                     </div>
@@ -535,11 +550,12 @@
                     <table>
                         <thead>
                             <tr>
-                                <th style="width: 28%;">Crop</th>
-                                <th style="width: 20%;">Planted</th>
-                                <th style="width: 12%;">Qty</th>
-                                <th style="width: 22%;">Harvest</th>
-                                <th style="width: 18%;">Actions</th>
+                                <th style="width: 24%;">Crop</th>
+                                <th style="width: 16%;">Planted</th>
+                                <th style="width: 10%;">Qty</th>
+                                <th style="width: 15%;">Unit</th>
+                                <th style="width: 20%;">Total Harvest</th>
+                                <th style="width: 15%;">Actions</th>
                             </tr>
                         </thead>
                         <tbody id="inventory-table-body"></tbody>
@@ -678,7 +694,14 @@
             </div>
 
             <div class="card grid-span-2">
-                <h2>Field Journal</h2>
+                <h2>
+                    Field Journal
+                    <div class="card-header-actions">
+                        <select id="logs-filter-crop" onchange="renderLogs()">
+                            <option value="ALL">All Crops</option>
+                        </select>
+                    </div>
+                </h2>
                 <div class="table-wrapper">
                     <table>
                         <thead>
@@ -709,15 +732,15 @@
                     </div>
                     <div class="form-group">
                         <label>Select Crop</label>
-                        <select id="harvest-crop" required=""></select>
+                        <select id="harvest-crop" onchange="onHarvestCropSelectChange()" required=""></select>
                     </div>
                     <div class="form-group">
                         <label>Quantity Harvested</label>
                         <input type="number" step="any" id="harvest-qty" min="0.01" placeholder="e.g. 2.5" required="">
                     </div>
                     <div class="form-group">
-                        <label>Unit</label>
-                        <input type="text" id="harvest-unit" placeholder="e.g. lbs, count" required="">
+                        <label>Unit <span class="badge-read-only">Auto-filled</span></label>
+                        <input type="text" id="harvest-unit" placeholder="Auto-filled from crop" readonly="" tabindex="-1">
                     </div>
                     <div style="display:flex; gap:8px;">
                         <button type="submit" class="btn" id="harvest-save-btn">Record Harvest</button>
@@ -727,7 +750,14 @@
             </div>
 
             <div class="card grid-span-2">
-                <h2>Harvest Logs</h2>
+                <h2>
+                    Harvest Logs
+                    <div class="card-header-actions">
+                        <select id="harvest-filter-crop" onchange="renderHarvestUI()">
+                            <option value="ALL">All Crops</option>
+                        </select>
+                    </div>
+                </h2>
                 <div class="table-wrapper">
                     <table>
                         <thead>
@@ -826,6 +856,16 @@
             }
         }
 
+        // --- INFER DEFAULT HARVEST UNITS FOR EXISTING CROPS ---
+        function inferHarvestUnits() {
+            state.crops.forEach(crop => {
+                if (!crop.harvestUnit) {
+                    const match = state.harvests.find(h => h.cropId === crop.id && h.unit);
+                    crop.harvestUnit = match ? match.unit : 'lbs';
+                }
+            });
+        }
+
         // --- FETCH DECOUPLED JSON DATA ---
         async function fetchRepoData() {
             try {
@@ -842,6 +882,7 @@
                     harvests: data.harvests || []
                 };
 
+                inferHarvestUnits();
                 saveLocalState();
                 renderAll();
             } catch (err) {
@@ -860,6 +901,7 @@
             if (stored) {
                 state = JSON.parse(stored);
             }
+            inferHarvestUnits();
             document.getElementById('last-updated-display').innerText = `Last Synced: ${state.lastUpdated || 'Offline'}`;
             renderAll();
         }
@@ -913,6 +955,7 @@
                         logs: loadedData.logs || [],
                         harvests: loadedData.harvests || []
                     };
+                    inferHarvestUnits();
                     saveState();
                     closeSettingsModal();
                     alert(`Successfully loaded historical dataset from ${file.name}`);
@@ -1025,6 +1068,7 @@
             const datePlanted = document.getElementById('crop-date-planted').value;
             const amountPlanted = document.getElementById('crop-amount-planted').value;
             const dateRipening = document.getElementById('crop-date-ripening').value;
+            const harvestUnit = document.getElementById('crop-harvest-unit').value.trim() || 'lbs';
 
             if (id) {
                 const crop = state.crops.find(c => c.id === id);
@@ -1033,6 +1077,7 @@
                     crop.datePlanted = datePlanted;
                     crop.amountPlanted = amountPlanted;
                     crop.dateRipening = dateRipening;
+                    crop.harvestUnit = harvestUnit;
                 }
             } else {
                 state.crops.push({
@@ -1040,7 +1085,8 @@
                     name,
                     datePlanted,
                     amountPlanted,
-                    dateRipening
+                    dateRipening,
+                    harvestUnit
                 });
             }
 
@@ -1057,7 +1103,8 @@
             document.getElementById('crop-date-planted').value = crop.datePlanted;
             document.getElementById('crop-amount-planted').value = crop.amountPlanted;
             document.getElementById('crop-date-ripening').value = crop.dateRipening || '';
-            
+            document.getElementById('crop-harvest-unit').value = crop.harvestUnit || 'lbs';
+
             document.getElementById('crop-form-title').innerText = "Edit Crop Entry";
             document.getElementById('crop-save-btn').innerText = "Update Crop";
             document.getElementById('crop-cancel-btn').style.display = 'inline-block';
@@ -1100,7 +1147,7 @@
             const harvestTotals = calculateHarvestTotals();
 
             if (state.crops.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" class="empty-state">No crops added yet. Populate your master inventory to start tracking!</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="6" class="empty-state">No crops added yet. Populate your master inventory to start tracking!</td></tr>`;
                 return;
             }
 
@@ -1117,6 +1164,7 @@
                     <td><strong>${crop.name}</strong></td>
                     <td>${crop.datePlanted ? crop.datePlanted.slice(5) : 'N/A'}</td>
                     <td>${crop.amountPlanted}</td>
+                    <td><span class="badge" style="background:#f0f4f8; border:1px solid #d0d7de; color:#333;">${crop.harvestUnit || 'lbs'}</span></td>
                     <td><span class="badge">${harvestDisplay}</span></td>
                     <td class="actions-cell">
                         <button class="icon-btn" onclick="editCrop('${crop.id}')" title="Edit">✏️</button>
@@ -1539,6 +1587,16 @@
         function renderLogs() {
             renderLogTagsSelector();
 
+            const logsFilterSelect = document.getElementById('logs-filter-crop');
+            const prevFilter = logsFilterSelect.value;
+
+            logsFilterSelect.innerHTML = `<option value="ALL">All Crops</option>` + state.crops.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+            if (prevFilter && (prevFilter === 'ALL' || state.crops.some(c => c.id === prevFilter))) {
+                logsFilterSelect.value = prevFilter;
+            }
+
+            const selectedCropId = logsFilterSelect.value;
+
             const tbody = document.getElementById('logs-table-body');
             if (!tbody) return;
             tbody.innerHTML = '';
@@ -1548,7 +1606,20 @@
                 return;
             }
 
-            const sorted = [...state.logs].sort((a, b) => {
+            let filtered = state.logs;
+            if (selectedCropId && selectedCropId !== 'ALL') {
+                filtered = state.logs.filter(l => {
+                    const tags = Array.isArray(l.tags) ? l.tags : [];
+                    return tags.includes('ALL') || tags.includes(selectedCropId);
+                });
+            }
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" class="empty-state">No field logs found matching crop filter.</td></tr>`;
+                return;
+            }
+
+            const sorted = [...filtered].sort((a, b) => {
                 const dateA = a.date ? new Date(a.date).getTime() : 0;
                 const dateB = b.date ? new Date(b.date).getTime() : 0;
                 return dateB - dateA;
@@ -1591,13 +1662,24 @@
         }
 
         // --- HARVEST MODULE ---
+        function onHarvestCropSelectChange() {
+            const cropId = document.getElementById('harvest-crop').value;
+            const crop = state.crops.find(c => c.id === cropId);
+            const unitInput = document.getElementById('harvest-unit');
+            if (crop && crop.harvestUnit) {
+                unitInput.value = crop.harvestUnit;
+            } else {
+                unitInput.value = 'lbs';
+            }
+        }
+
         function handleHarvestSubmit(e) {
             e.preventDefault();
             const id = document.getElementById('harvest-id').value;
             const date = document.getElementById('harvest-date').value;
             const cropId = document.getElementById('harvest-crop').value;
             const qty = parseFloat(document.getElementById('harvest-qty').value);
-            const unit = document.getElementById('harvest-unit').value.trim();
+            const unit = document.getElementById('harvest-unit').value.trim() || 'lbs';
 
             if (id) {
                 const h = state.harvests.find(item => item.id === id);
@@ -1650,6 +1732,7 @@
             document.getElementById('harvest-id').value = '';
             document.getElementById('harvest-form').reset();
             document.getElementById('harvest-date').value = new Date().toISOString().split('T')[0];
+            onHarvestCropSelectChange();
             document.getElementById('harvest-form-title').innerText = "Log Harvest";
             document.getElementById('harvest-save-btn').innerText = "Record Harvest";
             document.getElementById('harvest-cancel-btn').style.display = 'none';
@@ -1657,9 +1740,22 @@
 
         function renderHarvestUI() {
             const harvestCropSelect = document.getElementById('harvest-crop');
-            const prevVal = harvestCropSelect.value;
+            const harvestFilterSelect = document.getElementById('harvest-filter-crop');
+
+            const prevFormVal = harvestCropSelect.value;
+            const prevFilterVal = harvestFilterSelect.value;
+
             harvestCropSelect.innerHTML = state.crops.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
-            if (prevVal) harvestCropSelect.value = prevVal;
+            if (prevFormVal && state.crops.some(c => c.id === prevFormVal)) {
+                harvestCropSelect.value = prevFormVal;
+            }
+
+            harvestFilterSelect.innerHTML = `<option value="ALL">All Crops</option>` + state.crops.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+            if (prevFilterVal && (prevFilterVal === 'ALL' || state.crops.some(c => c.id === prevFilterVal))) {
+                harvestFilterSelect.value = prevFilterVal;
+            }
+
+            onHarvestCropSelectChange();
 
             const tbody = document.getElementById('harvest-table-body');
             tbody.innerHTML = '';
@@ -1669,7 +1765,18 @@
                 return;
             }
 
-            const sorted = [...state.harvests].sort((a,b) => new Date(b.date) - new Date(a.date));
+            const selectedFilterCropId = harvestFilterSelect.value;
+            let filtered = state.harvests;
+            if (selectedFilterCropId && selectedFilterCropId !== 'ALL') {
+                filtered = state.harvests.filter(h => h.cropId === selectedFilterCropId);
+            }
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" class="empty-state">No harvest entries found matching crop filter.</td></tr>`;
+                return;
+            }
+
+            const sorted = [...filtered].sort((a,b) => new Date(b.date) - new Date(a.date));
 
             sorted.forEach(h => {
                 const crop = state.crops.find(c => c.id === h.cropId);
