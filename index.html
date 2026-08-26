@@ -512,7 +512,7 @@
 
             <div class="card">
                 <h2 id="meas-form-title">2. Add Measurement</h2>
-                <form id="measurement-form" onsubmit="handleMeasurementSubmit(event)">
+                <form id="meas-form" onsubmit="handleMeasurementSubmit(event)">
                     <input type="hidden" id="meas-id" value="">
                     <div class="form-group">
                         <label>Select Crop</label>
@@ -1023,140 +1023,147 @@
             });
         }
 
-        // --- METRICS MODULE ---
-        function handleMetricDefSubmit(e) {
-            e.preventDefault();
-            const name = document.getElementById('metric-name').value.trim();
-            const unit = document.getElementById('metric-unit').value.trim();
+/ --- METRICS MODULE ---
+function handleMetricDefSubmit(e) {
+    e.preventDefault();
+    const name = document.getElementById('metric-name').value.trim();
+    const unit = document.getElementById('metric-unit').value.trim();
 
-            state.metricDefs.push({
-                id: generateId(),
-                name,
-                unit
-            });
+    state.metricDefs.push({
+        id: generateId(),
+        name,
+        unit
+    });
 
-            document.getElementById('metric-def-form').reset();
+    document.getElementById('metric-def-form').reset();
+    saveState();
+}
+
+function handleMeasurementSubmit(e) {
+    e.preventDefault();
+    const id = document.getElementById('meas-id').value;
+    const cropId = document.getElementById('meas-crop').value;
+    const metricId = document.getElementById('meas-metric').value;
+    const date = document.getElementById('meas-date').value;
+    const value = parseFloat(document.getElementById('meas-value').value);
+
+    if (id) {
+        const meas = state.measurements.find(m => m.id === id);
+        if (meas) {
+            meas.cropId = cropId;
+            meas.metricId = metricId;
+            meas.date = date;
+            meas.value = value;
+        }
+    } else {
+        state.measurements.push({
+            id: generateId(),
+            cropId,
+            metricId,
+            date,
+            value
+        });
+    }
+
+    resetMeasForm();
+    saveState();
+}
+
+function editMeas(id) {
+    const m = state.measurements.find(m => m.id === id);
+    if (!m) return;
+
+    document.getElementById('meas-id').value = m.id;
+    document.getElementById('meas-crop').value = m.cropId;
+    document.getElementById('meas-metric').value = m.metricId;
+    document.getElementById('meas-date').value = m.date;
+    document.getElementById('meas-value').value = m.value;
+
+    const titleEl = document.getElementById('meas-form-title');
+    if (titleEl) titleEl.innerText = "Edit Measurement";
+    document.getElementById('meas-save-btn').innerText = "Update Measurement";
+    document.getElementById('meas-cancel-btn').style.display = 'inline-block';
+}
+
+function deleteMeas(id) {
+    promptHardDelete(
+        "Are you sure you want to remove this measurement point?",
+        () => {
+            state.measurements = state.measurements.filter(m => m.id !== id);
             saveState();
         }
+    );
+}
 
-        function handleMeasurementSubmit(e) {
-            e.preventDefault();
-            const id = document.getElementById('meas-id').value;
-            const cropId = document.getElementById('meas-crop').value;
-            const metricId = document.getElementById('meas-metric').value;
-            const date = document.getElementById('meas-date').value;
-            const value = parseFloat(document.getElementById('meas-value').value);
+function resetMeasForm() {
+    document.getElementById('meas-id').value = '';
+    const form = document.getElementById('meas-form');
+    if (form) form.reset();
+    
+    document.getElementById('meas-date').value = new Date().toISOString().split('T')[0];
+    
+    const titleEl = document.getElementById('meas-form-title');
+    if (titleEl) titleEl.innerText = "2. Add Measurement";
+    
+    document.getElementById('meas-save-btn').innerText = "Log Value";
+    document.getElementById('meas-cancel-btn').style.display = 'none';
+}
 
-            if (id) {
-                const meas = state.measurements.find(m => m.id === id);
-                if (meas) {
-                    meas.cropId = cropId;
-                    meas.metricId = metricId;
-                    meas.date = date;
-                    meas.value = value;
-                }
-            } else {
-                state.measurements.push({
-                    id: generateId(),
-                    cropId,
-                    metricId,
-                    date,
-                    value
-                });
-            }
+function renderMetricsUI() {
+    const measCropSelect = document.getElementById('meas-crop');
+    const chartCropSelect = document.getElementById('chart-filter-crop');
 
-            resetMeasForm();
-            saveState();
-        }
+    const prevMeasCrop = measCropSelect.value;
+    const prevChartCrop = chartCropSelect.value;
 
-        function editMeas(id) {
-            const m = state.measurements.find(m => m.id === id);
-            if (!m) return;
+    measCropSelect.innerHTML = state.crops.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+    chartCropSelect.innerHTML = `<option value="ALL">All Crops</option>` + state.crops.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
 
-            document.getElementById('meas-id').value = m.id;
-            document.getElementById('meas-crop').value = m.cropId;
-            document.getElementById('meas-metric').value = m.metricId;
-            document.getElementById('meas-date').value = m.date;
-            document.getElementById('meas-value').value = m.value;
+    if (prevMeasCrop) measCropSelect.value = prevMeasCrop;
+    if (prevChartCrop) chartCropSelect.value = prevChartCrop;
 
-            document.getElementById('meas-form-title').innerText = "Edit Measurement";
-            document.getElementById('meas-save-btn').innerText = "Update Measurement";
-            document.getElementById('meas-cancel-btn').style.display = 'inline-block';
-        }
+    const measMetricSelect = document.getElementById('meas-metric');
+    const chartMetricSelect = document.getElementById('chart-filter-metric');
 
-        function deleteMeas(id) {
-            promptHardDelete(
-                "Are you sure you want to remove this measurement point?",
-                () => {
-                    state.measurements = state.measurements.filter(m => m.id !== id);
-                    saveState();
-                }
-            );
-        }
+    const prevMeasMetric = measMetricSelect.value;
+    const prevChartMetric = chartMetricSelect.value;
 
-        function resetMeasForm() {
-            document.getElementById('meas-id').value = '';
-            document.getElementById('meas-form').reset();
-            document.getElementById('meas-date').value = new Date().toISOString().split('T')[0];
-            document.getElementById('meas-form-title').innerText = "2. Add Measurement";
-            document.getElementById('meas-save-btn').innerText = "Log Value";
-            document.getElementById('meas-cancel-btn').style.display = 'none';
-        }
+    const metricOpts = state.metricDefs.map(m => `<option value="${m.id}">${m.name} (${m.unit})</option>`).join('');
+    measMetricSelect.innerHTML = metricOpts;
+    chartMetricSelect.innerHTML = metricOpts;
 
-        function renderMetricsUI() {
-            const measCropSelect = document.getElementById('meas-crop');
-            const chartCropSelect = document.getElementById('chart-filter-crop');
+    if (prevMeasMetric) measMetricSelect.value = prevMeasMetric;
+    if (prevChartMetric) chartMetricSelect.value = prevChartMetric;
 
-            const prevMeasCrop = measCropSelect.value;
-            const prevChartCrop = chartCropSelect.value;
+    const tbody = document.getElementById('meas-table-body');
+    if (!tbody) return;
+    tbody.innerHTML = '';
 
-            measCropSelect.innerHTML = state.crops.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
-            chartCropSelect.innerHTML = `<option value="ALL">All Crops</option>` + state.crops.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+    if (state.measurements.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" class="empty-state">No measurements logged yet.</td></tr>`;
+        return;
+    }
 
-            if (prevMeasCrop) measCropSelect.value = prevMeasCrop;
-            if (prevChartCrop) chartCropSelect.value = prevChartCrop;
+    const sorted = [...state.measurements].sort((a,b) => new Date(b.date) - new Date(a.date));
 
-            const measMetricSelect = document.getElementById('meas-metric');
-            const chartMetricSelect = document.getElementById('chart-filter-metric');
+    sorted.forEach(m => {
+        const crop = state.crops.find(c => c.id === m.cropId);
+        const metric = state.metricDefs.find(md => md.id === m.metricId);
 
-            const prevMeasMetric = measMetricSelect.value;
-            const prevChartMetric = chartMetricSelect.value;
-
-            const metricOpts = state.metricDefs.map(m => `<option value="${m.id}">${m.name} (${m.unit})</option>`).join('');
-            measMetricSelect.innerHTML = metricOpts;
-            chartMetricSelect.innerHTML = metricOpts;
-
-            if (prevMeasMetric) measMetricSelect.value = prevMeasMetric;
-            if (prevChartMetric) chartMetricSelect.value = prevChartMetric;
-
-            const tbody = document.getElementById('meas-table-body');
-            tbody.innerHTML = '';
-
-            if (state.measurements.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" class="empty-state">No measurements logged yet.</td></tr>`;
-                return;
-            }
-
-            const sorted = [...state.measurements].sort((a,b) => new Date(b.date) - new Date(a.date));
-
-            sorted.forEach(m => {
-                const crop = state.crops.find(c => c.id === m.cropId);
-                const metric = state.metricDefs.find(md => md.id === m.metricId);
-
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td>${m.date ? m.date.slice(5) : 'N/A'}</td>
-                    <td>${crop ? crop.name : '<em>Deleted</em>'}</td>
-                    <td>${metric ? `${metric.name}` : 'Unknown'}</td>
-                    <td><strong>${m.value}</strong></td>
-                    <td class="actions-cell">
-                        <button class="icon-btn" onclick="editMeas('${m.id}')">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteMeas('${m.id}')">🗑️</button>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>${m.date ? m.date.slice(5) : 'N/A'}</td>
+            <td>${crop ? crop.name : '<em>Deleted</em>'}</td>
+            <td>${metric ? `${metric.name}` : 'Unknown'}</td>
+            <td><strong>${m.value}</strong></td>
+            <td class="actions-cell">
+                <button class="icon-btn" onclick="editMeas('${m.id}')" title="Edit">✏️</button>
+                <button class="icon-btn delete" onclick="deleteMeas('${m.id}')" title="Hard Remove">🗑️</button>
+            </td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
 
         function renderChart() {
             const canvas = document.getElementById('metricsChart');
