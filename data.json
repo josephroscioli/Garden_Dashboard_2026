@@ -1,11 +1,11 @@
 {
-  "lastUpdated": "2026-08-25 19:38",
+  "lastUpdated": "2026-08-25 20:19",
   "crops": [
     {
       "id": "crop_corn",
       "name": "Corn",
       "datePlanted": "2026-05-15",
-      "amountPlanted": "60",
+      "amountPlanted": "65",
       "dateRipening": "2026-07-27"
     },
     {
