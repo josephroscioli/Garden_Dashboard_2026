@@ -564,8 +564,8 @@
                                 <th style="width: 24%;">Crop</th>
                                 <th style="width: 16%;">Planted</th>
                                 <th style="width: 10%;">Qty</th>
-                                <th style="width: 15%;">Unit</th>
                                 <th style="width: 20%;">Total Harvest</th>
+                                <th style="width: 15%;">Unit</th>
                                 <th style="width: 15%;">Actions</th>
                             </tr>
                         </thead>
@@ -1219,8 +1219,8 @@
                     <td><strong>${crop.name}</strong></td>
                     <td>${crop.datePlanted ? crop.datePlanted.slice(5) : 'N/A'}</td>
                     <td>${crop.amountPlanted}</td>
-                    <td><span class="badge" style="background:#f0f4f8; border:1px solid #d0d7de; color:#333;">${crop.harvestUnit || 'lbs'}</span></td>
                     <td><span class="badge">${harvestDisplay}</span></td>
+                    <td><span class="badge" style="background:#f0f4f8; border:1px solid #d0d7de; color:#333;">${crop.harvestUnit || 'lbs'}</span></td>
                     <td class="actions-cell">
                         <button class="icon-btn" onclick="editCrop('${crop.id}')" title="Edit">✏️</button>
                         <button class="icon-btn delete" onclick="deleteCrop('${crop.id}')" title="Hard Remove">🗑️</button>
