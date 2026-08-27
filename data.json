@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-08-27 07:59",
+  "lastUpdated": "2026-08-27 08:00",
   "lastUpdatedBy": "Wyatt",
   "crops": [
     {
@@ -652,6 +652,14 @@
       "metricId": "m_height",
       "date": "2026-08-27",
       "value": 50.5,
+      "author": "Wyatt"
+    },
+    {
+      "id": "_w5doexqlc",
+      "cropId": "crop_corn",
+      "metricId": "m_height",
+      "date": "2026-08-27",
+      "value": 103,
       "author": "Wyatt"
     }
   ],
