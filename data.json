@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-08-27 07:56",
+  "lastUpdated": "2026-08-27 07:59",
   "lastUpdatedBy": "Wyatt",
   "crops": [
     {
@@ -613,6 +613,46 @@
       "metricId": "m_height",
       "date": "2026-08-22",
       "value": 18
+    },
+    {
+      "id": "_dmnnzbmka",
+      "cropId": "crop_carrots",
+      "metricId": "m_height",
+      "date": "2026-08-27",
+      "value": 25,
+      "author": "Wyatt"
+    },
+    {
+      "id": "_2npebc10j",
+      "cropId": "crop_beans2",
+      "metricId": "m_height",
+      "date": "2026-08-27",
+      "value": 20,
+      "author": "Wyatt"
+    },
+    {
+      "id": "_kdwd175wa",
+      "cropId": "crop_beans1",
+      "metricId": "m_height",
+      "date": "2026-08-27",
+      "value": 24,
+      "author": "Wyatt"
+    },
+    {
+      "id": "_9bcsjufqa",
+      "cropId": "crop_potatoes",
+      "metricId": "m_height",
+      "date": "2026-08-27",
+      "value": 12,
+      "author": "Wyatt"
+    },
+    {
+      "id": "_sq8vu0hz8",
+      "cropId": "crop_tomatoes",
+      "metricId": "m_height",
+      "date": "2026-08-27",
+      "value": 50.5,
+      "author": "Wyatt"
     }
   ],
   "logs": [
