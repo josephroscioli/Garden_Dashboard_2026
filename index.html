@@ -437,6 +437,16 @@
             word-break: break-word;
         }
 
+        .author-tag {
+            font-size: 0.72rem;
+            color: #555;
+            background: #f0f4f8;
+            padding: 1px 5px;
+            border-radius: 4px;
+            border: 1px solid #d0d7de;
+            margin-left: 4px;
+        }
+
         .modal {
             display: none;
             position: fixed;
@@ -493,6 +503,7 @@
         </div>
         <div class="header-controls">
             <div id="last-updated-display" class="last-updated">Last Synced: Loading...</div>
+            <button class="btn btn-secondary" id="auth-btn" onclick="promptLogin()">🔑 Log In</button>
             <button class="btn btn-secondary" onclick="forceReloadLatest()">🔄 Load Latest</button>
             <button class="btn btn-secondary" id="save-file-btn" onclick="saveDashboardToFile()">💾 Save &amp; Sync</button>
             <button class="btn btn-secondary" onclick="openSettingsModal()">⚙️ Utilities</button>
@@ -706,9 +717,9 @@
                     <table>
                         <thead>
                             <tr>
-                                <th style="width: 22%;">Date</th>
+                                <th style="width: 20%;">Date</th>
                                 <th style="width: 25%;">Tagged</th>
-                                <th style="width: 38%;">Notes</th>
+                                <th style="width: 40%;">Notes</th>
                                 <th style="width: 15%;">Act</th>
                             </tr>
                         </thead>
@@ -762,9 +773,9 @@
                     <table>
                         <thead>
                             <tr>
-                                <th style="width: 25%;">Date</th>
-                                <th style="width: 35%;">Crop</th>
-                                <th style="width: 25%;">Yield</th>
+                                <th style="width: 20%;">Date</th>
+                                <th style="width: 30%;">Crop</th>
+                                <th style="width: 35%;">Yield</th>
                                 <th style="width: 15%;">Act</th>
                             </tr>
                         </thead>
@@ -825,6 +836,7 @@
     <script>
         let state = {
             lastUpdated: "Loading...",
+            lastUpdatedBy: null,
             crops: [],
             metricDefs: [],
             measurements: [],
@@ -832,7 +844,43 @@
             harvests: []
         };
 
+        let activePin = localStorage.getItem('gd_pin') || null;
+        let activeUser = localStorage.getItem('gd_user') || null;
+
         let pendingDeleteFn = null;
+
+        function updateAuthUI() {
+            const btn = document.getElementById('auth-btn');
+            if (btn) {
+                if (activeUser) {
+                    btn.innerText = `👤 ${activeUser}`;
+                    btn.title = "Click to log out or change user";
+                } else {
+                    btn.innerText = "🔑 Log In";
+                    btn.title = "Log in to enable sync permissions";
+                }
+            }
+        }
+
+        function promptLogin() {
+            if (activeUser) {
+                if (confirm(`Currently logged in as ${activeUser}. Do you want to log out?`)) {
+                    activePin = null;
+                    activeUser = null;
+                    localStorage.removeItem('gd_pin');
+                    localStorage.removeItem('gd_user');
+                    updateAuthUI();
+                }
+                return;
+            }
+
+            const pin = prompt("Enter your security PIN:");
+            if (pin && pin.trim()) {
+                activePin = pin.trim();
+                localStorage.setItem('gd_pin', activePin);
+                saveDashboardToFile(); // Test auth with Cloudflare worker
+            }
+        }
 
         // --- NAVIGATION ---
         function switchTab(tabId, btnEl) {
@@ -875,6 +923,7 @@
 
                 state = {
                     lastUpdated: data.lastUpdated || new Date().toISOString().replace('T', ' ').slice(0, 16),
+                    lastUpdatedBy: data.lastUpdatedBy || null,
                     crops: data.crops || [],
                     metricDefs: data.metricDefs || [],
                     measurements: data.measurements || [],
@@ -893,7 +942,8 @@
 
         function saveLocalState() {
             localStorage.setItem('gd_state', JSON.stringify(state));
-            document.getElementById('last-updated-display').innerText = `Last Synced: ${state.lastUpdated}`;
+            const byStr = state.lastUpdatedBy ? ` (by ${state.lastUpdatedBy})` : '';
+            document.getElementById('last-updated-display').innerText = `Last Synced: ${state.lastUpdated}${byStr}`;
         }
 
         function loadLocalState() {
@@ -902,7 +952,8 @@
                 state = JSON.parse(stored);
             }
             inferHarvestUnits();
-            document.getElementById('last-updated-display').innerText = `Last Synced: ${state.lastUpdated || 'Offline'}`;
+            const byStr = state.lastUpdatedBy ? ` (by ${state.lastUpdatedBy})` : '';
+            document.getElementById('last-updated-display').innerText = `Last Synced: ${state.lastUpdated || 'Offline'}${byStr}`;
             renderAll();
         }
 
@@ -949,6 +1000,7 @@
                     const loadedData = JSON.parse(e.target.result);
                     state = {
                         lastUpdated: loadedData.lastUpdated || 'Historical Load',
+                        lastUpdatedBy: loadedData.lastUpdatedBy || null,
                         crops: loadedData.crops || [],
                         metricDefs: loadedData.metricDefs || [],
                         measurements: loadedData.measurements || [],
@@ -972,6 +1024,7 @@
                 () => {
                     state = {
                         lastUpdated: new Date().toISOString().replace('T', ' ').slice(0, 16),
+                        lastUpdatedBy: activeUser || null,
                         crops: [],
                         metricDefs: [],
                         measurements: [],
@@ -994,6 +1047,7 @@
                 if (el && !el.value) el.value = today;
             });
 
+            updateAuthUI();
             setupTouchResizer();
             fetchRepoData();
         }
@@ -1086,7 +1140,8 @@
                     datePlanted,
                     amountPlanted,
                     dateRipening,
-                    harvestUnit
+                    harvestUnit,
+                    author: activeUser || null
                 });
             }
 
@@ -1184,7 +1239,8 @@
             state.metricDefs.push({
                 id: generateId(),
                 name,
-                unit
+                unit,
+                author: activeUser || null
             });
 
             document.getElementById('metric-def-form').reset();
@@ -1213,7 +1269,8 @@
                     cropId,
                     metricId,
                     date,
-                    value
+                    value,
+                    author: activeUser || null
                 });
             }
 
@@ -1302,10 +1359,11 @@
             sorted.forEach(m => {
                 const crop = state.crops.find(c => c.id === m.cropId);
                 const metric = state.metricDefs.find(md => md.id === m.metricId);
+                const authorBadge = m.author ? `<span class="author-tag">${m.author}</span>` : '';
 
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
-                    <td>${m.date ? m.date.slice(5) : 'N/A'}</td>
+                    <td>${m.date ? m.date.slice(5) : 'N/A'}${authorBadge}</td>
                     <td>${crop ? crop.name : '<em>Deleted</em>'}</td>
                     <td>${metric ? `${metric.name}` : 'Unknown'}</td>
                     <td><strong>${m.value}</strong></td>
@@ -1537,7 +1595,8 @@
                     id: generateId(),
                     date,
                     tags: selectedTags,
-                    notes
+                    notes,
+                    author: activeUser || null
                 });
             }
 
@@ -1647,9 +1706,11 @@
                     .replace(/"/g, "&quot;")
                     .replace(/'/g, "&#039;");
 
+                const authorBadge = l.author ? `<span class="author-tag">${l.author}</span>` : '';
+
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
-                    <td>${l.date ? l.date.slice(5) : 'N/A'}</td>
+                    <td>${l.date ? l.date.slice(5) : 'N/A'}${authorBadge}</td>
                     <td>${tagsDisplay || '<em>General</em>'}</td>
                     <td style="white-space: pre-wrap;">${safeNotes}</td>
                     <td class="actions-cell">
@@ -1695,7 +1756,8 @@
                     date,
                     cropId,
                     qty,
-                    unit
+                    unit,
+                    author: activeUser || null
                 });
             }
 
@@ -1780,10 +1842,11 @@
 
             sorted.forEach(h => {
                 const crop = state.crops.find(c => c.id === h.cropId);
+                const authorBadge = h.author ? `<span class="author-tag">${h.author}</span>` : '';
 
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
-                    <td>${h.date ? h.date.slice(5) : 'N/A'}</td>
+                    <td>${h.date ? h.date.slice(5) : 'N/A'}${authorBadge}</td>
                     <td>${crop ? crop.name : '<em>Deleted</em>'}</td>
                     <td><strong>${h.qty} ${h.unit}</strong></td>
                     <td class="actions-cell">
@@ -1800,6 +1863,12 @@
         }
 
         async function saveDashboardToFile() {
+            if (!activePin) {
+                const inputPin = prompt("Please enter your security PIN to save & sync:");
+                if (!inputPin || !inputPin.trim()) return;
+                activePin = inputPin.trim();
+            }
+
             const btn = document.getElementById('save-file-btn');
             if (!btn || btn.disabled) return;
 
@@ -1822,14 +1891,34 @@
                 const res = await fetch(WORKER_URL, {
                     method: "POST",
                     mode: "cors",
-                    headers: { "Content-Type": "application/json" },
+                    headers: { 
+                        "Content-Type": "application/json",
+                        "X-Garden-Auth": activePin
+                    },
                     body: JSON.stringify({ data: state })
                 });
 
-                const data = await res.json().catch(() => ({}));
+                if (res.status === 401) {
+                    activePin = null;
+                    activeUser = null;
+                    localStorage.removeItem('gd_pin');
+                    localStorage.removeItem('gd_user');
+                    updateAuthUI();
+                    throw new Error("Invalid PIN. Access denied.");
+                }
 
-                if (!res.ok || data.error) {
-                    throw new Error(data.error || `HTTP ${res.status}: ${res.statusText}`);
+                const responseData = await res.json().catch(() => ({}));
+
+                if (!res.ok || responseData.error) {
+                    throw new Error(responseData.error || `HTTP ${res.status}: ${res.statusText}`);
+                }
+
+                if (responseData.author) {
+                    activeUser = responseData.author;
+                    state.lastUpdatedBy = responseData.author;
+                    localStorage.setItem('gd_user', activeUser);
+                    localStorage.setItem('gd_pin', activePin);
+                    updateAuthUI();
                 }
 
                 saveState();
