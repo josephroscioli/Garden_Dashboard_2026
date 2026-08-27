@@ -1,6 +1,6 @@
 {
-  "lastUpdated": "2026-08-26 21:45",
-  "lastUpdatedBy": "Wyatt",
+  "lastUpdated": "2026-08-26 21:47",
+  "lastUpdatedBy": "Rob",
   "crops": [
     {
       "id": "crop_corn",
@@ -613,14 +613,6 @@
       "metricId": "m_height",
       "date": "2026-08-22",
       "value": 18
-    },
-    {
-      "id": "_ihe35k3to",
-      "cropId": "crop_carrots",
-      "metricId": "m_height",
-      "date": "2026-08-27",
-      "value": 878,
-      "author": "Wyatt"
     }
   ],
   "logs": [
@@ -770,14 +762,14 @@
       "notes": "BIG HARVEST DAY! 6 ears of corn, 0.8 lbs green beans, many tomatoes, corn is looking great."
     },
     {
-      "id": "_stkjomqzu",
+      "id": "_kzfapagq4",
       "date": "2026-08-27",
       "tags": [
-        "crop_beans1",
-        "crop_carrots"
+        "crop_cucumbers",
+        "crop_tomatoes"
       ],
-      "notes": "test",
-      "author": "Wyatt"
+      "notes": "Test",
+      "author": "Rob"
     }
   ],
   "harvests": [
@@ -843,6 +835,14 @@
       "cropId": "crop_tomatoes",
       "qty": 50,
       "unit": "count"
+    },
+    {
+      "id": "_ptl6qxml3",
+      "date": "2026-08-27",
+      "cropId": "crop_corn",
+      "qty": 4,
+      "unit": "ears",
+      "author": "Rob"
     }
   ]
 }
