@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-08-27 08:00",
+  "lastUpdated": "2026-08-27 08:03",
   "lastUpdatedBy": "Wyatt",
   "crops": [
     {
@@ -808,6 +808,15 @@
         "crop_beans2"
       ],
       "notes": "BIG HARVEST DAY! 6 ears of corn, 0.8 lbs green beans, many tomatoes, corn is looking great."
+    },
+    {
+      "id": "_t7d5w6w59",
+      "date": "2026-08-27",
+      "tags": [
+        "crop_potatoes"
+      ],
+      "notes": "Potatoes are dying, look reasonably ready to harvest.",
+      "author": "Wyatt"
     }
   ],
   "harvests": [
