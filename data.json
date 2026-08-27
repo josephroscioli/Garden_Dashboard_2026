@@ -825,6 +825,14 @@
       "cropId": "crop_tomatoes",
       "qty": 50,
       "unit": "count"
+    },
+    {
+      "id": "_li71p3efx",
+      "date": "2026-08-27",
+      "cropId": "crop_cucumbers",
+      "qty": 12,
+      "unit": "count",
+      "author": "Wyatt"
     }
   ]
 }
