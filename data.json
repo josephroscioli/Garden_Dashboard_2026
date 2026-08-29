@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-08-29 14:32",
+  "lastUpdated": "2026-08-29 14:38",
   "lastUpdatedBy": "Wyatt",
   "crops": [
     {
@@ -897,6 +897,14 @@
       "cropId": "crop_corn",
       "qty": 10,
       "unit": "ears",
+      "author": "Wyatt"
+    },
+    {
+      "id": "_d0ahxscdg",
+      "date": "2026-08-29",
+      "cropId": "crop_tomatoes",
+      "qty": 40,
+      "unit": "count",
       "author": "Wyatt"
     }
   ]
