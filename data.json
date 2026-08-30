@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-08-30 19:34",
+  "lastUpdated": "2026-08-30 19:35",
   "lastUpdatedBy": "Rob",
   "crops": [
     {
@@ -83,7 +83,7 @@
       "id": "_wf0exhlcd",
       "name": "aa",
       "unit": "a",
-      "isNew": true,
+      "isNew": false,
       "author": "Rob"
     }
   ],
@@ -674,22 +674,6 @@
       "date": "2026-08-27",
       "value": 103,
       "author": "Wyatt"
-    },
-    {
-      "id": "_7ias2icsh",
-      "cropId": "crop_tomatoes",
-      "metricId": "m_height",
-      "date": "2026-08-30",
-      "value": 4,
-      "author": "Rob"
-    },
-    {
-      "id": "_itszw5j2e",
-      "cropId": "crop_corn",
-      "metricId": "_wf0exhlcd",
-      "date": "2026-08-30",
-      "value": 3,
-      "author": "Rob"
     }
   ],
   "logs": [
