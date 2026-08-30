@@ -1,6 +1,6 @@
 {
-  "lastUpdated": "2026-08-30 09:11",
-  "lastUpdatedBy": "Wyatt",
+  "lastUpdated": "2026-08-30 18:37",
+  "lastUpdatedBy": "Rob",
   "crops": [
     {
       "id": "crop_corn",
@@ -833,6 +833,15 @@
       ],
       "notes": "DAD and I pulled up the carrots that have gone to seed! We got 8 carrots and somehow 1PARSNIP?! We will try them anyway! They will probably be VERY BITTER!",
       "author": "Wyatt"
+    },
+    {
+      "id": "_sgwk9utpb",
+      "date": "2026-08-30",
+      "tags": [
+        "crop_corn"
+      ],
+      "notes": "This was too late to pick the corn!  It's all starchy and not sweet.  Next year we need to pick when the silks are still fresh!",
+      "author": null
     }
   ],
   "harvests": [
@@ -954,6 +963,14 @@
       "qty": 0.25,
       "unit": "lbs",
       "author": "Wyatt"
+    },
+    {
+      "id": "_ce1p70jo8",
+      "date": "2026-08-30",
+      "cropId": "crop_corn",
+      "qty": 5,
+      "unit": "ears",
+      "author": null
     }
   ]
 }
