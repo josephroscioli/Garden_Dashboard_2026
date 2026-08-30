@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-08-30 08:48",
+  "lastUpdated": "2026-08-30 09:04",
   "lastUpdatedBy": "Wyatt",
   "crops": [
     {
@@ -824,6 +824,15 @@
       "tags": [],
       "notes": "The corn has produced10! cobs Yes ten cobs! on the other hand the midnights are producing less than the early girl?! The Green beans are also producing slowly?! Now ten carrots have gone seed it makes me worried/paranoid not knowing what will happen.",
       "author": "Wyatt"
+    },
+    {
+      "id": "_m7qochpqc",
+      "date": "2026-08-30",
+      "tags": [
+        "crop_carrots"
+      ],
+      "notes": "DAD and I pulled up the carrots that have gone to seed! We got 8 carrots and somehow 1PARSNIP?! We will try them anyway! They will probably be VERY BITTER!",
+      "author": "Wyatt"
     }
   ],
   "harvests": [
@@ -929,6 +938,14 @@
       "qty": 20,
       "unit": "count",
       "author": null
+    },
+    {
+      "id": "_toypkbe18",
+      "date": "2026-08-30",
+      "cropId": "crop_carrots",
+      "qty": 1.9,
+      "unit": "lbs",
+      "author": "Wyatt"
     }
   ]
 }
