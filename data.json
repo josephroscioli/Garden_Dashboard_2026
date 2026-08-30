@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-08-30 19:17",
+  "lastUpdated": "2026-08-30 19:34",
   "lastUpdatedBy": "Rob",
   "crops": [
     {
@@ -77,6 +77,13 @@
       "id": "_vxoc3h2z9",
       "name": "aa",
       "unit": "a",
+      "author": "Rob"
+    },
+    {
+      "id": "_wf0exhlcd",
+      "name": "aa",
+      "unit": "a",
+      "isNew": true,
       "author": "Rob"
     }
   ],
@@ -674,6 +681,14 @@
       "metricId": "m_height",
       "date": "2026-08-30",
       "value": 4,
+      "author": "Rob"
+    },
+    {
+      "id": "_itszw5j2e",
+      "cropId": "crop_corn",
+      "metricId": "_wf0exhlcd",
+      "date": "2026-08-30",
+      "value": 3,
       "author": "Rob"
     }
   ],
