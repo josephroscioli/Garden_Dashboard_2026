@@ -23,7 +23,2372 @@
             --radius: 10px;
         }
 
+        * {<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Garden Dashboard</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌱</text></svg>">
+    <style>
+        :root {
+            --primary: #2e7d32;
+            --primary-light: #4caf50;
+            --primary-dark: #1b5e20;
+            --accent: #81c784;
+            --bg: #f4f6f4;
+            --surface: #ffffff;
+            --text: #2c3e50;
+            --text-light: #607d8b;
+            --border: #e0e6ed;
+            --danger: #d32f2f;
+            --danger-light: #ffebee;
+            --warning: #f57c00;
+            --shadow: 0 4px 12px rgba(0,0,0,0.05);
+            --radius: 10px;
+        }
+
         * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            padding: 12px;
+            max-width: 1400px;
+            margin: 0 auto;
+            overflow-x: hidden;
+        }
+
+        header {
+            margin-bottom: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 12px;
+        }
+
+        @media (min-width: 768px) {
+            body { padding: 24px; }
+            header {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 24px;
+                padding-bottom: 16px;
+            }
+        }
+
+        h1 {
+            color: var(--primary-dark);
+            font-size: clamp(1.3rem, 4vw, 1.8rem);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .header-controls {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .last-updated {
+            font-size: 0.75rem;
+            color: var(--text-light);
+            font-weight: 500;
+            width: 100%;
+        }
+
+        @media (min-width: 576px) {
+            .last-updated { width: auto; }
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 16px;
+            background: #e8efe9;
+            padding: 4px;
+            border-radius: var(--radius);
+            width: 100%;
+        }
+
+        .tab-btn {
+            flex: 1 1 0;
+            padding: 8px 4px;
+            border: none;
+            background: transparent;
+            font-weight: 600;
+            color: var(--text-light);
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            font-size: clamp(0.72rem, 2.5vw, 0.9rem);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            text-align: center;
+            word-break: break-word;
+        }
+
+        .tab-btn:hover {
+            color: var(--primary-dark);
+            background: rgba(255,255,255,0.5);
+        }
+
+        .tab-btn.active {
+            background: var(--surface);
+            color: var(--primary-dark);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+        }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        @media (min-width: 992px) {
+            .grid {
+                grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+                gap: 24px;
+                margin-bottom: 24px;
+            }
+            .grid-span-2 { grid-column: span 2; }
+        }
+
+        .card {
+            background: var(--surface);
+            border-radius: var(--radius);
+            padding: 14px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            width: 100%;
+            overflow: hidden;
+        }
+
+        @media (min-width: 768px) { .card { padding: 24px; } }
+
+        .card h2 {
+            font-size: clamp(1rem, 3vw, 1.2rem);
+            margin-bottom: 12px;
+            color: var(--primary-dark);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .card-header-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card-header-actions select {
+            padding: 4px 8px;
+            font-size: 0.8rem;
+            width: auto;
+        }
+
+        .form-group { margin-bottom: 12px; }
+
+        label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 8px 10px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 0.85rem;
+            transition: border-color 0.2s;
+            background: #fafafa;
+        }
+
+        @media (min-width: 768px) {
+            input, select, textarea {
+                padding: 10px 14px;
+                font-size: 0.95rem;
+            }
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: #fff;
+        }
+
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            font-size: clamp(0.75rem, 2.5vw, 0.9rem);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+        }
+
+        .btn:hover { background: var(--primary-dark); }
+        .btn-secondary { background: #eceff1; color: var(--text); }
+        .btn-secondary:hover { background: #cfd8dc; }
+        .btn-danger { background: var(--danger); }
+        .btn-danger:hover { background: #b71c1c; }
+
+        .table-wrapper {
+            width: 100%;
+            overflow-x: hidden;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: clamp(0.7rem, 2.2vw, 0.9rem);
+            table-layout: fixed;
+        }
+
+        th, td {
+            padding: 6px 4px;
+            border-bottom: 1px solid var(--border);
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        @media (min-width: 768px) {
+            table { font-size: 0.95rem; }
+            th, td { padding: 12px 16px; }
+        }
+
+        th {
+            background: #f8faf8;
+            color: var(--text-light);
+            font-weight: 600;
+            font-size: clamp(0.65rem, 2vw, 0.85rem);
+            text-transform: uppercase;
+        }
+
+        tr:hover { background: #fdfdfd; }
+
+        .actions-cell {
+            display: flex;
+            gap: 4px;
+            align-items: center;
+            justify-content: flex-start;
+        }
+
+        .icon-btn {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            color: var(--text-light);
+            padding: 2px;
+            border-radius: 4px;
+            font-size: clamp(0.8rem, 2.5vw, 1rem);
+            transition: color 0.2s;
+        }
+
+        .icon-btn:hover { color: var(--primary); }
+        .icon-btn.delete:hover { color: var(--danger); }
+
+        .chart-container {
+            position: relative;
+            background: var(--surface);
+            border-radius: var(--radius);
+            padding: 12px;
+            padding-bottom: 24px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            resize: vertical;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            min-width: 100%;
+            min-height: 280px;
+            height: 440px;
+            margin-bottom: 16px;
+        }
+
+        @media (min-width: 768px) {
+            .chart-container {
+                padding: 20px;
+                padding-bottom: 28px;
+                margin-bottom: 24px;
+                min-height: 320px;
+                height: 480px;
+            }
+        }
+
+        .chart-controls {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            align-items: center;
+            margin-bottom: 8px;
+            background: #f8faf8;
+            padding: 8px;
+            border-radius: 6px;
+        }
+
+        .chart-controls .form-group {
+            margin-bottom: 0;
+            flex: 1 1 100px;
+        }
+
+        .chart-legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 8px;
+            padding: 4px 6px;
+            align-items: center;
+        }
+
+        .legend-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text);
+            background: #fafafa;
+            padding: 2px 8px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .legend-color-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        canvas {
+            width: 100% !important;
+            flex: 1;
+            min-height: 0;
+            display: block;
+        }
+
+        .chart-resize-handle {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 20px;
+            background: #e8efe9;
+            border-top: 1px solid var(--border);
+            cursor: ns-resize;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            touch-action: none;
+            user-select: none;
+        }
+
+        .chart-resize-handle::after {
+            content: "";
+            width: 36px;
+            height: 4px;
+            background: var(--text-light);
+            border-radius: 2px;
+            opacity: 0.6;
+        }
+
+        /* LAYOUT EDITOR STYLES */
+        .layout-editor-container {
+            position: relative;
+            width: 100%;
+            max-width: 1100px;
+            margin: 0 auto;
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+            background-color: #ffffff;
+            box-shadow: var(--shadow);
+            user-select: none;
+            touch-action: none;
+        }
+
+        .layout-bg-wrapper {
+            position: relative;
+            width: 100%;
+            height: 0;
+            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+            background: #fff;
+        }
+
+        .layout-bg-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            pointer-events: none;
+        }
+
+        .layout-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            cursor: crosshair;
+        }
+
+        .layout-toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: center;
+            background: #f8faf8;
+            padding: 12px;
+            border-radius: var(--radius);
+            margin-bottom: 16px;
+            border: 1px solid var(--border);
+        }
+
+        .layout-toolbar .form-group {
+            margin-bottom: 0;
+            min-width: 180px;
+        }
+
+        .tag-select-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            border: 1px solid var(--border);
+            padding: 6px;
+            border-radius: 6px;
+            background: #fafafa;
+            max-height: 100px;
+            overflow-y: auto;
+        }
+
+        .tag-option {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            background: #e8efe9;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-size: clamp(0.68rem, 2vw, 0.85rem);
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .tag-option input {
+            width: auto;
+            cursor: pointer;
+        }
+
+        .badge {
+            background: #e8efe9;
+            color: var(--primary-dark);
+            padding: 2px 6px;
+            border-radius: 8px;
+            font-size: clamp(0.65rem, 2vw, 0.8rem);
+            font-weight: 600;
+            display: inline-block;
+            margin-right: 2px;
+            margin-bottom: 2px;
+            word-break: break-word;
+        }
+
+        .author-tag {
+            font-size: 0.72rem;
+            color: #555;
+            background: #f0f4f8;
+            padding: 1px 5px;
+            border-radius: 4px;
+            border: 1px solid #d0d7de;
+            margin-left: 4px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 12px;
+        }
+
+        .modal.active { display: flex; }
+
+        .modal-content {
+            background: white;
+            padding: 18px;
+            border-radius: var(--radius);
+            width: 100%;
+            max-width: 450px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+            margin-top: 16px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 20px 8px;
+            color: var(--text-light);
+        }
+
+        .badge-read-only {
+            background: #f0f0f0;
+            color: #777;
+            font-size: 0.7rem;
+            padding: 2px 4px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div>
+            <h1>🌱 Garden Dashboard</h1>
+            <div id="stats-summary" style="font-size: 0.8rem; color: var(--text-light); margin-top: 2px;">Loading statistics...</div>
+        </div>
+        <div class="header-controls">
+            <div id="last-updated-display" class="last-updated">Last Synced: Loading...</div>
+            <button class="btn btn-secondary" id="auth-btn" onclick="promptLogin()">🔑 Log In</button>
+            <button class="btn btn-secondary" onclick="forceReloadLatest()">🔄 Load Latest</button>
+            <button class="btn btn-secondary" id="save-file-btn" onclick="saveDashboardToFile()">💾 Save &amp; Sync</button>
+            <button class="btn btn-secondary" onclick="openSettingsModal()">⚙️ Utilities</button>
+        </div>
+    </header>
+
+    <div class="nav-tabs">
+        <button class="tab-btn active" onclick="switchTab('inventory', this)">📦 Inventory</button>
+        <button class="tab-btn" onclick="switchTab('layout', this)">🗺️ Layout</button>
+        <button class="tab-btn" onclick="switchTab('metrics', this)">📈 Metrics</button>
+        <button class="tab-btn" onclick="switchTab('logs', this)">📝 Logs</button>
+        <button class="tab-btn" onclick="switchTab('harvest', this)">🧺 Harvest</button>
+    </div>
+
+    <!-- TAB 1: CROP INVENTORY -->
+    <div id="tab-inventory" class="tab-content active">
+        <div class="grid">
+            <div class="card">
+                <h2 id="crop-form-title">Add New Crop</h2>
+                <form id="crop-form" onsubmit="handleCropSubmit(event)">
+                    <input type="hidden" id="crop-id" value="">
+                    <div class="form-group">
+                        <label>Crop Name</label>
+                        <input type="text" id="crop-name" placeholder="e.g. Early Girl Tomato" required="">
+                    </div>
+                    <div class="form-group">
+                        <label>Date Planted</label>
+                        <input type="date" id="crop-date-planted" required="">
+                    </div>
+                    <div class="form-group">
+                        <label>Amount Planted</label>
+                        <input type="number" id="crop-amount-planted" min="1" placeholder="e.g. 6" required="">
+                    </div>
+                    <div class="form-group">
+                        <label>Expected Ripening Date</label>
+                        <input type="date" id="crop-date-ripening">
+                    </div>
+                    <div class="form-group">
+                        <label>Default Harvest Unit</label>
+                        <input type="text" id="crop-harvest-unit" placeholder="e.g. lbs, count, ears" required="">
+                    </div>
+                    <div class="form-group">
+                        <label>Total Harvest Amount <span class="badge-read-only">Auto-updated</span></label>
+                        <input type="text" id="crop-harvest-amount" value="0 (managed via Harvest Tab)" disabled="">
+                    </div>
+                    <div style="display: flex; gap: 8px;">
+                        <button type="submit" class="btn" id="crop-save-btn">Save Crop</button>
+                        <button type="button" class="btn btn-secondary" id="crop-cancel-btn" style="display: none;" onclick="resetCropForm()">Cancel</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="card grid-span-2">
+                <h2>Master Crop Inventory</h2>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 24%;">Crop</th>
+                                <th style="width: 16%;">Planted</th>
+                                <th style="width: 10%;">Qty</th>
+                                <th style="width: 20%;">Total Harvest</th>
+                                <th style="width: 15%;">Unit</th>
+                                <th style="width: 15%;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="inventory-table-body"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 2: GARDEN LAYOUT EDITOR -->
+    <div id="tab-layout" class="tab-content">
+        <div class="card">
+            <h2>
+                Top-Down Garden Plot Mapping
+                <span style="font-size: 0.8rem; font-weight: normal; color: var(--text-light);">Click &amp; drag on canvas to draw bounding boxes</span>
+            </h2>
+
+            <div class="layout-toolbar">
+                <div class="form-group">
+                    <label>Active Crop Selection</label>
+                    <select id="layout-crop-select"></select>
+                </div>
+                <div class="form-group" style="min-width: 140px;">
+                    <label>Box Color</label>
+                    <input type="color" id="layout-box-color" value="#4caf50" style="height: 38px; padding: 2px;">
+                </div>
+                <button class="btn btn-secondary" style="margin-top: auto;" onclick="clearSelectedLayoutBox()">🗑️ Remove Crop Box</button>
+                <button class="btn btn-danger" style="margin-top: auto; margin-left: auto;" onclick="clearAllLayoutBoxes()">🧹 Clear All Map Boxes</button>
+            </div>
+
+            <div class="layout-editor-container" id="layout-container">
+                <div class="layout-bg-wrapper">
+                    <img class="layout-bg-image" id="layout-bg-img" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1000 562.5'><rect width='1000' height='562.5' fill='%23806000'/><rect width='825' height='162' fill='%23626466'/><text x='412.5' y='90' font-family='sans-serif' font-size='28' fill='%23ffffff' text-anchor='middle' dominant-baseline='middle'>Barn</text><rect x='648' y='162' width='352' height='178' fill='%23ffffff'/></svg>" alt="Garden Plot Layout">
+                    <canvas class="layout-canvas" id="layoutCanvas"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 3: METRICS -->
+    <div id="tab-metrics" class="tab-content">
+        <div class="grid">
+            <div class="card">
+                <h2>1. Define Metric Type</h2>
+                <form id="metric-def-form" onsubmit="handleMetricDefSubmit(event)">
+                    <div class="form-group">
+                        <label>Metric Name</label>
+                        <input type="text" id="metric-name" placeholder="e.g. Plant Height" required="">
+                    </div>
+                    <div class="form-group">
+                        <label>Units</label>
+                        <input type="text" id="metric-unit" placeholder="e.g. inches" required="">
+                    </div>
+                    <button type="submit" class="btn">Define Metric</button>
+                </form>
+            </div>
+
+            <div class="card">
+                <h2 id="meas-form-title">2. Add Measurement</h2>
+                <form id="meas-form" onsubmit="handleMeasurementSubmit(event)">
+                    <input type="hidden" id="meas-id" value="">
+                    <div class="form-group">
+                        <label>Select Crop</label>
+                        <select id="meas-crop" required=""></select>
+                    </div>
+                    <div class="form-group">
+                        <label>Metric Type</label>
+                        <select id="meas-metric" required=""></select>
+                    </div>
+                    <div class="form-group">
+                        <label>Date</label>
+                        <input type="date" id="meas-date" required="">
+                    </div>
+                    <div class="form-group">
+                        <label>Value</label>
+                        <input type="number" step="any" id="meas-value" required="">
+                    </div>
+                    <div style="display:flex; gap:8px;">
+                        <button type="submit" class="btn" id="meas-save-btn">Log Value</button>
+                        <button type="button" class="btn btn-secondary" id="meas-cancel-btn" style="display:none;" onclick="resetMeasForm()">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="chart-container" id="chart-card">
+            <h2>Metric Visualization</h2>
+            <div class="chart-controls">
+                <div class="form-group">
+                    <label>Filter Crop</label>
+                    <select id="chart-filter-crop" onchange="renderChart()"></select>
+                </div>
+                <div class="form-group">
+                    <label>Filter Metric</label>
+                    <select id="chart-filter-metric" onchange="renderChart()"></select>
+                </div>
+                <div class="form-group">
+                    <label>X-Min Date</label>
+                    <input type="date" id="chart-xmin" onchange="renderChart()">
+                </div>
+                <div class="form-group">
+                    <label>X-Max Date</label>
+                    <input type="date" id="chart-xmax" onchange="renderChart()">
+                </div>
+                <button class="btn btn-secondary" style="margin-top: auto;" onclick="autoscaleXChart()">Autoscale X</button>
+                <div class="form-group">
+                    <label>Y-Min</label>
+                    <input type="number" id="chart-ymin" placeholder="Auto" onchange="renderChart()">
+                </div>
+                <div class="form-group">
+                    <label>Y-Max</label>
+                    <input type="number" id="chart-ymax" placeholder="Auto" onchange="renderChart()">
+                </div>
+                <button class="btn btn-secondary" style="margin-top: auto;" onclick="autoscaleYChart()">Autoscale Y</button>
+            </div>
+
+            <div class="chart-legend" id="chart-legend"></div>
+
+            <canvas id="metricsChart"></canvas>
+            <div class="chart-resize-handle" id="chart-drag-handle" title="Drag to resize height"></div>
+        </div>
+
+        <div class="card">
+            <h2>Measurement History</h2>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 20%;">Date</th>
+                            <th style="width: 25%;">Crop</th>
+                            <th style="width: 25%;">Metric</th>
+                            <th style="width: 15%;">Value</th>
+                            <th style="width: 15%;">Act</th>
+                        </tr>
+                    </thead>
+                    <tbody id="meas-table-body"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 4: FIELD LOGS -->
+    <div id="tab-logs" class="tab-content">
+        <div class="grid">
+            <div class="card">
+                <h2 id="log-form-title">New Field Log</h2>
+                <form id="log-form" onsubmit="handleLogSubmit(event)">
+                    <input type="hidden" id="log-id" value="">
+                    <div class="form-group">
+                        <label>Date</label>
+                        <input type="date" id="log-date" required="">
+                    </div>
+                    <div class="form-group">
+                        <label>Tag Crops</label>
+                        <div class="tag-select-container" id="log-tags-container"></div>
+                    </div>
+                    <div class="form-group">
+                        <label>Log Entry / Notes</label>
+                        <textarea id="log-notes" rows="4" placeholder="Describe activities, fertilizing, pest management..." required=""></textarea>
+                    </div>
+                    <div style="display:flex; gap:8px;">
+                        <button type="submit" class="btn" id="log-save-btn">Save Log Entry</button>
+                        <button type="button" class="btn btn-secondary" id="log-cancel-btn" style="display:none;" onclick="resetLogForm()">Cancel</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="card grid-span-2">
+                <h2>
+                    Field Journal
+                    <div class="card-header-actions">
+                        <select id="logs-filter-crop" onchange="renderLogs()">
+                            <option value="ALL">All Crops</option>
+                        </select>
+                    </div>
+                </h2>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 20%;">Date</th>
+                                <th style="width: 25%;">Tagged</th>
+                                <th style="width: 40%;">Notes</th>
+                                <th style="width: 15%;">Act</th>
+                            </tr>
+                        </thead>
+                        <tbody id="logs-table-body"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 5: HARVEST -->
+    <div id="tab-harvest" class="tab-content">
+        <div class="grid">
+            <div class="card">
+                <h2 id="harvest-form-title">Log Harvest</h2>
+                <form id="harvest-form" onsubmit="handleHarvestSubmit(event)">
+                    <input type="hidden" id="harvest-id" value="">
+                    <div class="form-group">
+                        <label>Date Harvested</label>
+                        <input type="date" id="harvest-date" required="">
+                    </div>
+                    <div class="form-group">
+                        <label>Select Crop</label>
+                        <select id="harvest-crop" onchange="onHarvestCropSelectChange()" required=""></select>
+                    </div>
+                    <div class="form-group">
+                        <label>Quantity Harvested</label>
+                        <input type="number" step="any" id="harvest-qty" min="0.01" placeholder="e.g. 2.5" required="">
+                    </div>
+                    <div class="form-group">
+                        <label>Unit <span class="badge-read-only">Auto-filled</span></label>
+                        <input type="text" id="harvest-unit" placeholder="Auto-filled from crop" readonly="" tabindex="-1">
+                    </div>
+                    <div style="display:flex; gap:8px;">
+                        <button type="submit" class="btn" id="harvest-save-btn">Record Harvest</button>
+                        <button type="button" class="btn btn-secondary" id="harvest-cancel-btn" style="display: none;" onclick="resetHarvestForm()">Cancel</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="card grid-span-2">
+                <h2>
+                    Harvest Logs
+                    <div class="card-header-actions">
+                        <select id="harvest-filter-crop" onchange="renderHarvestUI()">
+                            <option value="ALL">All Crops</option>
+                        </select>
+                    </div>
+                </h2>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 20%;">Date</th>
+                                <th style="width: 30%;">Crop</th>
+                                <th style="width: 35%;">Yield</th>
+                                <th style="width: 15%;">Act</th>
+                            </tr>
+                        </thead>
+                        <tbody id="harvest-table-body"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SETTINGS & UTILITIES MODAL -->
+    <div class="modal" id="settings-modal">
+        <div class="modal-content" style="max-width: 550px;">
+            <h2 style="margin-bottom: 12px; color: var(--primary-dark);">⚙️ Dashboard Utilities &amp; Archiving</h2>
+            
+            <div style="border-bottom: 1px solid var(--border); padding-bottom: 12px; margin-bottom: 12px;">
+                <h3 style="font-size: 0.95rem; margin-bottom: 6px;">1. Archive Current Season</h3>
+                <p style="font-size: 0.8rem; color: var(--text-light); margin-bottom: 8px;">Save active data to a named JSON file (e.g. <code>2026</code> becomes <code>archive/2026_data.json</code> or downloaded locally).</p>
+                <div style="display: flex; gap: 8px;">
+                    <input type="text" id="archive-name" placeholder="e.g. 2026" style="flex: 1;">
+                    <button class="btn" onclick="archiveCurrentSeason()">📦 Archive Season</button>
+                </div>
+            </div>
+
+            <div style="border-bottom: 1px solid var(--border); padding-bottom: 12px; margin-bottom: 12px;">
+                <h3 style="font-size: 0.95rem; margin-bottom: 6px;">2. Load Historical Dataset</h3>
+                <p style="font-size: 0.8rem; color: var(--text-light); margin-bottom: 8px;">Load a past season's data file into the dashboard to review historical records.</p>
+                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                    <input type="file" id="load-json-file" accept=".json" style="flex: 1;">
+                    <button class="btn btn-secondary" onclick="loadHistoricalFile()">📂 Load File</button>
+                </div>
+            </div>
+
+            <div style="padding-bottom: 8px;">
+                <h3 style="font-size: 0.95rem; color: var(--danger); margin-bottom: 6px;">3. Reset / Clear Active Data</h3>
+                <p style="font-size: 0.8rem; color: var(--text-light); margin-bottom: 8px;">Clear all active crop, metric, log, harvest, and layout map records to start fresh for a new season (e.g., 2027).</p>
+                <button class="btn btn-danger" onclick="confirmResetAllData()">🧹 Reset Active Season Data</button>
+            </div>
+
+            <div class="modal-footer" style="margin-top: 12px;">
+                <button class="btn btn-secondary" onclick="closeSettingsModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- HARD DELETION CONFIRMATION MODAL -->
+    <div class="modal" id="delete-modal">
+        <div class="modal-content">
+            <h3 style="color: var(--danger); margin-bottom: 8px;">⚠️ High Protection Action</h3>
+            <p id="delete-modal-text" style="font-size: 0.85rem;">Are you sure you want to remove this entry?</p>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeDeleteModal()">Cancel</button>
+                <button class="btn btn-danger" id="confirm-delete-btn">Confirm Deletion</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let state = {
+            lastUpdated: "Loading...",
+            lastUpdatedBy: null,
+            crops: [],
+            metricDefs: [],
+            measurements: [],
+            logs: [],
+            harvests: [],
+            layoutBoxes: []
+        };
+
+        let activePin = localStorage.getItem('gd_pin') || null;
+        let activeUser = localStorage.getItem('gd_user') || null;
+
+        let pendingDeleteFn = null;
+
+        function updateAuthUI() {
+            const btn = document.getElementById('auth-btn');
+            if (btn) {
+                if (activeUser) {
+                    btn.innerText = `👤 ${activeUser}`;
+                    btn.title = "Click to log out or change user";
+                } else {
+                    btn.innerText = "🔑 Log In";
+                    btn.title = "Log in to enable sync permissions";
+                }
+            }
+        }
+
+        function promptLogin() {
+            if (activeUser) {
+                if (confirm(`Currently logged in as ${activeUser}. Do you want to log out?`)) {
+                    activePin = null;
+                    activeUser = null;
+                    localStorage.removeItem('gd_pin');
+                    localStorage.removeItem('gd_user');
+                    updateAuthUI();
+                }
+                return;
+            }
+
+            const pin = prompt("Enter your security PIN:");
+            if (pin && pin.trim()) {
+                activePin = pin.trim();
+                localStorage.setItem('gd_pin', activePin);
+                saveDashboardToFile();
+            }
+        }
+
+        // --- NAVIGATION ---
+        function switchTab(tabId, btnEl) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+
+            if (btnEl) {
+                btnEl.classList.add('active');
+            } else if (window.event && window.event.currentTarget) {
+                window.event.currentTarget.classList.add('active');
+            } else {
+                const targetBtn = document.querySelector(`.tab-btn[onclick*="${tabId}"]`);
+                if (targetBtn) targetBtn.classList.add('active');
+            }
+
+            const targetTab = document.getElementById(`tab-${tabId}`);
+            if (targetTab) targetTab.classList.add('active');
+
+            if (tabId === 'metrics') {
+                setTimeout(() => { renderChart(); }, 50);
+            } else if (tabId === 'layout') {
+                setTimeout(() => { initLayoutEditor(); renderLayoutCanvas(); }, 50);
+            }
+        }
+
+        function inferHarvestUnits() {
+            state.crops.forEach(crop => {
+                if (!crop.harvestUnit) {
+                    const match = state.harvests.find(h => h.cropId === crop.id && h.unit);
+                    crop.harvestUnit = match ? match.unit : 'lbs';
+                }
+            });
+        }
+
+        async function fetchRepoData() {
+            try {
+                const res = await fetch('./data.json?v=' + new Date().getTime());
+                if (!res.ok) throw new Error("Could not fetch data.json");
+                const data = await res.json();
+
+                state = {
+                    lastUpdated: data.lastUpdated || new Date().toISOString().replace('T', ' ').slice(0, 16),
+                    lastUpdatedBy: data.lastUpdatedBy || null,
+                    crops: data.crops || [],
+                    metricDefs: data.metricDefs || [],
+                    measurements: data.measurements || [],
+                    logs: data.logs || [],
+                    harvests: data.harvests || [],
+                    layoutBoxes: data.layoutBoxes || []
+                };
+
+                inferHarvestUnits();
+                saveLocalState();
+                renderAll();
+            } catch (err) {
+                console.warn("Server fetch failed, loading from local cache:", err);
+                loadLocalState();
+            }
+        }
+
+        function saveLocalState() {
+            localStorage.setItem('gd_state', JSON.stringify(state));
+            const byStr = state.lastUpdatedBy ? ` (by ${state.lastUpdatedBy})` : '';
+            document.getElementById('last-updated-display').innerText = `Last Synced: ${state.lastUpdated}${byStr}`;
+        }
+
+        function loadLocalState() {
+            const stored = localStorage.getItem('gd_state');
+            if (stored) {
+                state = JSON.parse(stored);
+            }
+            if (!state.layoutBoxes) state.layoutBoxes = [];
+            inferHarvestUnits();
+            const byStr = state.lastUpdatedBy ? ` (by ${state.lastUpdatedBy})` : '';
+            document.getElementById('last-updated-display').innerText = `Last Synced: ${state.lastUpdated || 'Offline'}${byStr}`;
+            renderAll();
+        }
+
+        function saveState() {
+            saveLocalState();
+            renderAll();
+        }
+
+        function openSettingsModal() {
+            document.getElementById('settings-modal').classList.add('active');
+        }
+
+        function closeSettingsModal() {
+            document.getElementById('settings-modal').classList.remove('active');
+        }
+
+        function archiveCurrentSeason() {
+            const name = document.getElementById('archive-name').value.trim() || 'season';
+            const fileName = `${name}_data.json`;
+            const jsonStr = JSON.stringify(state, null, 2);
+
+            const blob = new Blob([jsonStr], { type: "application/json" });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = fileName;
+            link.click();
+            URL.revokeObjectURL(link.href);
+
+            alert(`Archived current dataset as ${fileName}!`);
+        }
+
+        function loadHistoricalFile() {
+            const input = document.getElementById('load-json-file');
+            if (!input.files || !input.files[0]) {
+                alert("Please select a valid .json dataset file first.");
+                return;
+            }
+
+            const file = input.files[0];
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const loadedData = JSON.parse(e.target.result);
+                    state = {
+                        lastUpdated: loadedData.lastUpdated || 'Historical Load',
+                        lastUpdatedBy: loadedData.lastUpdatedBy || null,
+                        crops: loadedData.crops || [],
+                        metricDefs: loadedData.metricDefs || [],
+                        measurements: loadedData.measurements || [],
+                        logs: loadedData.logs || [],
+                        harvests: loadedData.harvests || [],
+                        layoutBoxes: loadedData.layoutBoxes || []
+                    };
+                    inferHarvestUnits();
+                    saveState();
+                    closeSettingsModal();
+                    alert(`Successfully loaded historical dataset from ${file.name}`);
+                } catch (err) {
+                    alert("Error parsing JSON file: " + err.message);
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function confirmResetAllData() {
+            promptHardDelete(
+                "Are you sure you want to CLEAR ALL CURRENT DATA? Make sure you have archived your current season data first!",
+                () => {
+                    state = {
+                        lastUpdated: new Date().toISOString().replace('T', ' ').slice(0, 16),
+                        lastUpdatedBy: activeUser || null,
+                        crops: [],
+                        metricDefs: [],
+                        measurements: [],
+                        logs: [],
+                        harvests: [],
+                        layoutBoxes: []
+                    };
+                    saveState();
+                    closeSettingsModal();
+                    alert("All active season data has been reset.");
+                }
+            );
+        }
+
+        function init() {
+            const today = new Date().toISOString().split('T')[0];
+            const dateInputs = ['crop-date-planted', 'meas-date', 'log-date', 'harvest-date'];
+            dateInputs.forEach(id => {
+                const el = document.getElementById(id);
+                if (el && !el.value) el.value = today;
+            });
+
+            updateAuthUI();
+            setupTouchResizer();
+            fetchRepoData();
+        }
+
+        function generateId() {
+            return '_' + Math.random().toString(36).substr(2, 9);
+        }
+
+        function promptHardDelete(message, onConfirm) {
+            document.getElementById('delete-modal-text').innerText = message;
+            pendingDeleteFn = onConfirm;
+            document.getElementById('delete-modal').classList.add('active');
+        }
+
+        function closeDeleteModal() {
+            document.getElementById('delete-modal').classList.remove('active');
+            pendingDeleteFn = null;
+        }
+
+        document.getElementById('confirm-delete-btn').addEventListener('click', () => {
+            if (pendingDeleteFn) pendingDeleteFn();
+            closeDeleteModal();
+        });
+
+        function setupTouchResizer() {
+            const handle = document.getElementById('chart-drag-handle');
+            const card = document.getElementById('chart-card');
+            if (!handle || !card) return;
+
+            let startY = 0;
+            let startHeight = 0;
+            let isDragging = false;
+
+            const onStart = (e) => {
+                isDragging = true;
+                startY = e.touches ? e.touches[0].clientY : e.clientY;
+                startHeight = card.getBoundingClientRect().height;
+                document.body.style.userSelect = 'none';
+            };
+
+            const onMove = (e) => {
+                if (!isDragging) return;
+                const currentY = e.touches ? e.touches[0].clientY : e.clientY;
+                const newHeight = Math.max(280, startHeight + (currentY - startY));
+                card.style.height = `${newHeight}px`;
+                renderChart();
+            };
+
+            const onEnd = () => {
+                if (isDragging) {
+                    isDragging = false;
+                    document.body.style.userSelect = '';
+                }
+            };
+
+            handle.addEventListener('mousedown', onStart);
+            handle.addEventListener('touchstart', onStart, { passive: true });
+
+            window.addEventListener('mousemove', onMove);
+            window.addEventListener('touchmove', onMove, { passive: true });
+
+            window.addEventListener('mouseup', onEnd);
+            window.addEventListener('touchend', onEnd);
+        }
+
+        // --- CROP INVENTORY MODULE ---
+        function handleCropSubmit(e) {
+            e.preventDefault();
+            const id = document.getElementById('crop-id').value;
+            const name = document.getElementById('crop-name').value.trim();
+            const datePlanted = document.getElementById('crop-date-planted').value;
+            const amountPlanted = document.getElementById('crop-amount-planted').value;
+            const dateRipening = document.getElementById('crop-date-ripening').value;
+            const harvestUnit = document.getElementById('crop-harvest-unit').value.trim() || 'lbs';
+
+            if (id) {
+                const crop = state.crops.find(c => c.id === id);
+                if (crop) {
+                    crop.name = name;
+                    crop.datePlanted = datePlanted;
+                    crop.amountPlanted = amountPlanted;
+                    crop.dateRipening = dateRipening;
+                    crop.harvestUnit = harvestUnit;
+                }
+            } else {
+                state.crops.push({
+                    id: generateId(),
+                    name,
+                    datePlanted,
+                    amountPlanted,
+                    dateRipening,
+                    harvestUnit,
+                    author: activeUser || null
+                });
+            }
+
+            resetCropForm();
+            saveState();
+        }
+
+        function editCrop(id) {
+            const crop = state.crops.find(c => c.id === id);
+            if (!crop) return;
+
+            document.getElementById('crop-id').value = crop.id;
+            document.getElementById('crop-name').value = crop.name;
+            document.getElementById('crop-date-planted').value = crop.datePlanted;
+            document.getElementById('crop-amount-planted').value = crop.amountPlanted;
+            document.getElementById('crop-date-ripening').value = crop.dateRipening || '';
+            document.getElementById('crop-harvest-unit').value = crop.harvestUnit || 'lbs';
+
+            document.getElementById('crop-form-title').innerText = "Edit Crop Entry";
+            document.getElementById('crop-save-btn').innerText = "Update Crop";
+            document.getElementById('crop-cancel-btn').style.display = 'inline-block';
+        }
+
+        function deleteCrop(id) {
+            const crop = state.crops.find(c => c.id === id);
+            promptHardDelete(
+                `Are you sure you want to permanently remove "${crop.name}"? This will impact metrics and logs associated with this crop.`,
+                () => {
+                    state.crops = state.crops.filter(c => c.id !== id);
+                    state.layoutBoxes = state.layoutBoxes.filter(b => b.cropId !== id);
+                    saveState();
+                }
+            );
+        }
+
+        function resetCropForm() {
+            document.getElementById('crop-id').value = '';
+            document.getElementById('crop-form').reset();
+            document.getElementById('crop-date-planted').value = new Date().toISOString().split('T')[0];
+            document.getElementById('crop-form-title').innerText = "Add New Crop";
+            document.getElementById('crop-save-btn').innerText = "Save Crop";
+            document.getElementById('crop-cancel-btn').style.display = 'none';
+        }
+
+        function calculateHarvestTotals() {
+            const totals = {};
+            state.harvests.forEach(h => {
+                if (!totals[h.cropId]) totals[h.cropId] = {};
+                if (!totals[h.cropId][h.unit]) totals[h.cropId][h.unit] = 0;
+                totals[h.cropId][h.unit] += parseFloat(h.qty);
+            });
+            return totals;
+        }
+
+        function renderInventory() {
+            const tbody = document.getElementById('inventory-table-body');
+            tbody.innerHTML = '';
+
+            const harvestTotals = calculateHarvestTotals();
+
+            if (state.crops.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="empty-state">No crops added yet. Populate your master inventory to start tracking!</td></tr>`;
+                return;
+            }
+
+            state.crops.forEach(crop => {
+                let harvestDisplay = "0";
+                if (harvestTotals[crop.id]) {
+                    harvestDisplay = Object.entries(harvestTotals[crop.id])
+                        .map(([unit, qty]) => `${qty} ${unit}`)
+                        .join(', ');
+                }
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><strong>${crop.name}</strong></td>
+                    <td>${crop.datePlanted ? crop.datePlanted.slice(5) : 'N/A'}</td>
+                    <td>${crop.amountPlanted}</td>
+                    <td><span class="badge">${harvestDisplay}</span></td>
+                    <td><span class="badge" style="background:#f0f4f8; border:1px solid #d0d7de; color:#333;">${crop.harvestUnit || 'lbs'}</span></td>
+                    <td class="actions-cell">
+                        <button class="icon-btn" onclick="editCrop('${crop.id}')" title="Edit">✏️</button>
+                        <button class="icon-btn delete" onclick="deleteCrop('${crop.id}')" title="Hard Remove">🗑️</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // --- LAYOUT EDITOR ENGINE ---
+        let selectedBoxIndex = -1;
+        let isDrawingLayout = false;
+        let isDraggingLayout = false;
+        let isResizingLayout = false;
+        let dragOffset = { x: 0, y: 0 };
+        let drawStartPos = { x: 0, y: 0 };
+
+        function renderLayoutCropSelector() {
+            const select = document.getElementById('layout-crop-select');
+            if (!select) return;
+            const currentVal = select.value;
+
+            select.innerHTML = state.crops.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+            if (currentVal && state.crops.some(c => c.id === currentVal)) {
+                select.value = currentVal;
+            }
+        }
+
+        function initLayoutEditor() {
+            renderLayoutCropSelector();
+
+            const canvas = document.getElementById('layoutCanvas');
+            if (!canvas) return;
+
+            canvas.removeEventListener('mousedown', onLayoutMouseDown);
+            canvas.removeEventListener('mousemove', onLayoutMouseMove);
+            window.removeEventListener('mouseup', onLayoutMouseUp);
+
+            canvas.addEventListener('mousedown', onLayoutMouseDown);
+            canvas.addEventListener('mousemove', onLayoutMouseMove);
+            window.addEventListener('mouseup', onLayoutMouseUp);
+
+            canvas.removeEventListener('touchstart', onLayoutTouchStart);
+            canvas.removeEventListener('touchmove', onLayoutTouchMove);
+            window.removeEventListener('touchend', onLayoutMouseUp);
+
+            canvas.addEventListener('touchstart', onLayoutTouchStart, { passive: false });
+            canvas.addEventListener('touchmove', onLayoutTouchMove, { passive: false });
+            window.addEventListener('touchend', onLayoutMouseUp);
+        }
+
+        function getCanvasCoords(evt, canvas) {
+            const rect = canvas.getBoundingClientRect();
+            const clientX = evt.touches ? evt.touches[0].clientX : evt.clientX;
+            const clientY = evt.touches ? evt.touches[0].clientY : evt.clientY;
+
+            return {
+                x: (clientX - rect.left) / rect.width,
+                y: (clientY - rect.top) / rect.height
+            };
+        }
+
+        function onLayoutMouseDown(e) {
+            const canvas = document.getElementById('layoutCanvas');
+            const pos = getCanvasCoords(e, canvas);
+
+            if (selectedBoxIndex >= 0) {
+                const box = state.layoutBoxes[selectedBoxIndex];
+                if (box) {
+                    const handleX = box.x + box.w;
+                    const handleY = box.y + box.h;
+                    if (Math.abs(pos.x - handleX) < 0.03 && Math.abs(pos.y - handleY) < 0.03) {
+                        isResizingLayout = true;
+                        return;
+                    }
+                }
+            }
+
+            let hitIndex = -1;
+            for (let i = state.layoutBoxes.length - 1; i >= 0; i--) {
+                const b = state.layoutBoxes[i];
+                if (pos.x >= b.x && pos.x <= b.x + b.w && pos.y >= b.y && pos.y <= b.y + b.h) {
+                    hitIndex = i;
+                    break;
+                }
+            }
+
+            if (hitIndex >= 0) {
+                selectedBoxIndex = hitIndex;
+                isDraggingLayout = true;
+                dragOffset = {
+                    x: pos.x - state.layoutBoxes[hitIndex].x,
+                    y: pos.y - state.layoutBoxes[hitIndex].y
+                };
+                renderLayoutCanvas();
+                return;
+            }
+
+            if (state.crops.length === 0) {
+                alert("Please add crops to your Master Inventory first!");
+                return;
+            }
+
+            selectedBoxIndex = -1;
+            isDrawingLayout = true;
+            drawStartPos = pos;
+        }
+
+        function onLayoutTouchStart(e) {
+            e.preventDefault();
+            onLayoutMouseDown(e);
+        }
+
+        function onLayoutMouseMove(e) {
+            const canvas = document.getElementById('layoutCanvas');
+            const pos = getCanvasCoords(e, canvas);
+
+            if (isResizingLayout && selectedBoxIndex >= 0) {
+                const box = state.layoutBoxes[selectedBoxIndex];
+                box.w = Math.max(0.02, pos.x - box.x);
+                box.h = Math.max(0.02, pos.y - box.y);
+                renderLayoutCanvas();
+            } else if (isDraggingLayout && selectedBoxIndex >= 0) {
+                const box = state.layoutBoxes[selectedBoxIndex];
+                box.x = Math.max(0, Math.min(1 - box.w, pos.x - dragOffset.x));
+                box.y = Math.max(0, Math.min(1 - box.h, pos.y - dragOffset.y));
+                renderLayoutCanvas();
+            } else if (isDrawingLayout) {
+                renderLayoutCanvas(pos);
+            }
+        }
+
+        function onLayoutTouchMove(e) {
+            e.preventDefault();
+            onLayoutMouseMove(e);
+        }
+
+        function onLayoutMouseUp(e) {
+            if (isDrawingLayout) {
+                const canvas = document.getElementById('layoutCanvas');
+                let endPos = drawStartPos;
+                if (e.clientX || (e.changedTouches && e.changedTouches[0])) {
+                    const evt = e.changedTouches ? e.changedTouches[0] : e;
+                    const rect = canvas.getBoundingClientRect();
+                    endPos = {
+                        x: (evt.clientX - rect.left) / rect.width,
+                        y: (evt.clientY - rect.top) / rect.height
+                    };
+                }
+
+                const x = Math.min(drawStartPos.x, endPos.x);
+                const y = Math.min(drawStartPos.y, endPos.y);
+                const w = Math.abs(endPos.x - drawStartPos.x);
+                const h = Math.abs(endPos.y - drawStartPos.y);
+
+                if (w > 0.02 && h > 0.02) {
+                    const cropSelect = document.getElementById('layout-crop-select');
+                    const colorInput = document.getElementById('layout-box-color');
+                    const cropId = cropSelect.value;
+                    const color = colorInput ? colorInput.value : '#4caf50';
+
+                    state.layoutBoxes.push({
+                        id: generateId(),
+                        cropId,
+                        color,
+                        x, y, w, h
+                    });
+
+                    selectedBoxIndex = state.layoutBoxes.length - 1;
+                    saveState();
+                }
+            } else if (isDraggingLayout || isResizingLayout) {
+                saveState();
+            }
+
+            isDrawingLayout = false;
+            isDraggingLayout = false;
+            isResizingLayout = false;
+            renderLayoutCanvas();
+        }
+
+        function clearSelectedLayoutBox() {
+            if (selectedBoxIndex >= 0 && selectedBoxIndex < state.layoutBoxes.length) {
+                state.layoutBoxes.splice(selectedBoxIndex, 1);
+                selectedBoxIndex = -1;
+                saveState();
+            } else {
+                alert("Please select a crop box on the canvas first.");
+            }
+        }
+
+        function clearAllLayoutBoxes() {
+            if (confirm("Are you sure you want to clear all mapped crop boxes from the layout diagram?")) {
+                state.layoutBoxes = [];
+                selectedBoxIndex = -1;
+                saveState();
+            }
+        }
+
+        function renderLayoutCanvas(currentMousePos = null) {
+            const canvas = document.getElementById('layoutCanvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+
+            const rect = canvas.getBoundingClientRect();
+            if (rect.width === 0 || rect.height === 0) return;
+
+            canvas.width = rect.width * window.devicePixelRatio;
+            canvas.height = rect.height * window.devicePixelRatio;
+            ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+
+            const w = rect.width;
+            const h = rect.height;
+
+            ctx.clearRect(0, 0, w, h);
+
+            state.layoutBoxes.forEach((b, idx) => {
+                const boxX = b.x * w;
+                const boxY = b.y * h;
+                const boxW = b.w * w;
+                const boxH = b.h * h;
+
+                const crop = state.crops.find(c => c.id === b.cropId);
+                const labelText = crop ? crop.name : 'Crop Box';
+
+                ctx.fillStyle = b.color || '#4caf50';
+                ctx.globalAlpha = 0.35;
+                ctx.fillRect(boxX, boxY, boxW, boxH);
+
+                ctx.globalAlpha = 1.0;
+                ctx.strokeStyle = idx === selectedBoxIndex ? '#d32f2f' : (b.color || '#2e7d32');
+                ctx.lineWidth = idx === selectedBoxIndex ? 3 : 2;
+                ctx.strokeRect(boxX, boxY, boxW, boxH);
+
+                ctx.fillStyle = '#ffffff';
+                ctx.font = 'bold 12px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+
+                const textPadding = 4;
+                const textWidth = ctx.measureText(labelText).width;
+                if (boxW > 20 && boxH > 15) {
+                    ctx.fillStyle = 'rgba(0,0,0,0.65)';
+                    ctx.fillRect(boxX + boxW/2 - textWidth/2 - textPadding, boxY + boxH/2 - 9, textWidth + textPadding*2, 18);
+
+                    ctx.fillStyle = '#ffffff';
+                    ctx.fillText(labelText, boxX + boxW/2, boxY + boxH/2);
+                }
+
+                if (idx === selectedBoxIndex) {
+                    const handleX = boxX + boxW;
+                    const handleY = boxY + boxH;
+                    ctx.fillStyle = '#d32f2f';
+                    ctx.fillRect(handleX - 6, handleY - 6, 12, 12);
+                    ctx.strokeStyle = '#ffffff';
+                    ctx.lineWidth = 1;
+                    ctx.strokeRect(handleX - 6, handleY - 6, 12, 12);
+                }
+            });
+
+            if (isDrawingLayout && currentMousePos) {
+                const x = Math.min(drawStartPos.x, currentMousePos.x) * w;
+                const y = Math.min(drawStartPos.y, currentMousePos.y) * h;
+                const bw = Math.abs(currentMousePos.x - drawStartPos.x) * w;
+                const bh = Math.abs(currentMousePos.y - drawStartPos.y) * h;
+
+                ctx.fillStyle = '#4caf50';
+                ctx.globalAlpha = 0.25;
+                ctx.fillRect(x, y, bw, bh);
+
+                ctx.globalAlpha = 1.0;
+                ctx.strokeStyle = '#2e7d32';
+                ctx.lineWidth = 2;
+                ctx.setLineDash([6, 4]);
+                ctx.strokeRect(x, y, bw, bh);
+                ctx.setLineDash([]);
+            }
+        }
+
+        // --- METRICS MODULE ---
+        function handleMetricDefSubmit(e) {
+            e.preventDefault();
+            const name = document.getElementById('metric-name').value.trim();
+            const unit = document.getElementById('metric-unit').value.trim();
+
+            state.metricDefs.push({
+                id: generateId(),
+                name,
+                unit,
+                isNew: true, // Flag to show immediately in dropdowns
+                author: activeUser || null
+            });
+
+            document.getElementById('metric-def-form').reset();
+            saveState();
+        }
+
+        function handleMeasurementSubmit(e) {
+            e.preventDefault();
+            const id = document.getElementById('meas-id').value;
+            const cropId = document.getElementById('meas-crop').value;
+            const metricId = document.getElementById('meas-metric').value;
+            const date = document.getElementById('meas-date').value;
+            const value = parseFloat(document.getElementById('meas-value').value);
+
+            if (id) {
+                const meas = state.measurements.find(m => m.id === id);
+                if (meas) {
+                    meas.cropId = cropId;
+                    meas.metricId = metricId;
+                    meas.date = date;
+                    meas.value = value;
+                }
+            } else {
+                state.measurements.push({
+                    id: generateId(),
+                    cropId,
+                    metricId,
+                    date,
+                    value,
+                    author: activeUser || null
+                });
+            }
+
+            resetMeasForm();
+            saveState();
+        }
+
+        function editMeas(id) {
+            const m = state.measurements.find(m => m.id === id);
+            if (!m) return;
+
+            document.getElementById('meas-id').value = m.id;
+            document.getElementById('meas-crop').value = m.cropId;
+            document.getElementById('meas-metric').value = m.metricId;
+            document.getElementById('meas-date').value = m.date;
+            document.getElementById('meas-value').value = m.value;
+
+            const titleEl = document.getElementById('meas-form-title');
+            if (titleEl) titleEl.innerText = "Edit Measurement";
+
+            document.getElementById('meas-save-btn').innerText = "Update Measurement";
+            document.getElementById('meas-cancel-btn').style.display = 'inline-block';
+        }
+
+        function deleteMeas(id) {
+            promptHardDelete(
+                "Are you sure you want to remove this measurement point?",
+                () => {
+                    const deletedMeas = state.measurements.find(m => m.id === id);
+                    state.measurements = state.measurements.filter(m => m.id !== id);
+
+                    if (deletedMeas) {
+                        const remaining = state.measurements.some(m => m.metricId === deletedMeas.metricId);
+                        if (!remaining) {
+                            const def = state.metricDefs.find(m => m.id === deletedMeas.metricId);
+                            if (def) def.isNew = false;
+                        }
+                    }
+
+                    saveState();
+                }
+            );
+        }
+
+        function resetMeasForm() {
+            document.getElementById('meas-id').value = '';
+            const form = document.getElementById('meas-form');
+            if (form) form.reset();
+
+            document.getElementById('meas-date').value = new Date().toISOString().split('T')[0];
+            
+            const titleEl = document.getElementById('meas-form-title');
+            if (titleEl) titleEl.innerText = "2. Add Measurement";
+
+            document.getElementById('meas-save-btn').innerText = "Log Value";
+            document.getElementById('meas-cancel-btn').style.display = 'none';
+        }
+
+        function renderMetricsUI() {
+            const measCropSelect = document.getElementById('meas-crop');
+            const chartCropSelect = document.getElementById('chart-filter-crop');
+
+            const prevMeasCrop = measCropSelect.value;
+            const prevChartCrop = chartCropSelect.value;
+
+            measCropSelect.innerHTML = state.crops.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+            chartCropSelect.innerHTML = `<option value="ALL">All Crops</option>` + state.crops.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+
+            if (prevMeasCrop) measCropSelect.value = prevMeasCrop;
+            if (prevChartCrop) chartCropSelect.value = prevChartCrop;
+
+            const measMetricSelect = document.getElementById('meas-metric');
+            const chartMetricSelect = document.getElementById('chart-filter-metric');
+
+            const prevMeasMetric = measMetricSelect.value;
+            const prevChartMetric = chartMetricSelect.value;
+
+            // Only show metrics that currently have logged measurements OR are newly defined
+            const activeMetricDefs = state.metricDefs.filter(m => {
+                const hasMeasurements = state.measurements.some(meas => meas.metricId === m.id);
+                const isFreshlyCreated = m.isNew === true;
+                return hasMeasurements || isFreshlyCreated;
+            });
+
+            const metricOpts = activeMetricDefs.map(m => `<option value="${m.id}">${m.name} (${m.unit})</option>`).join('');
+            measMetricSelect.innerHTML = metricOpts;
+            chartMetricSelect.innerHTML = metricOpts;
+
+            if (prevMeasMetric && activeMetricDefs.some(m => m.id === prevMeasMetric)) {
+                measMetricSelect.value = prevMeasMetric;
+            }
+            if (prevChartMetric && activeMetricDefs.some(m => m.id === prevChartMetric)) {
+                chartMetricSelect.value = prevChartMetric;
+            }
+
+            const tbody = document.getElementById('meas-table-body');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+
+            if (state.measurements.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="empty-state">No measurements logged yet.</td></tr>`;
+                return;
+            }
+
+            const sorted = [...state.measurements].sort((a,b) => new Date(b.date) - new Date(a.date));
+
+            sorted.forEach(m => {
+                const crop = state.crops.find(c => c.id === m.cropId);
+                const metric = state.metricDefs.find(md => md.id === m.metricId);
+                const authorBadge = m.author ? `<span class="author-tag">${m.author}</span>` : '';
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${m.date ? m.date.slice(5) : 'N/A'}${authorBadge}</td>
+                    <td>${crop ? crop.name : '<em>Deleted</em>'}</td>
+                    <td>${metric ? `${metric.name}` : 'Unknown'}</td>
+                    <td><strong>${m.value}</strong></td>
+                    <td class="actions-cell">
+                        <button class="icon-btn" onclick="editMeas('${m.id}')" title="Edit">✏️</button>
+                        <button class="icon-btn delete" onclick="deleteMeas('${m.id}')" title="Hard Remove">🗑️</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function renderChart() {
+            const canvas = document.getElementById('metricsChart');
+            const legendContainer = document.getElementById('chart-legend');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+
+            const metricSelect = document.getElementById('chart-filter-metric');
+            if (!metricSelect || !metricSelect.value) {
+                if (legendContainer) legendContainer.innerHTML = '';
+                return;
+            }
+
+            const rect = canvas.getBoundingClientRect();
+            if (rect.width === 0 || rect.height === 0) return;
+
+            canvas.width = rect.width * window.devicePixelRatio;
+            canvas.height = rect.height * window.devicePixelRatio;
+            ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+
+            const width = rect.width;
+            const height = rect.height;
+
+            ctx.clearRect(0, 0, width, height);
+
+            const cropSelect = document.getElementById('chart-filter-crop');
+            const selectedCropId = cropSelect ? cropSelect.value : 'ALL';
+            const selectedMetricId = metricSelect.value;
+
+            let filtered = state.measurements.filter(m => m.metricId === selectedMetricId);
+            if (selectedCropId && selectedCropId !== 'ALL') {
+                filtered = filtered.filter(m => m.cropId === selectedCropId);
+            }
+
+            if (filtered.length === 0) {
+                if (legendContainer) legendContainer.innerHTML = '';
+                ctx.fillStyle = "#607d8b";
+                ctx.font = "12px sans-serif";
+                ctx.textAlign = "center";
+                ctx.fillText("No data available for filters", width / 2, height / 2);
+                return;
+            }
+
+            filtered.sort((a,b) => new Date(a.date) - new Date(b.date));
+
+            const padding = { top: 20, right: 15, bottom: 40, left: 40 };
+            const graphWidth = width - padding.left - padding.right;
+            const graphHeight = height - padding.top - padding.bottom;
+
+            const values = filtered.map(m => m.value);
+            let yMinManual = parseFloat(document.getElementById('chart-ymin').value);
+            let yMaxManual = parseFloat(document.getElementById('chart-ymax').value);
+
+            let minY = !isNaN(yMinManual) ? yMinManual : Math.min(...values);
+            let maxY = !isNaN(yMaxManual) ? yMaxManual : Math.max(...values);
+
+            if (minY === maxY) {
+                minY -= 1;
+                maxY += 1;
+            }
+
+            if (isNaN(yMinManual)) minY = Math.floor(minY * 0.9);
+            if (isNaN(yMaxManual)) maxY = Math.ceil(maxY * 1.1);
+
+            const dates = filtered.map(m => new Date(m.date).getTime());
+            let xMinVal = document.getElementById('chart-xmin').value;
+            let xMaxVal = document.getElementById('chart-xmax').value;
+
+            let minX = xMinVal ? new Date(xMinVal + 'T00:00:00').getTime() : Math.min(...dates);
+            let maxX = xMaxVal ? new Date(xMaxVal + 'T23:59:59').getTime() : Math.max(...dates);
+
+            if (minX >= maxX) {
+                minX = Math.min(...dates) - 86400000;
+                maxX = Math.max(...dates) + 86400000;
+            }
+
+            ctx.strokeStyle = "#e0e6ed";
+            ctx.lineWidth = 1;
+            ctx.fillStyle = "#607d8b";
+            ctx.font = "10px sans-serif";
+
+            const yTicks = 4;
+            for (let i = 0; i <= yTicks; i++) {
+                const yVal = minY + (maxY - minY) * (i / yTicks);
+                const yPos = padding.top + graphHeight - (i / yTicks) * graphHeight;
+
+                ctx.beginPath();
+                ctx.moveTo(padding.left, yPos);
+                ctx.lineTo(width - padding.right, yPos);
+                ctx.stroke();
+
+                ctx.textAlign = "right";
+                ctx.fillText(yVal.toFixed(0), padding.left - 4, yPos + 3);
+            }
+
+            const cropsData = {};
+            filtered.forEach(m => {
+                if (!cropsData[m.cropId]) cropsData[m.cropId] = [];
+                cropsData[m.cropId].push(m);
+            });
+
+            const colors = ['#2e7d32', '#f57c00', '#0288d1', '#7b1fa2', '#c2185b', '#00796b'];
+            let colorIdx = 0;
+
+            if (legendContainer) legendContainer.innerHTML = '';
+
+            Object.keys(cropsData).forEach(cropId => {
+                const pts = cropsData[cropId];
+                const strokeColor = colors[colorIdx % colors.length];
+                colorIdx++;
+
+                const cropObj = state.crops.find(c => c.id === cropId);
+                const cropName = cropObj ? cropObj.name : 'Unknown Crop';
+
+                if (legendContainer) {
+                    const item = document.createElement('div');
+                    item.className = 'legend-item';
+                    item.innerHTML = `<span class="legend-color-dot" style="background-color: ${strokeColor};"></span> ${cropName}`;
+                    legendContainer.appendChild(item);
+                }
+
+                ctx.strokeStyle = strokeColor;
+                ctx.fillStyle = strokeColor;
+                ctx.lineWidth = 2;
+
+                ctx.beginPath();
+                pts.forEach((pt, idx) => {
+                    const time = new Date(pt.date).getTime();
+                    const x = padding.left + ((time - minX) / (maxX - minX)) * graphWidth;
+                    const y = padding.top + graphHeight - ((pt.value - minY) / (maxY - minY)) * graphHeight;
+
+                    if (idx === 0) ctx.moveTo(x, y);
+                    else ctx.lineTo(x, y);
+                });
+                ctx.stroke();
+
+                pts.forEach(pt => {
+                    const time = new Date(pt.date).getTime();
+                    const x = padding.left + ((time - minX) / (maxX - minX)) * graphWidth;
+                    const y = padding.top + graphHeight - ((pt.value - minY) / (maxY - minY)) * graphHeight;
+
+                    ctx.beginPath();
+                    ctx.arc(x, y, 4, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    ctx.fillStyle = "#607d8b";
+                    ctx.textAlign = "center";
+                    ctx.fillText(pt.date.slice(5), x, padding.top + graphHeight + 14);
+                    ctx.fillStyle = strokeColor;
+                });
+            });
+        }
+
+        function autoscaleXChart() {
+            document.getElementById('chart-xmin').value = '';
+            document.getElementById('chart-xmax').value = '';
+            renderChart();
+        }
+
+        function autoscaleYChart() {
+            document.getElementById('chart-ymin').value = '';
+            document.getElementById('chart-ymax').value = '';
+            renderChart();
+        }
+
+        // --- FIELD LOGS MODULE ---
+        function renderLogTagsSelector() {
+            const container = document.getElementById('log-tags-container');
+            container.innerHTML = `
+                <label class="tag-option">
+                    <input type="checkbox" value="ALL" id="tag-all" onchange="toggleAllTags(this)">
+                    <strong>All Crops</strong>
+                </label>
+            `;
+
+            state.crops.forEach(c => {
+                container.innerHTML += `
+                    <label class="tag-option">
+                        <input type="checkbox" value="${c.id}" class="crop-tag-chk">
+                        ${c.name}
+                    </label>
+                `;
+            });
+        }
+
+        function toggleAllTags(allChk) {
+            document.querySelectorAll('.crop-tag-chk').forEach(chk => {
+                chk.checked = allChk.checked;
+            });
+        }
+
+        function handleLogSubmit(e) {
+            e.preventDefault();
+            const id = document.getElementById('log-id').value;
+            const date = document.getElementById('log-date').value;
+            const notes = document.getElementById('log-notes').value.trim();
+
+            const selectedTags = [];
+            const allChk = document.getElementById('tag-all');
+
+            if (allChk && allChk.checked) {
+                selectedTags.push('ALL');
+            } else {
+                document.querySelectorAll('.crop-tag-chk:checked').forEach(chk => {
+                    selectedTags.push(chk.value);
+                });
+            }
+
+            if (id) {
+                const log = state.logs.find(l => l.id === id);
+                if (log) {
+                    log.date = date;
+                    log.tags = selectedTags;
+                    log.notes = notes;
+                }
+            } else {
+                state.logs.push({
+                    id: generateId(),
+                    date,
+                    tags: selectedTags,
+                    notes,
+                    author: activeUser || null
+                });
+            }
+
+            resetLogForm();
+            saveState();
+        }
+
+        function editLog(id) {
+            const l = state.logs.find(l => l.id === id);
+            if (!l) return;
+
+            document.getElementById('log-id').value = l.id;
+            document.getElementById('log-date').value = l.date;
+            document.getElementById('log-notes').value = l.notes;
+
+            const allChk = document.getElementById('tag-all');
+            if (allChk) allChk.checked = l.tags.includes('ALL');
+
+            document.querySelectorAll('.crop-tag-chk').forEach(chk => {
+                chk.checked = l.tags.includes(chk.value) || l.tags.includes('ALL');
+            });
+
+            document.getElementById('log-form-title').innerText = "Edit Field Log";
+            document.getElementById('log-save-btn').innerText = "Update Log";
+            document.getElementById('log-cancel-btn').style.display = 'inline-block';
+        }
+
+        function deleteLog(id) {
+            promptHardDelete(
+                "Are you sure you want to delete this log entry?",
+                () => {
+                    state.logs = state.logs.filter(l => l.id !== id);
+                    saveState();
+                }
+            );
+        }
+
+        function resetLogForm() {
+            document.getElementById('log-id').value = '';
+            document.getElementById('log-form').reset();
+            document.getElementById('log-date').value = new Date().toISOString().split('T')[0];
+            document.getElementById('log-form-title').innerText = "New Field Log";
+            document.getElementById('log-save-btn').innerText = "Save Log Entry";
+            document.getElementById('log-cancel-btn').style.display = 'none';
+        }
+
+        function renderLogs() {
+            renderLogTagsSelector();
+
+            const logsFilterSelect = document.getElementById('logs-filter-crop');
+            const prevFilter = logsFilterSelect.value;
+
+            logsFilterSelect.innerHTML = `<option value="ALL">All Crops</option>` + state.crops.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+            if (prevFilter && (prevFilter === 'ALL' || state.crops.some(c => c.id === prevFilter))) {
+                logsFilterSelect.value = prevFilter;
+            }
+
+            const selectedCropId = logsFilterSelect.value;
+
+            const tbody = document.getElementById('logs-table-body');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+
+            if (!state.logs || state.logs.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" class="empty-state">No field logs recorded.</td></tr>`;
+                return;
+            }
+
+            let filtered = state.logs;
+            if (selectedCropId && selectedCropId !== 'ALL') {
+                filtered = state.logs.filter(l => {
+                    const tags = Array.isArray(l.tags) ? l.tags : [];
+                    return tags.includes('ALL') || tags.includes(selectedCropId);
+                });
+            }
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" class="empty-state">No field logs found matching crop filter.</td></tr>`;
+                return;
+            }
+
+            const sorted = [...filtered].sort((a, b) => {
+                const dateA = a.date ? new Date(a.date).getTime() : 0;
+                const dateB = b.date ? new Date(b.date).getTime() : 0;
+                return dateB - dateA;
+            });
+
+            sorted.forEach(l => {
+                if (!l) return;
+
+                let tagsDisplay = "";
+                const tagsList = Array.isArray(l.tags) ? l.tags : [];
+
+                if (tagsList.includes('ALL')) {
+                    tagsDisplay = `<span class="badge" style="background:#c8e6c9;">All</span>`;
+                } else {
+                    tagsDisplay = tagsList.map(tid => {
+                        const crop = state.crops.find(c => c.id === tid);
+                        return crop ? `<span class="badge">${crop.name}</span>` : '';
+                    }).join(' ');
+                }
+
+                const safeNotes = (l.notes || '')
+                    .replace(/&/g, "&amp;")
+                    .replace(/</g, "&lt;")
+                    .replace(/>/g, "&gt;")
+                    .replace(/"/g, "&quot;")
+                    .replace(/'/g, "&#039;");
+
+                const authorBadge = l.author ? `<span class="author-tag">${l.author}</span>` : '';
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${l.date ? l.date.slice(5) : 'N/A'}${authorBadge}</td>
+                    <td>${tagsDisplay || '<em>General</em>'}</td>
+                    <td style="white-space: pre-wrap;">${safeNotes}</td>
+                    <td class="actions-cell">
+                        <button class="icon-btn" onclick="editLog('${l.id}')">✏️</button>
+                        <button class="icon-btn delete" onclick="deleteLog('${l.id}')">🗑️</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // --- HARVEST MODULE ---
+        function onHarvestCropSelectChange() {
+            const cropId = document.getElementById('harvest-crop').value;
+            const crop = state.crops.find(c => c.id === cropId);
+            const unitInput = document.getElementById('harvest-unit');
+            if (crop && crop.harvestUnit) {
+                unitInput.value = crop.harvestUnit;
+            } else {
+                unitInput.value = 'lbs';
+            }
+        }
+
+        function handleHarvestSubmit(e) {
+            e.preventDefault();
+            const id = document.getElementById('harvest-id').value;
+            const date = document.getElementById('harvest-date').value;
+            const cropId = document.getElementById('harvest-crop').value;
+            const qty = parseFloat(document.getElementById('harvest-qty').value);
+            const unit = document.getElementById('harvest-unit').value.trim() || 'lbs';
+
+            if (id) {
+                const h = state.harvests.find(item => item.id === id);
+                if (h) {
+                    h.date = date;
+                    h.cropId = cropId;
+                    h.qty = qty;
+                    h.unit = unit;
+                }
+            } else {
+                state.harvests.push({
+                    id: generateId(),
+                    date,
+                    cropId,
+                    qty,
+                    unit,
+                    author: activeUser || null
+                });
+            }
+
+            resetHarvestForm();
+            saveState();
+        }
+
+        function editHarvest(id) {
+            const h = state.harvests.find(item => item.id === id);
+            if (!h) return;
+
+            document.getElementById('harvest-id').value = h.id;
+            document.getElementById('harvest-date').value = h.date;
+            document.getElementById('harvest-crop').value = h.cropId;
+            document.getElementById('harvest-qty').value = h.qty;
+            document.getElementById('harvest-unit').value = h.unit;
+
+            document.getElementById('harvest-form-title').innerText = "Edit Harvest Record";
+            document.getElementById('harvest-save-btn').innerText = "Update Record";
+            document.getElementById('harvest-cancel-btn').style.display = 'inline-block';
+        }
+
+        function deleteHarvest(id) {
+            promptHardDelete(
+                "Are you sure you want to remove this harvest entry?",
+                () => {
+                    state.harvests = state.harvests.filter(h => h.id !== id);
+                    saveState();
+                }
+            );
+        }
+
+        function resetHarvestForm() {
+            document.getElementById('harvest-id').value = '';
+            document.getElementById('harvest-form').reset();
+            document.getElementById('harvest-date').value = new Date().toISOString().split('T')[0];
+            onHarvestCropSelectChange();
+            document.getElementById('harvest-form-title').innerText = "Log Harvest";
+            document.getElementById('harvest-save-btn').innerText = "Record Harvest";
+            document.getElementById('harvest-cancel-btn').style.display = 'none';
+        }
+
+        function renderHarvestUI() {
+            const harvestCropSelect = document.getElementById('harvest-crop');
+            const harvestFilterSelect = document.getElementById('harvest-filter-crop');
+
+            const prevFormVal = harvestCropSelect.value;
+            const prevFilterVal = harvestFilterSelect.value;
+
+            harvestCropSelect.innerHTML = state.crops.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+            if (prevFormVal && state.crops.some(c => c.id === prevFormVal)) {
+                harvestCropSelect.value = prevFormVal;
+            }
+
+            harvestFilterSelect.innerHTML = `<option value="ALL">All Crops</option>` + state.crops.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+            if (prevFilterVal && (prevFilterVal === 'ALL' || state.crops.some(c => c.id === prevFilterVal))) {
+                harvestFilterSelect.value = prevFilterVal;
+            }
+
+            onHarvestCropSelectChange();
+
+            const tbody = document.getElementById('harvest-table-body');
+            tbody.innerHTML = '';
+
+            if (state.harvests.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" class="empty-state">No harvests recorded yet.</td></tr>`;
+                return;
+            }
+
+            const selectedFilterCropId = harvestFilterSelect.value;
+            let filtered = state.harvests;
+            if (selectedFilterCropId && selectedFilterCropId !== 'ALL') {
+                filtered = state.harvests.filter(h => h.cropId === selectedFilterCropId);
+            }
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" class="empty-state">No harvest entries found matching crop filter.</td></tr>`;
+                return;
+            }
+
+            const sorted = [...filtered].sort((a,b) => new Date(b.date) - new Date(a.date));
+
+            sorted.forEach(h => {
+                const crop = state.crops.find(c => c.id === h.cropId);
+                const authorBadge = h.author ? `<span class="author-tag">${h.author}</span>` : '';
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${h.date ? h.date.slice(5) : 'N/A'}${authorBadge}</td>
+                    <td>${crop ? crop.name : '<em>Deleted</em>'}</td>
+                    <td><strong>${h.qty} ${h.unit}</strong></td>
+                    <td class="actions-cell">
+                        <button class="icon-btn" onclick="editHarvest('${h.id}')">✏️</button>
+                        <button class="icon-btn delete" onclick="deleteHarvest('${h.id}')">🗑️</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function forceReloadLatest() {
+            fetchRepoData();
+        }
+
+        async function saveDashboardToFile() {
+            if (!activePin) {
+                const inputPin = prompt("Please enter your security PIN to save & sync:");
+                if (!inputPin || !inputPin.trim()) return;
+                activePin = inputPin.trim();
+            }
+
+            const btn = document.getElementById('save-file-btn');
+            if (!btn || btn.disabled) return;
+
+            const WORKER_URL = "https://garden-dashboard-sync.joseph-roscioli.workers.dev";
+
+            try {
+                const now = new Date();
+                const year = now.getFullYear();
+                const month = String(now.getMonth() + 1).padStart(2, '0');
+                const day = String(now.getDate()).padStart(2, '0');
+                const hours = String(now.getHours()).padStart(2, '0');
+                const mins = String(now.getMinutes()).padStart(2, '0');
+                const timestampStr = `${year}-${month}-${day} ${hours}:${mins}`;
+
+                state.lastUpdated = timestampStr;
+
+                btn.innerText = "⏳ Syncing Data...";
+                btn.disabled = true;
+
+                const res = await fetch(WORKER_URL, {
+                    method: "POST",
+                    mode: "cors",
+                    headers: { 
+                        "Content-Type": "application/json",
+                        "X-Garden-Auth": activePin
+                    },
+                    body: JSON.stringify({ data: state })
+                });
+
+                if (res.status === 401) {
+                    activePin = null;
+                    activeUser = null;
+                    localStorage.removeItem('gd_pin');
+                    localStorage.removeItem('gd_user');
+                    updateAuthUI();
+                    throw new Error("Invalid PIN. Access denied.");
+                }
+
+                const responseData = await res.json().catch(() => ({}));
+
+                if (!res.ok || responseData.error) {
+                    throw new Error(responseData.error || `HTTP ${res.status}: ${res.statusText}`);
+                }
+
+                if (responseData.author) {
+                    activeUser = responseData.author;
+                    state.lastUpdatedBy = responseData.author;
+                    localStorage.setItem('gd_user', activeUser);
+                    localStorage.setItem('gd_pin', activePin);
+                    updateAuthUI();
+                }
+
+                saveState();
+
+                btn.innerText = "✅ Committed!";
+                btn.style.background = "#c8e6c9";
+            } catch (err) {
+                console.error("Save Error:", err);
+                alert("Sync failed: " + err.message);
+                btn.innerText = "❌ Sync Failed";
+                btn.style.background = "#ffebee";
+            } finally {
+                setTimeout(() => {
+                    btn.innerText = "💾 Save & Sync";
+                    btn.style.background = "#eceff1";
+                    btn.disabled = false;
+                    btn.removeAttribute('disabled');
+                }, 3000);
+            }
+        }
+
+        function renderAll() {
+            renderInventory();
+            renderLayoutCropSelector();
+            renderMetricsUI();
+            renderLogs();
+            renderHarvestUI();
+
+            document.getElementById('stats-summary').innerText = 
+                `Tracking ${state.crops.length} Crop Type(s) | ${state.harvests.length} Harvest Records | ${state.layoutBoxes ? state.layoutBoxes.length : 0} Mapped Plot Zones`;
+
+            renderChart();
+            renderLayoutCanvas();
+        }
+
+        window.addEventListener('load', () => {
+            init();
+            
+            const chartCard = document.getElementById('chart-card');
+            if (chartCard && 'ResizeObserver' in window) {
+                new ResizeObserver(() => {
+                    window.requestAnimationFrame(renderChart);
+                }).observe(chartCard);
+            }
+
+            const layoutContainer = document.getElementById('layout-container');
+            if (layoutContainer && 'ResizeObserver' in window) {
+                new ResizeObserver(() => {
+                    window.requestAnimationFrame(renderLayoutCanvas);
+                }).observe(layoutContainer);
+            }
+        });
+
+        window.addEventListener('resize', () => {
+            window.requestAnimationFrame(renderChart);
+            window.requestAnimationFrame(renderLayoutCanvas);
+        });
+    </script>
+</body>
+</html>
             box-sizing: border-box;
             margin: 0;
             padding: 0;
