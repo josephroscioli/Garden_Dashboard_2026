@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-08-30 19:11",
+  "lastUpdated": "2026-08-30 19:16",
   "lastUpdatedBy": "Rob",
   "crops": [
     {
@@ -72,6 +72,12 @@
       "id": "m_height",
       "name": "Height",
       "unit": "inches"
+    },
+    {
+      "id": "_vxoc3h2z9",
+      "name": "aa",
+      "unit": "a",
+      "author": "Rob"
     }
   ],
   "measurements": [
@@ -661,6 +667,22 @@
       "date": "2026-08-27",
       "value": 103,
       "author": "Wyatt"
+    },
+    {
+      "id": "_zpwrlps6r",
+      "cropId": "crop_corn",
+      "metricId": "_vxoc3h2z9",
+      "date": "2026-08-30",
+      "value": 4,
+      "author": "Rob"
+    },
+    {
+      "id": "_7ias2icsh",
+      "cropId": "crop_tomatoes",
+      "metricId": "m_height",
+      "date": "2026-08-30",
+      "value": 4,
+      "author": "Rob"
     }
   ],
   "logs": [
