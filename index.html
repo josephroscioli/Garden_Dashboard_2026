@@ -395,6 +395,65 @@
             opacity: 0.6;
         }
 
+        /* LAYOUT EDITOR STYLES */
+        .layout-editor-container {
+            position: relative;
+            width: 100%;
+            max-width: 1100px;
+            margin: 0 auto;
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+            background-color: #ffffff;
+            box-shadow: var(--shadow);
+            user-select: none;
+            touch-action: none;
+        }
+
+        .layout-bg-wrapper {
+            position: relative;
+            width: 100%;
+            height: 0;
+            padding-bottom: 56.25%; /* 16:9 Aspect Ratio matching garden plot image */
+            background: #fff;
+        }
+
+        .layout-bg-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            pointer-events: none;
+        }
+
+        .layout-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            cursor: crosshair;
+        }
+
+        .layout-toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: center;
+            background: #f8faf8;
+            padding: 12px;
+            border-radius: var(--radius);
+            margin-bottom: 16px;
+            border: 1px solid var(--border);
+        }
+
+        .layout-toolbar .form-group {
+            margin-bottom: 0;
+            min-width: 180px;
+        }
+
         .tag-select-container {
             display: flex;
             flex-wrap: wrap;
@@ -512,6 +571,7 @@
 
     <div class="nav-tabs">
         <button class="tab-btn active" onclick="switchTab('inventory', this)">📦 Inventory</button>
+        <button class="tab-btn" onclick="switchTab('layout', this)">🗺️ Layout</button>
         <button class="tab-btn" onclick="switchTab('metrics', this)">📈 Metrics</button>
         <button class="tab-btn" onclick="switchTab('logs', this)">📝 Logs</button>
         <button class="tab-btn" onclick="switchTab('harvest', this)">🧺 Harvest</button>
@@ -576,7 +636,38 @@
         </div>
     </div>
 
-    <!-- TAB 2: METRICS -->
+    <!-- TAB 2: GARDEN LAYOUT EDITOR -->
+    <div id="tab-layout" class="tab-content">
+        <div class="card">
+            <h2>
+                Top-Down Garden Plot Mapping
+                <span style="font-size: 0.8rem; font-weight: normal; color: var(--text-light);">Click &amp; drag on canvas to draw bounding boxes</span>
+            </h2>
+
+            <div class="layout-toolbar">
+                <div class="form-group">
+                    <label>Active Crop Selection</label>
+                    <select id="layout-crop-select"></select>
+                </div>
+                <div class="form-group" style="min-width: 140px;">
+                    <label>Box Color</label>
+                    <input type="color" id="layout-box-color" value="#4caf50" style="height: 38px; padding: 2px;">
+                </div>
+                <button class="btn btn-secondary" style="margin-top: auto;" onclick="clearSelectedLayoutBox()">🗑️ Remove Crop Box</button>
+                <button class="btn btn-danger" style="margin-top: auto; margin-left: auto;" onclick="clearAllLayoutBoxes()">🧹 Clear All Map Boxes</button>
+            </div>
+
+            <div class="layout-editor-container" id="layout-container">
+                <div class="layout-bg-wrapper">
+                    <!-- Embedded SVG/Image Top-Down Diagram -->
+                    <img class="layout-bg-image" id="layout-bg-img" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1000 562.5'><rect width='1000' height='562.5' fill='%23806000'/><rect width='825' height='162' fill='%23626466'/><text x='412.5' y='90' font-family='sans-serif' font-size='28' fill='%23ffffff' text-anchor='middle' dominant-baseline='middle'>Barn</text><rect x='648' y='162' width='352' height='178' fill='%23ffffff'/></svg>" alt="Garden Plot Layout">
+                    <canvas class="layout-canvas" id="layoutCanvas"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 3: METRICS -->
     <div id="tab-metrics" class="tab-content">
         <div class="grid">
             <div class="card">
@@ -678,7 +769,7 @@
         </div>
     </div>
 
-    <!-- TAB 3: FIELD LOGS -->
+    <!-- TAB 4: FIELD LOGS -->
     <div id="tab-logs" class="tab-content">
         <div class="grid">
             <div class="card">
@@ -730,7 +821,7 @@
         </div>
     </div>
 
-    <!-- TAB 4: HARVEST -->
+    <!-- TAB 5: HARVEST -->
     <div id="tab-harvest" class="tab-content">
         <div class="grid">
             <div class="card">
@@ -811,7 +902,7 @@
 
             <div style="padding-bottom: 8px;">
                 <h3 style="font-size: 0.95rem; color: var(--danger); margin-bottom: 6px;">3. Reset / Clear Active Data</h3>
-                <p style="font-size: 0.8rem; color: var(--text-light); margin-bottom: 8px;">Clear all active crop, metric, log, and harvest records to start fresh for a new season (e.g., 2027).</p>
+                <p style="font-size: 0.8rem; color: var(--text-light); margin-bottom: 8px;">Clear all active crop, metric, log, harvest, and layout map records to start fresh for a new season (e.g., 2027).</p>
                 <button class="btn btn-danger" onclick="confirmResetAllData()">🧹 Reset Active Season Data</button>
             </div>
 
@@ -841,7 +932,8 @@
             metricDefs: [],
             measurements: [],
             logs: [],
-            harvests: []
+            harvests: [],
+            layoutBoxes: []
         };
 
         let activePin = localStorage.getItem('gd_pin') || null;
@@ -878,7 +970,7 @@
             if (pin && pin.trim()) {
                 activePin = pin.trim();
                 localStorage.setItem('gd_pin', activePin);
-                saveDashboardToFile(); // Test auth with Cloudflare worker
+                saveDashboardToFile();
             }
         }
 
@@ -901,10 +993,11 @@
 
             if (tabId === 'metrics') {
                 setTimeout(() => { renderChart(); }, 50);
+            } else if (tabId === 'layout') {
+                setTimeout(() => { initLayoutEditor(); renderLayoutCanvas(); }, 50);
             }
         }
 
-        // --- INFER DEFAULT HARVEST UNITS FOR EXISTING CROPS ---
         function inferHarvestUnits() {
             state.crops.forEach(crop => {
                 if (!crop.harvestUnit) {
@@ -914,7 +1007,6 @@
             });
         }
 
-        // --- FETCH DECOUPLED JSON DATA ---
         async function fetchRepoData() {
             try {
                 const res = await fetch('./data.json?v=' + new Date().getTime());
@@ -928,7 +1020,8 @@
                     metricDefs: data.metricDefs || [],
                     measurements: data.measurements || [],
                     logs: data.logs || [],
-                    harvests: data.harvests || []
+                    harvests: data.harvests || [],
+                    layoutBoxes: data.layoutBoxes || []
                 };
 
                 inferHarvestUnits();
@@ -951,6 +1044,7 @@
             if (stored) {
                 state = JSON.parse(stored);
             }
+            if (!state.layoutBoxes) state.layoutBoxes = [];
             inferHarvestUnits();
             const byStr = state.lastUpdatedBy ? ` (by ${state.lastUpdatedBy})` : '';
             document.getElementById('last-updated-display').innerText = `Last Synced: ${state.lastUpdated || 'Offline'}${byStr}`;
@@ -962,7 +1056,6 @@
             renderAll();
         }
 
-        // --- MODALS & UTILITIES ---
         function openSettingsModal() {
             document.getElementById('settings-modal').classList.add('active');
         }
@@ -1005,7 +1098,8 @@
                         metricDefs: loadedData.metricDefs || [],
                         measurements: loadedData.measurements || [],
                         logs: loadedData.logs || [],
-                        harvests: loadedData.harvests || []
+                        harvests: loadedData.harvests || [],
+                        layoutBoxes: loadedData.layoutBoxes || []
                     };
                     inferHarvestUnits();
                     saveState();
@@ -1029,7 +1123,8 @@
                         metricDefs: [],
                         measurements: [],
                         logs: [],
-                        harvests: []
+                        harvests: [],
+                        layoutBoxes: []
                     };
                     saveState();
                     closeSettingsModal();
@@ -1038,7 +1133,6 @@
             );
         }
 
-        // --- INIT & UTILS ---
         function init() {
             const today = new Date().toISOString().split('T')[0];
             const dateInputs = ['crop-date-planted', 'meas-date', 'log-date', 'harvest-date'];
@@ -1072,7 +1166,6 @@
             closeDeleteModal();
         });
 
-        // --- TOUCH & MOUSE CHART HEIGHT RESIZER ---
         function setupTouchResizer() {
             const handle = document.getElementById('chart-drag-handle');
             const card = document.getElementById('chart-card');
@@ -1171,6 +1264,7 @@
                 `Are you sure you want to permanently remove "${crop.name}"? This will impact metrics and logs associated with this crop.`,
                 () => {
                     state.crops = state.crops.filter(c => c.id !== id);
+                    state.layoutBoxes = state.layoutBoxes.filter(b => b.cropId !== id);
                     saveState();
                 }
             );
@@ -1228,6 +1322,284 @@
                 `;
                 tbody.appendChild(tr);
             });
+        }
+
+        // --- LAYOUT EDITOR ENGINE ---
+        let selectedBoxIndex = -1;
+        let isDrawingLayout = false;
+        let isDraggingLayout = false;
+        let isResizingLayout = false;
+        let dragStartIndex = -1;
+        let dragOffset = { x: 0, y: 0 };
+        let drawStartPos = { x: 0, y: 0 };
+
+        function renderLayoutCropSelector() {
+            const select = document.getElementById('layout-crop-select');
+            if (!select) return;
+            const currentVal = select.value;
+
+            select.innerHTML = state.crops.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+            if (currentVal && state.crops.some(c => c.id === currentVal)) {
+                select.value = currentVal;
+            }
+        }
+
+        function initLayoutEditor() {
+            renderLayoutCropSelector();
+
+            const canvas = document.getElementById('layoutCanvas');
+            if (!canvas) return;
+
+            canvas.removeEventListener('mousedown', onLayoutMouseDown);
+            canvas.removeEventListener('mousemove', onLayoutMouseMove);
+            window.removeEventListener('mouseup', onLayoutMouseUp);
+
+            canvas.addEventListener('mousedown', onLayoutMouseDown);
+            canvas.addEventListener('mousemove', onLayoutMouseMove);
+            window.addEventListener('mouseup', onLayoutMouseUp);
+
+            canvas.removeEventListener('touchstart', onLayoutTouchStart);
+            canvas.removeEventListener('touchmove', onLayoutTouchMove);
+            window.removeEventListener('touchend', onLayoutMouseUp);
+
+            canvas.addEventListener('touchstart', onLayoutTouchStart, { passive: false });
+            canvas.addEventListener('touchmove', onLayoutTouchMove, { passive: false });
+            window.addEventListener('touchend', onLayoutMouseUp);
+        }
+
+        function getCanvasCoords(evt, canvas) {
+            const rect = canvas.getBoundingClientRect();
+            const clientX = evt.touches ? evt.touches[0].clientX : evt.clientX;
+            const clientY = evt.touches ? evt.touches[0].clientY : evt.clientY;
+
+            return {
+                x: (clientX - rect.left) / rect.width,
+                y: (clientY - rect.top) / rect.height
+            };
+        }
+
+        function onLayoutMouseDown(e) {
+            const canvas = document.getElementById('layoutCanvas');
+            const pos = getCanvasCoords(e, canvas);
+
+            // Check handle or box hit
+            if (selectedBoxIndex >= 0) {
+                const box = state.layoutBoxes[selectedBoxIndex];
+                if (box) {
+                    const handleX = box.x + box.w;
+                    const handleY = box.y + box.h;
+                    if (Math.abs(pos.x - handleX) < 0.03 && Math.abs(pos.y - handleY) < 0.03) {
+                        isResizingLayout = true;
+                        return;
+                    }
+                }
+            }
+
+            // Check box body hit
+            let hitIndex = -1;
+            for (let i = state.layoutBoxes.length - 1; i >= 0; i--) {
+                const b = state.layoutBoxes[i];
+                if (pos.x >= b.x && pos.x <= b.x + b.w && pos.y >= b.y && pos.y <= b.y + b.h) {
+                    hitIndex = i;
+                    break;
+                }
+            }
+
+            if (hitIndex >= 0) {
+                selectedBoxIndex = hitIndex;
+                isDraggingLayout = true;
+                dragOffset = {
+                    x: pos.x - state.layoutBoxes[hitIndex].x,
+                    y: pos.y - state.layoutBoxes[hitIndex].y
+                };
+                renderLayoutCanvas();
+                return;
+            }
+
+            // Otherwise start drawing box
+            if (state.crops.length === 0) {
+                alert("Please add crops to your Master Inventory first!");
+                return;
+            }
+
+            selectedBoxIndex = -1;
+            isDrawingLayout = true;
+            drawStartPos = pos;
+        }
+
+        function onLayoutTouchStart(e) {
+            e.preventDefault();
+            onLayoutMouseDown(e);
+        }
+
+        function onLayoutMouseMove(e) {
+            const canvas = document.getElementById('layoutCanvas');
+            const pos = getCanvasCoords(e, canvas);
+
+            if (isResizingLayout && selectedBoxIndex >= 0) {
+                const box = state.layoutBoxes[selectedBoxIndex];
+                box.w = Math.max(0.02, pos.x - box.x);
+                box.h = Math.max(0.02, pos.y - box.y);
+                renderLayoutCanvas();
+            } else if (isDraggingLayout && selectedBoxIndex >= 0) {
+                const box = state.layoutBoxes[selectedBoxIndex];
+                box.x = Math.max(0, Math.min(1 - box.w, pos.x - dragOffset.x));
+                box.y = Math.max(0, Math.min(1 - box.h, pos.y - dragOffset.y));
+                renderLayoutCanvas();
+            } else if (isDrawingLayout) {
+                renderLayoutCanvas(pos);
+            }
+        }
+
+        function onLayoutTouchMove(e) {
+            e.preventDefault();
+            onLayoutMouseMove(e);
+        }
+
+        function onLayoutMouseUp(e) {
+            if (isDrawingLayout) {
+                const canvas = document.getElementById('layoutCanvas');
+                let endPos = drawStartPos;
+                if (e.clientX || (e.changedTouches && e.changedTouches[0])) {
+                    const evt = e.changedTouches ? e.changedTouches[0] : e;
+                    const rect = canvas.getBoundingClientRect();
+                    endPos = {
+                        x: (evt.clientX - rect.left) / rect.width,
+                        y: (evt.clientY - rect.top) / rect.height
+                    };
+                }
+
+                const x = Math.min(drawStartPos.x, endPos.x);
+                const y = Math.min(drawStartPos.y, endPos.y);
+                const w = Math.abs(endPos.x - drawStartPos.x);
+                const h = Math.abs(endPos.y - drawStartPos.y);
+
+                if (w > 0.02 && h > 0.02) {
+                    const cropSelect = document.getElementById('layout-crop-select');
+                    const colorInput = document.getElementById('layout-box-color');
+                    const cropId = cropSelect.value;
+                    const color = colorInput ? colorInput.value : '#4caf50';
+
+                    state.layoutBoxes.push({
+                        id: generateId(),
+                        cropId,
+                        color,
+                        x, y, w, h
+                    });
+
+                    selectedBoxIndex = state.layoutBoxes.length - 1;
+                    saveState();
+                }
+            } else if (isDraggingLayout || isResizingLayout) {
+                saveState();
+            }
+
+            isDrawingLayout = false;
+            isDraggingLayout = false;
+            isResizingLayout = false;
+            renderLayoutCanvas();
+        }
+
+        function clearSelectedLayoutBox() {
+            if (selectedBoxIndex >= 0 && selectedBoxIndex < state.layoutBoxes.length) {
+                state.layoutBoxes.splice(selectedBoxIndex, 1);
+                selectedBoxIndex = -1;
+                saveState();
+            } else {
+                alert("Please select a crop box on the canvas first.");
+            }
+        }
+
+        function clearAllLayoutBoxes() {
+            if (confirm("Are you sure you want to clear all mapped crop boxes from the layout diagram?")) {
+                state.layoutBoxes = [];
+                selectedBoxIndex = -1;
+                saveState();
+            }
+        }
+
+        function renderLayoutCanvas(currentMousePos = null) {
+            const canvas = document.getElementById('layoutCanvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+
+            const rect = canvas.getBoundingClientRect();
+            if (rect.width === 0 || rect.height === 0) return;
+
+            canvas.width = rect.width * window.devicePixelRatio;
+            canvas.height = rect.height * window.devicePixelRatio;
+            ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+
+            const w = rect.width;
+            const h = rect.height;
+
+            ctx.clearRect(0, 0, w, h);
+
+            // Draw existing layout boxes
+            state.layoutBoxes.forEach((b, idx) => {
+                const boxX = b.x * w;
+                const boxY = b.y * h;
+                const boxW = b.w * w;
+                const boxH = b.h * h;
+
+                const crop = state.crops.find(c => c.id === b.cropId);
+                const labelText = crop ? crop.name : 'Crop Box';
+
+                ctx.fillStyle = b.color || '#4caf50';
+                ctx.globalAlpha = 0.35;
+                ctx.fillRect(boxX, boxY, boxW, boxH);
+
+                ctx.globalAlpha = 1.0;
+                ctx.strokeStyle = idx === selectedBoxIndex ? '#d32f2f' : (b.color || '#2e7d32');
+                ctx.lineWidth = idx === selectedBoxIndex ? 3 : 2;
+                ctx.strokeRect(boxX, boxY, boxW, boxH);
+
+                // Label Text
+                ctx.fillStyle = '#ffffff';
+                ctx.font = 'bold 12px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+
+                const textPadding = 4;
+                const textWidth = ctx.measureText(labelText).width;
+                if (boxW > 20 && boxH > 15) {
+                    ctx.fillStyle = 'rgba(0,0,0,0.65)';
+                    ctx.fillRect(boxX + boxW/2 - textWidth/2 - textPadding, boxY + boxH/2 - 9, textWidth + textPadding*2, 18);
+
+                    ctx.fillStyle = '#ffffff';
+                    ctx.fillText(labelText, boxX + boxW/2, boxY + boxH/2);
+                }
+
+                // Handle for selected box
+                if (idx === selectedBoxIndex) {
+                    const handleX = boxX + boxW;
+                    const handleY = boxY + boxH;
+                    ctx.fillStyle = '#d32f2f';
+                    ctx.fillRect(handleX - 6, handleY - 6, 12, 12);
+                    ctx.strokeStyle = '#ffffff';
+                    ctx.lineWidth = 1;
+                    ctx.strokeRect(handleX - 6, handleY - 6, 12, 12);
+                }
+            });
+
+            // Draw active dynamic drawing rectangle
+            if (isDrawingLayout && currentMousePos) {
+                const x = Math.min(drawStartPos.x, currentMousePos.x) * w;
+                const y = Math.min(drawStartPos.y, currentMousePos.y) * h;
+                const bw = Math.abs(currentMousePos.x - drawStartPos.x) * w;
+                const bh = Math.abs(currentMousePos.y - drawStartPos.y) * h;
+
+                ctx.fillStyle = '#4caf50';
+                ctx.globalAlpha = 0.25;
+                ctx.fillRect(x, y, bw, bh);
+
+                ctx.globalAlpha = 1.0;
+                ctx.strokeStyle = '#2e7d32';
+                ctx.lineWidth = 2;
+                ctx.setLineDash([6, 4]);
+                ctx.strokeRect(x, y, bw, bh);
+                ctx.setLineDash([]);
+            }
         }
 
         // --- METRICS MODULE ---
@@ -1942,14 +2314,16 @@
 
         function renderAll() {
             renderInventory();
+            renderLayoutCropSelector();
             renderMetricsUI();
             renderLogs();
             renderHarvestUI();
 
             document.getElementById('stats-summary').innerText = 
-                `Tracking ${state.crops.length} Crop Type(s) | ${state.harvests.length} Harvest Records`;
+                `Tracking ${state.crops.length} Crop Type(s) | ${state.harvests.length} Harvest Records | ${state.layoutBoxes ? state.layoutBoxes.length : 0} Mapped Plot Zones`;
 
             renderChart();
+            renderLayoutCanvas();
         }
 
         window.addEventListener('load', () => {
@@ -1961,10 +2335,18 @@
                     window.requestAnimationFrame(renderChart);
                 }).observe(chartCard);
             }
+
+            const layoutContainer = document.getElementById('layout-container');
+            if (layoutContainer && 'ResizeObserver' in window) {
+                new ResizeObserver(() => {
+                    window.requestAnimationFrame(renderLayoutCanvas);
+                }).observe(layoutContainer);
+            }
         });
 
         window.addEventListener('resize', () => {
             window.requestAnimationFrame(renderChart);
+            window.requestAnimationFrame(renderLayoutCanvas);
         });
     </script>
 </body>
