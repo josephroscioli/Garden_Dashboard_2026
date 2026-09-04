@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-09-04 08:28",
+  "lastUpdated": "2026-09-04 08:29",
   "lastUpdatedBy": "Wyatt",
   "crops": [
     {
@@ -984,6 +984,38 @@
       "qty": 5,
       "unit": "ears",
       "author": null
+    },
+    {
+      "id": "_vvbrxy7rp",
+      "date": "2026-09-04",
+      "cropId": "crop_corn",
+      "qty": 5,
+      "unit": "ears",
+      "author": "Wyatt"
+    },
+    {
+      "id": "_jdaeowztd",
+      "date": "2026-09-04",
+      "cropId": "crop_tomatoes",
+      "qty": 218,
+      "unit": "count",
+      "author": "Wyatt"
+    },
+    {
+      "id": "_c9as1zzr5",
+      "date": "2026-09-04",
+      "cropId": "crop_carrots",
+      "qty": 1.3,
+      "unit": "lbs",
+      "author": "Wyatt"
+    },
+    {
+      "id": "_13cstr6ys",
+      "date": "2026-09-04",
+      "cropId": "crop_beans2",
+      "qty": 1.1,
+      "unit": "lbs",
+      "author": "Wyatt"
     }
   ],
   "layoutBoxes": [
