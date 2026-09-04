@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-09-04 08:21",
+  "lastUpdated": "2026-09-04 08:25",
   "lastUpdatedBy": "Wyatt",
   "crops": [
     {
@@ -999,6 +999,14 @@
       "cropId": "crop_carrots",
       "qty": 1.3,
       "unit": "lbs",
+      "author": "Wyatt"
+    },
+    {
+      "id": "_ofnkymbdk",
+      "date": "2026-09-04",
+      "cropId": "crop_tomatoes",
+      "qty": 218,
+      "unit": "count",
       "author": "Wyatt"
     }
   ],
