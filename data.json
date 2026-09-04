@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-09-04 08:29",
+  "lastUpdated": "2026-09-04 08:39",
   "lastUpdatedBy": "Wyatt",
   "crops": [
     {
@@ -855,6 +855,20 @@
       ],
       "notes": "This was too late to pick the corn!  It's all starchy and not sweet.  Next year we need to pick when the silks are still fresh!",
       "author": null
+    },
+    {
+      "id": "_rvskrdllj",
+      "date": "2026-09-04",
+      "tags": [
+        "crop_corn",
+        "crop_tomatoes",
+        "crop_beans1",
+        "crop_carrots",
+        "crop_potatoes",
+        "crop_beans2"
+      ],
+      "notes": "BIG HARVEST DAY! DAD and I picked 218 tomatoes, 5 ears of corn, 1.3 lbs. of carrots, and last but not least 1.1 lbs. of green beans!",
+      "author": "Wyatt"
     }
   ],
   "harvests": [
