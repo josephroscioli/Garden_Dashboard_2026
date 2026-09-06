@@ -462,7 +462,7 @@
             padding: 6px;
             border-radius: 6px;
             background: #fafafa;
-            max-height: 100px;
+            max-height: 140px;
             overflow-y: auto;
         }
 
@@ -494,6 +494,18 @@
             margin-right: 2px;
             margin-bottom: 2px;
             word-break: break-word;
+        }
+
+        .badge-type {
+            background: #e0f2fe;
+            color: #0369a1;
+            border: 1px solid #bae6fd;
+        }
+
+        .badge-area {
+            background: #fef3c7;
+            color: #92400e;
+            border: 1px solid #fde68a;
         }
 
         .author-tag {
@@ -575,6 +587,7 @@
         <button class="tab-btn" onclick="switchTab('metrics', this)">📈 Metrics</button>
         <button class="tab-btn" onclick="switchTab('logs', this)">📝 Logs</button>
         <button class="tab-btn" onclick="switchTab('harvest', this)">🧺 Harvest</button>
+        <button class="tab-btn" onclick="switchTab('tools', this)">🛠️ Tools</button>
     </div>
 
     <!-- TAB 1: CROP INVENTORY -->
@@ -876,6 +889,81 @@
         </div>
     </div>
 
+    <!-- TAB 6: TOOLS -->
+    <div id="tab-tools" class="tab-content">
+        <div class="grid">
+            <div class="card">
+                <h2 id="tool-form-title">Add New Tool</h2>
+                <form id="tool-form" onsubmit="handleToolSubmit(event)">
+                    <input type="hidden" id="tool-id" value="">
+                    <div class="form-group">
+                        <label>Tool Name</label>
+                        <input type="text" id="tool-name" placeholder="e.g. Broadfork, Neem Oil, Surround WP" required="">
+                    </div>
+                    <div class="form-group">
+                        <label>Type</label>
+                        <select id="tool-type" required="">
+                            <option value="mechanical">Mechanical</option>
+                            <option value="treatment">Treatment</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Application Area</label>
+                        <select id="tool-area" required="">
+                            <option value="soil">Soil</option>
+                            <option value="foliar">Foliar</option>
+                            <option value="fruit">Fruit</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                            <label style="margin-bottom: 0;">Tool Tags / Target Focus</label>
+                            <button type="button" class="btn btn-secondary" style="padding: 2px 6px; font-size: 0.7rem;" onclick="promptAddCustomToolTag()">➕ Custom Tag</button>
+                        </div>
+                        <div class="tag-select-container" id="tool-tags-container"></div>
+                    </div>
+                    <div style="display:flex; gap:8px;">
+                        <button type="submit" class="btn" id="tool-save-btn">Save Tool</button>
+                        <button type="button" class="btn btn-secondary" id="tool-cancel-btn" style="display: none;" onclick="resetToolForm()">Cancel</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="card grid-span-2">
+                <h2>
+                    Tools &amp; Treatment Registry
+                    <div class="card-header-actions">
+                        <select id="tools-filter-type" onchange="renderToolsUI()">
+                            <option value="ALL">All Types</option>
+                            <option value="mechanical">Mechanical</option>
+                            <option value="treatment">Treatment</option>
+                        </select>
+                        <select id="tools-filter-area" onchange="renderToolsUI()">
+                            <option value="ALL">All Areas</option>
+                            <option value="soil">Soil</option>
+                            <option value="foliar">Foliar</option>
+                            <option value="fruit">Fruit</option>
+                        </select>
+                    </div>
+                </h2>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 22%;">Tool Name</th>
+                                <th style="width: 15%;">Type</th>
+                                <th style="width: 15%;">Area</th>
+                                <th style="width: 33%;">Tags / Targets</th>
+                                <th style="width: 15%;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tools-table-body"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- SETTINGS & UTILITIES MODAL -->
     <div class="modal" id="settings-modal">
         <div class="modal-content" style="max-width: 550px;">
@@ -901,7 +989,7 @@
 
             <div style="padding-bottom: 8px;">
                 <h3 style="font-size: 0.95rem; color: var(--danger); margin-bottom: 6px;">3. Reset / Clear Active Data</h3>
-                <p style="font-size: 0.8rem; color: var(--text-light); margin-bottom: 8px;">Clear all active crop, metric, log, harvest, and layout map records to start fresh for a new season (e.g., 2027).</p>
+                <p style="font-size: 0.8rem; color: var(--text-light); margin-bottom: 8px;">Clear all active crop, metric, log, harvest, tool, and layout map records to start fresh for a new season (e.g., 2027).</p>
                 <button class="btn btn-danger" onclick="confirmResetAllData()">🧹 Reset Active Season Data</button>
             </div>
 
@@ -924,6 +1012,11 @@
     </div>
 
     <script>
+        const DEFAULT_TOOL_TAGS = [
+            "soil texture", "soil nutrient", "soil pest", "foliar pest",
+            "fruit pest", "bacterial", "fungal", "beetle", "plum curc", "insect", "leafhopper"
+        ];
+
         let state = {
             lastUpdated: "Loading...",
             lastUpdatedBy: null,
@@ -932,7 +1025,9 @@
             measurements: [],
             logs: [],
             harvests: [],
-            layoutBoxes: []
+            layoutBoxes: [],
+            tools: [],
+            toolTagList: [...DEFAULT_TOOL_TAGS]
         };
 
         let activePin = localStorage.getItem('gd_pin') || null;
@@ -994,6 +1089,8 @@
                 setTimeout(() => { renderChart(); }, 50);
             } else if (tabId === 'layout') {
                 setTimeout(() => { initLayoutEditor(); renderLayoutCanvas(); }, 50);
+            } else if (tabId === 'tools') {
+                renderToolsUI();
             }
         }
 
@@ -1004,6 +1101,17 @@
                     crop.harvestUnit = match ? match.unit : 'lbs';
                 }
             });
+        }
+
+        function ensureToolDefaults() {
+            if (!state.tools) state.tools = [];
+            if (!state.toolTagList || state.toolTagList.length === 0) {
+                state.toolTagList = [...DEFAULT_TOOL_TAGS];
+            } else {
+                DEFAULT_TOOL_TAGS.forEach(tag => {
+                    if (!state.toolTagList.includes(tag)) state.toolTagList.push(tag);
+                });
+            }
         }
 
         async function fetchRepoData() {
@@ -1020,9 +1128,12 @@
                     measurements: data.measurements || [],
                     logs: data.logs || [],
                     harvests: data.harvests || [],
-                    layoutBoxes: data.layoutBoxes || []
+                    layoutBoxes: data.layoutBoxes || [],
+                    tools: data.tools || [],
+                    toolTagList: data.toolTagList || [...DEFAULT_TOOL_TAGS]
                 };
 
+                ensureToolDefaults();
                 inferHarvestUnits();
                 saveLocalState();
                 renderAll();
@@ -1044,6 +1155,7 @@
                 state = JSON.parse(stored);
             }
             if (!state.layoutBoxes) state.layoutBoxes = [];
+            ensureToolDefaults();
             inferHarvestUnits();
             const byStr = state.lastUpdatedBy ? ` (by ${state.lastUpdatedBy})` : '';
             document.getElementById('last-updated-display').innerText = `Last Synced: ${state.lastUpdated || 'Offline'}${byStr}`;
@@ -1098,8 +1210,11 @@
                         measurements: loadedData.measurements || [],
                         logs: loadedData.logs || [],
                         harvests: loadedData.harvests || [],
-                        layoutBoxes: loadedData.layoutBoxes || []
+                        layoutBoxes: loadedData.layoutBoxes || [],
+                        tools: loadedData.tools || [],
+                        toolTagList: loadedData.toolTagList || [...DEFAULT_TOOL_TAGS]
                     };
+                    ensureToolDefaults();
                     inferHarvestUnits();
                     saveState();
                     closeSettingsModal();
@@ -1123,7 +1238,9 @@
                         measurements: [],
                         logs: [],
                         harvests: [],
-                        layoutBoxes: []
+                        layoutBoxes: [],
+                        tools: [],
+                        toolTagList: [...DEFAULT_TOOL_TAGS]
                     };
                     saveState();
                     closeSettingsModal();
@@ -2243,6 +2360,154 @@
             });
         }
 
+        // --- TOOLS & TREATMENTS MODULE ---
+        function renderToolTagsSelector() {
+            const container = document.getElementById('tool-tags-container');
+            if (!container) return;
+
+            ensureToolDefaults();
+
+            container.innerHTML = state.toolTagList.map(tag => `
+                <label class="tag-option">
+                    <input type="checkbox" value="${tag}" class="tool-tag-chk">
+                    ${tag}
+                </label>
+            `).join('');
+        }
+
+        function promptAddCustomToolTag() {
+            const tag = prompt("Enter new custom tool tag name:");
+            if (tag && tag.trim()) {
+                const cleanTag = tag.trim().toLowerCase();
+                if (!state.toolTagList.includes(cleanTag)) {
+                    state.toolTagList.push(cleanTag);
+                    renderToolTagsSelector();
+                    // Auto-check the newly added tag
+                    const chk = document.querySelector(`.tool-tag-chk[value="${cleanTag}"]`);
+                    if (chk) chk.checked = true;
+                }
+            }
+        }
+
+        function handleToolSubmit(e) {
+            e.preventDefault();
+            const id = document.getElementById('tool-id').value;
+            const name = document.getElementById('tool-name').value.trim();
+            const type = document.getElementById('tool-type').value;
+            const area = document.getElementById('tool-area').value;
+
+            const selectedTags = [];
+            document.querySelectorAll('.tool-tag-chk:checked').forEach(chk => {
+                selectedTags.push(chk.value);
+            });
+
+            if (id) {
+                const tool = state.tools.find(t => t.id === id);
+                if (tool) {
+                    tool.name = name;
+                    tool.type = type;
+                    tool.area = area;
+                    tool.tags = selectedTags;
+                }
+            } else {
+                state.tools.push({
+                    id: generateId(),
+                    name,
+                    type,
+                    area,
+                    tags: selectedTags,
+                    author: activeUser || null
+                });
+            }
+
+            resetToolForm();
+            saveState();
+        }
+
+        function editTool(id) {
+            const tool = state.tools.find(t => t.id === id);
+            if (!tool) return;
+
+            document.getElementById('tool-id').value = tool.id;
+            document.getElementById('tool-name').value = tool.name;
+            document.getElementById('tool-type').value = tool.type;
+            document.getElementById('tool-area').value = tool.area;
+
+            document.querySelectorAll('.tool-tag-chk').forEach(chk => {
+                chk.checked = Array.isArray(tool.tags) && tool.tags.includes(chk.value);
+            });
+
+            document.getElementById('tool-form-title').innerText = "Edit Tool Entry";
+            document.getElementById('tool-save-btn').innerText = "Update Tool";
+            document.getElementById('tool-cancel-btn').style.display = 'inline-block';
+        }
+
+        function deleteTool(id) {
+            const tool = state.tools.find(t => t.id === id);
+            promptHardDelete(
+                `Are you sure you want to remove "${tool ? tool.name : 'this tool'}"?`,
+                () => {
+                    state.tools = state.tools.filter(t => t.id !== id);
+                    saveState();
+                }
+            );
+        }
+
+        function resetToolForm() {
+            document.getElementById('tool-id').value = '';
+            document.getElementById('tool-form').reset();
+            renderToolTagsSelector();
+            document.getElementById('tool-form-title').innerText = "Add New Tool";
+            document.getElementById('tool-save-btn').innerText = "Save Tool";
+            document.getElementById('tool-cancel-btn').style.display = 'none';
+        }
+
+        function renderToolsUI() {
+            renderToolTagsSelector();
+
+            const tbody = document.getElementById('tools-table-body');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+
+            if (!state.tools || state.tools.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="empty-state">No tools or treatments defined yet.</td></tr>`;
+                return;
+            }
+
+            const filterType = document.getElementById('tools-filter-type') ? document.getElementById('tools-filter-type').value : 'ALL';
+            const filterArea = document.getElementById('tools-filter-area') ? document.getElementById('tools-filter-area').value : 'ALL';
+
+            let filtered = state.tools;
+            if (filterType !== 'ALL') filtered = filtered.filter(t => t.type === filterType);
+            if (filterArea !== 'ALL') filtered = filtered.filter(t => t.area === filterArea);
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="empty-state">No tools found matching type/area filters.</td></tr>`;
+                return;
+            }
+
+            filtered.forEach(tool => {
+                const tagsDisplay = (Array.isArray(tool.tags) ? tool.tags : [])
+                    .map(tag => `<span class="badge">${tag}</span>`)
+                    .join(' ');
+
+                const authorBadge = tool.author ? `<span class="author-tag">${tool.author}</span>` : '';
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><strong>${tool.name}</strong>${authorBadge}</td>
+                    <td><span class="badge badge-type">${tool.type}</span></td>
+                    <td><span class="badge badge-area">${tool.area}</span></td>
+                    <td>${tagsDisplay || '<em>None</em>'}</td>
+                    <td class="actions-cell">
+                        <button class="icon-btn" onclick="editTool('${tool.id}')" title="Edit">✏️</button>
+                        <button class="icon-btn delete" onclick="deleteTool('${tool.id}')" title="Hard Remove">🗑️</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
         function forceReloadLatest() {
             fetchRepoData();
         }
@@ -2331,9 +2596,11 @@
             renderMetricsUI();
             renderLogs();
             renderHarvestUI();
+            renderToolsUI();
 
+            const toolsCount = state.tools ? state.tools.length : 0;
             document.getElementById('stats-summary').innerText = 
-                `Tracking ${state.crops.length} Crop Type(s) | ${state.harvests.length} Harvest Records | ${state.layoutBoxes ? state.layoutBoxes.length : 0} Mapped Plot Zones`;
+                `Tracking ${state.crops.length} Crop Type(s) | ${state.harvests.length} Harvest Records | ${toolsCount} Tool(s) | ${state.layoutBoxes ? state.layoutBoxes.length : 0} Mapped Plot Zones`;
 
             renderChart();
             renderLayoutCanvas();
