@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-09-04 08:39",
+  "lastUpdated": "2026-09-08 08:14",
   "lastUpdatedBy": "Wyatt",
   "crops": [
     {
@@ -1123,5 +1123,30 @@
       "w": 0.2764598540145986,
       "h": 0.14598540145985406
     }
+  ],
+  "tools": [
+    {
+      "id": "_egl2yv0la",
+      "name": "Swoe",
+      "type": "mechanical",
+      "area": "soil",
+      "tags": [
+        "soil texture"
+      ],
+      "author": "Wyatt"
+    }
+  ],
+  "toolTagList": [
+    "soil texture",
+    "soil nutrient",
+    "soil pest",
+    "foliar pest",
+    "fruit pest",
+    "bacterial",
+    "fungal",
+    "beetle",
+    "plum curc",
+    "insect",
+    "leafhopper"
   ]
 }
