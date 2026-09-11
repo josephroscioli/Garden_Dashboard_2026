@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-09-11 06:58",
+  "lastUpdated": "2026-09-11 07:09",
   "lastUpdatedBy": "Wyatt",
   "crops": [
     {
@@ -1076,6 +1076,22 @@
       "date": "2026-09-04",
       "cropId": "crop_beans2",
       "qty": 1.1,
+      "unit": "lbs",
+      "author": "Wyatt"
+    },
+    {
+      "id": "_pbni3egkx",
+      "date": "2026-09-11",
+      "cropId": "crop_tomatoes",
+      "qty": 94,
+      "unit": "count",
+      "author": "Wyatt"
+    },
+    {
+      "id": "_cvnfy7jsi",
+      "date": "2026-09-11",
+      "cropId": "crop_beans1",
+      "qty": 1.9,
       "unit": "lbs",
       "author": "Wyatt"
     }
