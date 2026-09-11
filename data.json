@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-09-11 07:09",
+  "lastUpdated": "2026-09-11 07:33",
   "lastUpdatedBy": "Wyatt",
   "crops": [
     {
@@ -917,6 +917,13 @@
       ],
       "notes": "BIG HARVEST DAY! DAD and I picked 218 tomatoes, 5 ears of corn, 1.3 lbs. of carrots, and last but not least 1.1 lbs. of green beans!",
       "author": "Wyatt"
+    },
+    {
+      "id": "_53xnw0mw2",
+      "date": "2026-09-11",
+      "tags": [],
+      "notes": "Great harvest day. The green beans are still heavily producing. The plants have reached their maximum height. This weekend dad and I are going to pick carrots!",
+      "author": "Wyatt"
     }
   ],
   "harvests": [
@@ -1137,7 +1144,7 @@
       "id": "_m6i6whc42",
       "cropId": "crop_tomatoes",
       "color": "#fa0000",
-      "x": 0.25,
+      "x": 0.2509124087591241,
       "y": 0.5304136253041363,
       "w": 0.03558394160583944,
       "h": 0.058394160583941535
@@ -1196,6 +1203,38 @@
       "area": "soil",
       "tags": [
         "soil texture"
+      ],
+      "author": "Wyatt"
+    },
+    {
+      "id": "_rubcccago",
+      "name": "SR beneficial nematodes",
+      "type": "treatment",
+      "area": "soil",
+      "tags": [
+        "soil pest",
+        "fruit pest",
+        "plum curc"
+      ],
+      "author": "Wyatt"
+    },
+    {
+      "id": "_ikpozocg5",
+      "name": "rototiller",
+      "type": "mechanical",
+      "area": "soil",
+      "tags": [
+        "soil texture"
+      ],
+      "author": "Wyatt"
+    },
+    {
+      "id": "_nhf3mdfh7",
+      "name": "coop poop",
+      "type": "mechanical",
+      "area": "soil",
+      "tags": [
+        "soil nutrient"
       ],
       "author": "Wyatt"
     }
