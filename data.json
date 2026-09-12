@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-09-12 18:19",
+  "lastUpdated": "2026-09-12 19:41",
   "lastUpdatedBy": "Rob",
   "crops": [
     {
@@ -924,6 +924,18 @@
       "tags": [],
       "notes": "Great harvest day. The green beans are still heavily producing. The plants have reached their maximum height. This weekend dad and I are going to pick carrots!",
       "author": "Wyatt"
+    },
+    {
+      "id": "_gu48f46bo",
+      "date": "2026-09-12",
+      "tags": [
+        "crop_carrots"
+      ],
+      "notes": "big harvest for carrots, 31 lbs.  That's all of them",
+      "photos": [
+        "photos/1789256488976_Image__8_.jpeg"
+      ],
+      "author": "Rob"
     }
   ],
   "harvests": [
