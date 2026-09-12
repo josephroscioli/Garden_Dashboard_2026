@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Garden Dashboard</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌱</text></svg>">
+    
+    <!-- SheetJS for Excel Exports -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
     <style>
         :root {
             --primary: #2e7d32;
@@ -234,7 +238,54 @@
         .card-header-actions { display: flex; align-items: center; gap: 8px; }
         .card-header-actions select { padding: 4px 8px; font-size: 0.8rem; width: auto; }
 
-        .form-group { margin-bottom: 12px; }
+        /* COLLAPSIBLE FORM CONTAINER ON MOBILE */
+        details.form-collapsible {
+            width: 100%;
+        }
+
+        details.form-collapsible > summary {
+            font-weight: bold;
+            font-size: clamp(1rem, 3vw, 1.2rem);
+            color: var(--primary-dark);
+            cursor: pointer;
+            list-style: none;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            user-select: none;
+            padding-bottom: 8px;
+        }
+
+        details.form-collapsible > summary::-webkit-details-marker {
+            display: none;
+        }
+
+        details.form-collapsible > summary::after {
+            content: "▼";
+            font-size: 0.8rem;
+            color: var(--text-light);
+            transition: transform 0.2s;
+        }
+
+        details.form-collapsible[open] > summary::after {
+            transform: rotate(180deg);
+        }
+
+        details.form-collapsible > summary:focus {
+            outline: none;
+        }
+
+        @media (min-width: 992px) {
+            details.form-collapsible > summary {
+                pointer-events: none;
+                padding-bottom: 12px;
+            }
+            details.form-collapsible > summary::after {
+                display: none;
+            }
+        }
+
+        .form-group { margin-bottom: 12px; margin-top: 4px; }
 
         label {
             display: block;
@@ -653,6 +704,7 @@
 </head>
 <body>
 
+    <!-- SIDEBAR DRAWER & OVERLAY -->
     <div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
     <div class="sidebar-drawer" id="sidebar-drawer">
         <div class="sidebar-header">
@@ -687,41 +739,44 @@
         </div>
     </header>
 
+    <!-- TAB 1: CROP INVENTORY -->
     <div id="tab-inventory" class="tab-content active">
         <div class="grid">
             <div class="card">
-                <h2 id="crop-form-title">Add New Crop</h2>
-                <form id="crop-form" onsubmit="handleCropSubmit(event)">
-                    <input type="hidden" id="crop-id" value="">
-                    <div class="form-group">
-                        <label>Crop Name</label>
-                        <input type="text" id="crop-name" placeholder="e.g. Early Girl Tomato" required="">
-                    </div>
-                    <div class="form-group">
-                        <label>Date Planted</label>
-                        <input type="date" id="crop-date-planted" required="">
-                    </div>
-                    <div class="form-group">
-                        <label>Amount Planted</label>
-                        <input type="number" id="crop-amount-planted" min="1" placeholder="e.g. 6" required="">
-                    </div>
-                    <div class="form-group">
-                        <label>Expected Ripening Date</label>
-                        <input type="date" id="crop-date-ripening">
-                    </div>
-                    <div class="form-group">
-                        <label>Default Harvest Unit</label>
-                        <input type="text" id="crop-harvest-unit" placeholder="e.g. lbs, count, ears" required="">
-                    </div>
-                    <div class="form-group">
-                        <label>Total Harvest Amount <span class="badge-read-only">Auto-updated</span></label>
-                        <input type="text" id="crop-harvest-amount" value="0 (managed via Harvest Tab)" disabled="">
-                    </div>
-                    <div style="display: flex; gap: 8px;">
-                        <button type="submit" class="btn" id="crop-save-btn">Save Crop</button>
-                        <button type="button" class="btn btn-secondary" id="crop-cancel-btn" style="display: none;" onclick="resetCropForm()">Cancel</button>
-                    </div>
-                </form>
+                <details class="form-collapsible" open>
+                    <summary id="crop-form-title">Add New Crop</summary>
+                    <form id="crop-form" onsubmit="handleCropSubmit(event)">
+                        <input type="hidden" id="crop-id" value="">
+                        <div class="form-group">
+                            <label>Crop Name</label>
+                            <input type="text" id="crop-name" placeholder="e.g. Early Girl Tomato" required="">
+                        </div>
+                        <div class="form-group">
+                            <label>Date Planted</label>
+                            <input type="date" id="crop-date-planted" required="">
+                        </div>
+                        <div class="form-group">
+                            <label>Amount Planted</label>
+                            <input type="number" id="crop-amount-planted" min="1" placeholder="e.g. 6" required="">
+                        </div>
+                        <div class="form-group">
+                            <label>Expected Ripening Date</label>
+                            <input type="date" id="crop-date-ripening">
+                        </div>
+                        <div class="form-group">
+                            <label>Default Harvest Unit</label>
+                            <input type="text" id="crop-harvest-unit" placeholder="e.g. lbs, count, ears" required="">
+                        </div>
+                        <div class="form-group">
+                            <label>Total Harvest Amount <span class="badge-read-only">Auto-updated</span></label>
+                            <input type="text" id="crop-harvest-amount" value="0 (managed via Harvest Tab)" disabled="">
+                        </div>
+                        <div style="display: flex; gap: 8px;">
+                            <button type="submit" class="btn" id="crop-save-btn">Save Crop</button>
+                            <button type="button" class="btn btn-secondary" id="crop-cancel-btn" style="display: none;" onclick="resetCropForm()">Cancel</button>
+                        </div>
+                    </form>
+                </details>
             </div>
 
             <div class="card grid-span-2">
@@ -745,6 +800,7 @@
         </div>
     </div>
 
+    <!-- TAB 2: GARDEN LAYOUT EDITOR -->
     <div id="tab-layout" class="tab-content">
         <div class="card">
             <h2>
@@ -774,48 +830,53 @@
         </div>
     </div>
 
+    <!-- TAB 3: METRICS -->
     <div id="tab-metrics" class="tab-content">
         <div class="grid">
             <div class="card">
-                <h2>1. Define Metric Type</h2>
-                <form id="metric-def-form" onsubmit="handleMetricDefSubmit(event)">
-                    <div class="form-group">
-                        <label>Metric Name</label>
-                        <input type="text" id="metric-name" placeholder="e.g. Plant Height" required="">
-                    </div>
-                    <div class="form-group">
-                        <label>Units</label>
-                        <input type="text" id="metric-unit" placeholder="e.g. inches" required="">
-                    </div>
-                    <button type="submit" class="btn">Define Metric</button>
-                </form>
+                <details class="form-collapsible" open>
+                    <summary>1. Define Metric Type</summary>
+                    <form id="metric-def-form" onsubmit="handleMetricDefSubmit(event)">
+                        <div class="form-group">
+                            <label>Metric Name</label>
+                            <input type="text" id="metric-name" placeholder="e.g. Plant Height" required="">
+                        </div>
+                        <div class="form-group">
+                            <label>Units</label>
+                            <input type="text" id="metric-unit" placeholder="e.g. inches" required="">
+                        </div>
+                        <button type="submit" class="btn">Define Metric</button>
+                    </form>
+                </details>
             </div>
 
             <div class="card">
-                <h2 id="meas-form-title">2. Add Measurement</h2>
-                <form id="meas-form" onsubmit="handleMeasurementSubmit(event)">
-                    <input type="hidden" id="meas-id" value="">
-                    <div class="form-group">
-                        <label>Select Crop</label>
-                        <select id="meas-crop" required=""></select>
-                    </div>
-                    <div class="form-group">
-                        <label>Metric Type</label>
-                        <select id="meas-metric" required=""></select>
-                    </div>
-                    <div class="form-group">
-                        <label>Date</label>
-                        <input type="date" id="meas-date" required="">
-                    </div>
-                    <div class="form-group">
-                        <label>Value</label>
-                        <input type="number" step="any" id="meas-value" required="">
-                    </div>
-                    <div style="display:flex; gap:8px;">
-                        <button type="submit" class="btn" id="meas-save-btn">Log Value</button>
-                        <button type="button" class="btn btn-secondary" id="meas-cancel-btn" style="display:none;" onclick="resetMeasForm()">Cancel</button>
-                    </div>
-                </form>
+                <details class="form-collapsible" open>
+                    <summary id="meas-form-title">2. Add Measurement</summary>
+                    <form id="meas-form" onsubmit="handleMeasurementSubmit(event)">
+                        <input type="hidden" id="meas-id" value="">
+                        <div class="form-group">
+                            <label>Select Crop</label>
+                            <select id="meas-crop" required=""></select>
+                        </div>
+                        <div class="form-group">
+                            <label>Metric Type</label>
+                            <select id="meas-metric" required=""></select>
+                        </div>
+                        <div class="form-group">
+                            <label>Date</label>
+                            <input type="date" id="meas-date" required="">
+                        </div>
+                        <div class="form-group">
+                            <label>Value</label>
+                            <input type="number" step="any" id="meas-value" required="">
+                        </div>
+                        <div style="display:flex; gap:8px;">
+                            <button type="submit" class="btn" id="meas-save-btn">Log Value</button>
+                            <button type="button" class="btn btn-secondary" id="meas-cancel-btn" style="display:none;" onclick="resetMeasForm()">Cancel</button>
+                        </div>
+                    </form>
+                </details>
             </div>
         </div>
 
@@ -875,35 +936,37 @@
         </div>
     </div>
 
-    <!-- TAB 4: FIELD LOGS (UPDATED WITH PHOTO ATTACHMENTS) -->
+    <!-- TAB 4: FIELD LOGS -->
     <div id="tab-logs" class="tab-content">
         <div class="grid">
             <div class="card">
-                <h2 id="log-form-title">New Field Log</h2>
-                <form id="log-form" onsubmit="handleLogSubmit(event)">
-                    <input type="hidden" id="log-id" value="">
-                    <div class="form-group">
-                        <label>Date</label>
-                        <input type="date" id="log-date" required="">
-                    </div>
-                    <div class="form-group">
-                        <label>Tag Crops</label>
-                        <div class="tag-select-container" id="log-tags-container"></div>
-                    </div>
-                    <div class="form-group">
-                        <label>Log Entry / Notes</label>
-                        <textarea id="log-notes" rows="4" placeholder="Describe activities, fertilizing, pest management..." required=""></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label>Attach Photos</label>
-                        <input type="file" id="log-photo-input" accept="image/*" multiple onchange="handlePhotoSelection(event)">
-                        <div id="log-photo-previews" class="log-photo-preview-container"></div>
-                    </div>
-                    <div style="display:flex; gap:8px;">
-                        <button type="submit" class="btn" id="log-save-btn">Save Log Entry</button>
-                        <button type="button" class="btn btn-secondary" id="log-cancel-btn" style="display:none;" onclick="resetLogForm()">Cancel</button>
-                    </div>
-                </form>
+                <details class="form-collapsible" open>
+                    <summary id="log-form-title">New Field Log</summary>
+                    <form id="log-form" onsubmit="handleLogSubmit(event)">
+                        <input type="hidden" id="log-id" value="">
+                        <div class="form-group">
+                            <label>Date</label>
+                            <input type="date" id="log-date" required="">
+                        </div>
+                        <div class="form-group">
+                            <label>Tag Crops</label>
+                            <div class="tag-select-container" id="log-tags-container"></div>
+                        </div>
+                        <div class="form-group">
+                            <label>Log Entry / Notes</label>
+                            <textarea id="log-notes" rows="4" placeholder="Describe activities, fertilizing, pest management..." required=""></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Attach Photos</label>
+                            <input type="file" id="log-photo-input" accept="image/*" multiple onchange="handlePhotoSelection(event)">
+                            <div id="log-photo-previews" class="log-photo-preview-container"></div>
+                        </div>
+                        <div style="display:flex; gap:8px;">
+                            <button type="submit" class="btn" id="log-save-btn">Save Log Entry</button>
+                            <button type="button" class="btn btn-secondary" id="log-cancel-btn" style="display:none;" onclick="resetLogForm()">Cancel</button>
+                        </div>
+                    </form>
+                </details>
             </div>
 
             <div class="card grid-span-2">
@@ -932,33 +995,36 @@
         </div>
     </div>
 
+    <!-- TAB 5: HARVEST -->
     <div id="tab-harvest" class="tab-content">
         <div class="grid">
             <div class="card">
-                <h2 id="harvest-form-title">Log Harvest</h2>
-                <form id="harvest-form" onsubmit="handleHarvestSubmit(event)">
-                    <input type="hidden" id="harvest-id" value="">
-                    <div class="form-group">
-                        <label>Date Harvested</label>
-                        <input type="date" id="harvest-date" required="">
-                    </div>
-                    <div class="form-group">
-                        <label>Select Crop</label>
-                        <select id="harvest-crop" onchange="onHarvestCropSelectChange()" required=""></select>
-                    </div>
-                    <div class="form-group">
-                        <label>Quantity Harvested</label>
-                        <input type="number" step="any" id="harvest-qty" min="0.01" placeholder="e.g. 2.5" required="">
-                    </div>
-                    <div class="form-group">
-                        <label>Unit <span class="badge-read-only">Auto-filled</span></label>
-                        <input type="text" id="harvest-unit" placeholder="Auto-filled from crop" readonly="" tabindex="-1">
-                    </div>
-                    <div style="display:flex; gap:8px;">
-                        <button type="submit" class="btn" id="harvest-save-btn">Record Harvest</button>
-                        <button type="button" class="btn btn-secondary" id="harvest-cancel-btn" style="display: none;" onclick="resetHarvestForm()">Cancel</button>
-                    </div>
-                </form>
+                <details class="form-collapsible" open>
+                    <summary id="harvest-form-title">Log Harvest</summary>
+                    <form id="harvest-form" onsubmit="handleHarvestSubmit(event)">
+                        <input type="hidden" id="harvest-id" value="">
+                        <div class="form-group">
+                            <label>Date Harvested</label>
+                            <input type="date" id="harvest-date" required="">
+                        </div>
+                        <div class="form-group">
+                            <label>Select Crop</label>
+                            <select id="harvest-crop" onchange="onHarvestCropSelectChange()" required=""></select>
+                        </div>
+                        <div class="form-group">
+                            <label>Quantity Harvested</label>
+                            <input type="number" step="any" id="harvest-qty" min="0.01" placeholder="e.g. 2.5" required="">
+                        </div>
+                        <div class="form-group">
+                            <label>Unit <span class="badge-read-only">Auto-filled</span></label>
+                            <input type="text" id="harvest-unit" placeholder="Auto-filled from crop" readonly="" tabindex="-1">
+                        </div>
+                        <div style="display:flex; gap:8px;">
+                            <button type="submit" class="btn" id="harvest-save-btn">Record Harvest</button>
+                            <button type="button" class="btn btn-secondary" id="harvest-cancel-btn" style="display: none;" onclick="resetHarvestForm()">Cancel</button>
+                        </div>
+                    </form>
+                </details>
             </div>
 
             <div class="card grid-span-2">
@@ -987,43 +1053,46 @@
         </div>
     </div>
 
+    <!-- TAB 6: TOOLS -->
     <div id="tab-tools" class="tab-content">
         <div class="grid">
             <div class="card">
-                <h2 id="tool-form-title">Add New Tool</h2>
-                <form id="tool-form" onsubmit="handleToolSubmit(event)">
-                    <input type="hidden" id="tool-id" value="">
-                    <div class="form-group">
-                        <label>Tool Name</label>
-                        <input type="text" id="tool-name" placeholder="e.g. Broadfork, Neem Oil, Surround WP" required="">
-                    </div>
-                    <div class="form-group">
-                        <label>Type</label>
-                        <select id="tool-type" required="">
-                            <option value="mechanical">Mechanical</option>
-                            <option value="treatment">Treatment</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Application Area</label>
-                        <select id="tool-area" required="">
-                            <option value="soil">Soil</option>
-                            <option value="foliar">Foliar</option>
-                            <option value="fruit">Fruit</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-                            <label style="margin-bottom: 0;">Tool Tags / Target Focus</label>
-                            <button type="button" class="btn btn-secondary" style="padding: 2px 6px; font-size: 0.7rem;" onclick="promptAddCustomToolTag()">➕ Custom Tag</button>
+                <details class="form-collapsible" open>
+                    <summary id="tool-form-title">Add New Tool</summary>
+                    <form id="tool-form" onsubmit="handleToolSubmit(event)">
+                        <input type="hidden" id="tool-id" value="">
+                        <div class="form-group">
+                            <label>Tool Name</label>
+                            <input type="text" id="tool-name" placeholder="e.g. Broadfork, Neem Oil, Surround WP" required="">
                         </div>
-                        <div class="tag-select-container" id="tool-tags-container"></div>
-                    </div>
-                    <div style="display:flex; gap:8px;">
-                        <button type="submit" class="btn" id="tool-save-btn">Save Tool</button>
-                        <button type="button" class="btn btn-secondary" id="tool-cancel-btn" style="display: none;" onclick="resetToolForm()">Cancel</button>
-                    </div>
-                </form>
+                        <div class="form-group">
+                            <label>Type</label>
+                            <select id="tool-type" required="">
+                                <option value="mechanical">Mechanical</option>
+                                <option value="treatment">Treatment</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Application Area</label>
+                            <select id="tool-area" required="">
+                                <option value="soil">Soil</option>
+                                <option value="foliar">Foliar</option>
+                                <option value="fruit">Fruit</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                                <label style="margin-bottom: 0;">Tool Tags / Target Focus</label>
+                                <button type="button" class="btn btn-secondary" style="padding: 2px 6px; font-size: 0.7rem;" onclick="promptAddCustomToolTag()">➕ Custom Tag</button>
+                            </div>
+                            <div class="tag-select-container" id="tool-tags-container"></div>
+                        </div>
+                        <div style="display:flex; gap:8px;">
+                            <button type="submit" class="btn" id="tool-save-btn">Save Tool</button>
+                            <button type="button" class="btn btn-secondary" id="tool-cancel-btn" style="display: none;" onclick="resetToolForm()">Cancel</button>
+                        </div>
+                    </form>
+                </details>
             </div>
 
             <div class="card grid-span-2">
@@ -1061,16 +1130,18 @@
         </div>
     </div>
 
+    <!-- SETTINGS & UTILITIES MODAL -->
     <div class="modal" id="settings-modal">
         <div class="modal-content" style="max-width: 550px;">
             <h2 style="margin-bottom: 12px; color: var(--primary-dark);">⚙️ Dashboard Utilities &amp; Archiving</h2>
             
             <div style="border-bottom: 1px solid var(--border); padding-bottom: 12px; margin-bottom: 12px;">
                 <h3 style="font-size: 0.95rem; margin-bottom: 6px;">1. Archive Current Season</h3>
-                <p style="font-size: 0.8rem; color: var(--text-light); margin-bottom: 8px;">Save active data to a named JSON file (e.g. <code>2026</code> becomes <code>archive/2026_data.json</code> or downloaded locally).</p>
-                <div style="display: flex; gap: 8px;">
-                    <input type="text" id="archive-name" placeholder="e.g. 2026" style="flex: 1;">
-                    <button class="btn" onclick="archiveCurrentSeason()">📦 Archive Season</button>
+                <p style="font-size: 0.8rem; color: var(--text-light); margin-bottom: 8px;">Save active data to a named JSON or structured Excel file with dedicated tabs and auto-filters.</p>
+                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                    <input type="text" id="archive-name" placeholder="e.g. 2026" style="flex: 1; min-width: 140px;">
+                    <button class="btn" onclick="archiveCurrentSeason()">📦 Archive JSON</button>
+                    <button class="btn btn-secondary" style="background:#e8f5e9; color:#2e7d32; border:1px solid #c8e6c9;" onclick="exportToExcel()">📊 Export .XLSX</button>
                 </div>
             </div>
 
@@ -1095,6 +1166,7 @@
         </div>
     </div>
 
+    <!-- HARD DELETION CONFIRMATION MODAL -->
     <div class="modal" id="delete-modal">
         <div class="modal-content">
             <h3 style="color: var(--danger); margin-bottom: 8px;">⚠️ High Protection Action</h3>
@@ -1303,6 +1375,146 @@
             alert(`Archived current dataset as ${fileName}!`);
         }
 
+        function exportToExcel() {
+            if (typeof XLSX === 'undefined') {
+                alert("Excel export library is loading, please try again in a moment.");
+                return;
+            }
+
+            const name = document.getElementById('archive-name').value.trim() || 'garden_data';
+            const fileName = `${name}.xlsx`;
+            const wb = XLSX.utils.book_new();
+
+            const { totals: harvestTotals } = calculateHarvestTotals();
+
+            // 1. Crops Tab
+            const cropsData = state.crops.map(c => {
+                let harvestSummary = "0";
+                if (harvestTotals[c.id]) {
+                    harvestSummary = Object.entries(harvestTotals[c.id])
+                        .map(([unit, qty]) => `${qty} ${unit}`)
+                        .join(', ');
+                }
+                return {
+                    "Crop ID": c.id,
+                    "Crop Name": c.name,
+                    "Date Planted": c.datePlanted || "",
+                    "Amount Planted": c.amountPlanted || 0,
+                    "Expected Ripening Date": c.dateRipening || "",
+                    "Default Harvest Unit": c.harvestUnit || "lbs",
+                    "Total Harvest": harvestSummary,
+                    "Author": c.author || ""
+                };
+            });
+            const wsCrops = XLSX.utils.json_to_sheet(cropsData.length ? cropsData : [{}]);
+
+            // 2. Metric Definitions Tab
+            const metricDefsData = state.metricDefs.map(m => ({
+                "Metric ID": m.id,
+                "Metric Name": m.name,
+                "Unit": m.unit,
+                "Author": m.author || ""
+            }));
+            const wsMetricDefs = XLSX.utils.json_to_sheet(metricDefsData.length ? metricDefsData : [{}]);
+
+            // 3. Measurements Tab
+            const measurementsData = [...state.measurements]
+                .sort((a,b) => new Date(b.date) - new Date(a.date))
+                .map(m => {
+                    const crop = state.crops.find(c => c.id === m.cropId);
+                    const metric = state.metricDefs.find(md => md.id === m.metricId);
+                    return {
+                        "Date": m.date || "",
+                        "Crop": crop ? crop.name : "Deleted",
+                        "Metric": metric ? metric.name : "Unknown",
+                        "Unit": metric ? metric.unit : "",
+                        "Value": m.value,
+                        "Author": m.author || ""
+                    };
+                });
+            const wsMeasurements = XLSX.utils.json_to_sheet(measurementsData.length ? measurementsData : [{}]);
+
+            // 4. Field Logs Tab
+            const logsData = [...state.logs]
+                .sort((a,b) => new Date(b.date) - new Date(a.date))
+                .map(l => {
+                    const tagsList = Array.isArray(l.tags) ? l.tags : [];
+                    let tagNames = "";
+                    if (tagsList.includes('ALL')) {
+                        tagNames = "All Crops";
+                    } else {
+                        tagNames = tagsList.map(tid => {
+                            const c = state.crops.find(crop => crop.id === tid);
+                            return c ? c.name : '';
+                        }).filter(Boolean).join(', ');
+                    }
+                    return {
+                        "Date": l.date || "",
+                        "Tagged Crops": tagNames || "General",
+                        "Notes": l.notes || "",
+                        "Attached Photos": (l.photos || []).join(', '),
+                        "Author": l.author || ""
+                    };
+                });
+            const wsLogs = XLSX.utils.json_to_sheet(logsData.length ? logsData : [{}]);
+
+            // 5. Harvests Tab
+            const harvestsData = [...state.harvests]
+                .sort((a,b) => new Date(b.date) - new Date(a.date))
+                .map(h => {
+                    const crop = state.crops.find(c => c.id === h.cropId);
+                    return {
+                        "Date": h.date || "",
+                        "Crop": crop ? crop.name : "Deleted",
+                        "Quantity": h.qty,
+                        "Unit": h.unit || "lbs",
+                        "Author": h.author || ""
+                    };
+                });
+            const wsHarvests = XLSX.utils.json_to_sheet(harvestsData.length ? harvestsData : [{}]);
+
+            // 6. Tools Tab
+            const toolsData = (state.tools || []).map(t => ({
+                "Tool Name": t.name,
+                "Type": t.type,
+                "Area": t.area,
+                "Tags / Targets": (t.tags || []).join(', '),
+                "Author": t.author || ""
+            }));
+            const wsTools = XLSX.utils.json_to_sheet(toolsData.length ? toolsData : [{}]);
+
+            // Add sheets to workbook
+            XLSX.utils.book_append_sheet(wb, wsCrops, "Crops");
+            XLSX.utils.book_append_sheet(wb, wsMetricDefs, "Metric Definitions");
+            XLSX.utils.book_append_sheet(wb, wsMeasurements, "Measurements");
+            XLSX.utils.book_append_sheet(wb, wsLogs, "Field Logs");
+            XLSX.utils.book_append_sheet(wb, wsHarvests, "Harvests");
+            XLSX.utils.book_append_sheet(wb, wsTools, "Tools");
+
+            // Enable auto-filters and auto column width for all sheets
+            [wsCrops, wsMetricDefs, wsMeasurements, wsLogs, wsHarvests, wsTools].forEach(ws => {
+                if (ws['!ref']) {
+                    ws['!autofilter'] = { ref: ws['!ref'] };
+                    const range = XLSX.utils.decode_range(ws['!ref']);
+                    const colWidths = [];
+                    for (let C = range.s.c; C <= range.e.c; ++C) {
+                        let maxLen = 10;
+                        for (let R = range.s.r; R <= range.e.r; ++R) {
+                            const cell = ws[XLSX.utils.encode_cell({r: R, c: C})];
+                            if (cell && cell.v) {
+                                const len = String(cell.v).length;
+                                if (len > maxLen) maxLen = Math.min(len, 50);
+                            }
+                        }
+                        colWidths.push({ wch: maxLen + 2 });
+                    }
+                    ws['!cols'] = colWidths;
+                }
+            });
+
+            XLSX.writeFile(wb, fileName);
+        }
+
         function loadHistoricalFile() {
             const input = document.getElementById('load-json-file');
             if (!input.files || !input.files[0]) {
@@ -1485,6 +1697,9 @@
             document.getElementById('crop-form-title').innerText = "Edit Crop Entry";
             document.getElementById('crop-save-btn').innerText = "Update Crop";
             document.getElementById('crop-cancel-btn').style.display = 'inline-block';
+            
+            const details = document.getElementById('crop-form').closest('details');
+            if (details) details.open = true;
         }
 
         function deleteCrop(id) {
@@ -1909,6 +2124,9 @@
 
             document.getElementById('meas-save-btn').innerText = "Update Measurement";
             document.getElementById('meas-cancel-btn').style.display = 'inline-block';
+            
+            const details = document.getElementById('meas-form').closest('details');
+            if (details) details.open = true;
         }
 
         function deleteMeas(id) {
@@ -2314,6 +2532,9 @@
             document.getElementById('log-form-title').innerText = "Edit Field Log";
             document.getElementById('log-save-btn').innerText = "Update Log";
             document.getElementById('log-cancel-btn').style.display = 'inline-block';
+            
+            const details = document.getElementById('log-form').closest('details');
+            if (details) details.open = true;
         }
 
         function deleteLog(id) {
@@ -2485,6 +2706,9 @@
             document.getElementById('harvest-form-title').innerText = "Edit Harvest Record";
             document.getElementById('harvest-save-btn').innerText = "Update Record";
             document.getElementById('harvest-cancel-btn').style.display = 'inline-block';
+            
+            const details = document.getElementById('harvest-form').closest('details');
+            if (details) details.open = true;
         }
 
         function deleteHarvest(id) {
@@ -2644,6 +2868,9 @@
             document.getElementById('tool-form-title').innerText = "Edit Tool Entry";
             document.getElementById('tool-save-btn').innerText = "Update Tool";
             document.getElementById('tool-cancel-btn').style.display = 'inline-block';
+            
+            const details = document.getElementById('tool-form').closest('details');
+            if (details) details.open = true;
         }
 
         function deleteTool(id) {
