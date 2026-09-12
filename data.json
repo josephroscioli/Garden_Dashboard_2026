@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-09-12 14:39",
+  "lastUpdated": "2026-09-12 14:50",
   "lastUpdatedBy": "Wyatt",
   "crops": [
     {
@@ -1272,6 +1272,26 @@
       "id": "_nhf3mdfh7",
       "name": "coop poop",
       "type": "mechanical",
+      "area": "soil",
+      "tags": [
+        "soil nutrient"
+      ],
+      "author": "Wyatt"
+    },
+    {
+      "id": "_omhltx86z",
+      "name": "Langbienite",
+      "type": "treatment",
+      "area": "soil",
+      "tags": [
+        "soil nutrient"
+      ],
+      "author": "Wyatt"
+    },
+    {
+      "id": "_26zk4sie1",
+      "name": "Alaska fish fertilizer",
+      "type": "treatment",
       "area": "soil",
       "tags": [
         "soil nutrient"
