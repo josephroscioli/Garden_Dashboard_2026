@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-09-12 19:44",
+  "lastUpdated": "2026-09-12 19:45",
   "lastUpdatedBy": "Rob",
   "crops": [
     {
@@ -1160,14 +1160,6 @@
       "cropId": "crop_potatoes",
       "qty": 1.7,
       "unit": "lbs",
-      "author": "Rob"
-    },
-    {
-      "id": "_hk2rp2col",
-      "date": "2026-09-12",
-      "cropId": "crop_corn",
-      "qty": 10,
-      "unit": "ears",
       "author": "Rob"
     }
   ],
