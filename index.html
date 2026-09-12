@@ -5,8 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Garden Dashboard</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌱</text></svg>">
-    <!-- SheetJS for Excel Export -->
-    <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
     <style>
         :root {
             --primary: #2e7d32;
@@ -83,9 +81,7 @@
             transition: background 0.2s ease;
         }
 
-        .menu-toggle-btn:hover {
-            background: #e8efe9;
-        }
+        .menu-toggle-btn:hover { background: #e8efe9; }
 
         h1 {
             color: var(--primary-dark);
@@ -109,11 +105,8 @@
             width: 100%;
         }
 
-        @media (min-width: 576px) {
-            .last-updated { width: auto; }
-        }
+        @media (min-width: 576px) { .last-updated { width: auto; } }
 
-        /* SLIDE-OUT SIDEBAR NAV */
         .sidebar-overlay {
             position: fixed;
             top: 0;
@@ -147,9 +140,7 @@
             padding: 20px 16px;
         }
 
-        .sidebar-drawer.active {
-            left: 0;
-        }
+        .sidebar-drawer.active { left: 0; }
 
         .sidebar-header {
             display: flex;
@@ -160,10 +151,7 @@
             margin-bottom: 16px;
         }
 
-        .sidebar-header h2 {
-            font-size: 1.2rem;
-            color: var(--primary-dark);
-        }
+        .sidebar-header h2 { font-size: 1.2rem; color: var(--primary-dark); }
 
         .sidebar-close-btn {
             background: transparent;
@@ -198,21 +186,10 @@
             gap: 10px;
         }
 
-        .sidebar-btn:hover {
-            color: var(--primary-dark);
-            background: #e8efe9;
-        }
+        .sidebar-btn:hover { color: var(--primary-dark); background: #e8efe9; }
+        .sidebar-btn.active { background: var(--primary-light); color: white; }
 
-        .sidebar-btn.active {
-            background: var(--primary-light);
-            color: white;
-        }
-
-        .sidebar-divider {
-            height: 1px;
-            background: var(--border);
-            margin: 8px 0;
-        }
+        .sidebar-divider { height: 1px; background: var(--border); margin: 8px 0; }
 
         .tab-content { display: none; }
         .tab-content.active { display: block; }
@@ -254,75 +231,8 @@
             justify-content: space-between;
         }
 
-        /* COLLAPSIBLE ACCORDION STYLES */
-        details.collapsible-card {
-            background: var(--surface);
-            border-radius: var(--radius);
-            border: 1px solid var(--border);
-            box-shadow: var(--shadow);
-            margin-bottom: 16px;
-            overflow: hidden;
-        }
-
-        details.collapsible-card summary {
-            padding: 14px 18px;
-            font-size: clamp(1rem, 3vw, 1.2rem);
-            font-weight: bold;
-            color: var(--primary-dark);
-            cursor: pointer;
-            list-style: none;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            user-select: none;
-            background: #fafafa;
-            border-bottom: 1px solid transparent;
-            transition: background 0.2s ease;
-        }
-
-        details.collapsible-card summary::-webkit-details-marker {
-            display: none;
-        }
-
-        details.collapsible-card summary:hover {
-            background: #f0f4f0;
-        }
-
-        details.collapsible-card[open] summary {
-            border-bottom: 1px solid var(--border);
-            background: #ffffff;
-        }
-
-        details.collapsible-card summary::after {
-            content: "▶";
-            font-size: 0.85rem;
-            color: var(--text-light);
-            transition: transform 0.2s ease;
-        }
-
-        details.collapsible-card[open] summary::after {
-            transform: rotate(90deg);
-        }
-
-        .collapsible-body {
-            padding: 16px;
-        }
-
-        @media (min-width: 768px) {
-            .collapsible-body { padding: 24px; }
-        }
-
-        .card-header-actions {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .card-header-actions select {
-            padding: 4px 8px;
-            font-size: 0.8rem;
-            width: auto;
-        }
+        .card-header-actions { display: flex; align-items: center; gap: 8px; }
+        .card-header-actions select { padding: 4px 8px; font-size: 0.8rem; width: auto; }
 
         .form-group { margin-bottom: 12px; }
 
@@ -347,10 +257,7 @@
         }
 
         @media (min-width: 768px) {
-            input, select, textarea {
-                padding: 10px 14px;
-                font-size: 0.95rem;
-            }
+            input, select, textarea { padding: 10px 14px; font-size: 0.95rem; }
         }
 
         input:focus, select:focus, textarea:focus {
@@ -381,10 +288,7 @@
         .btn-danger { background: var(--danger); }
         .btn-danger:hover { background: #b71c1c; }
 
-        .table-wrapper {
-            width: 100%;
-            overflow-x: hidden;
-        }
+        .table-wrapper { width: 100%; overflow-x: hidden; }
 
         table {
             width: 100%;
@@ -476,10 +380,7 @@
             border-radius: 6px;
         }
 
-        .chart-controls .form-group {
-            margin-bottom: 0;
-            flex: 1 1 100px;
-        }
+        .chart-controls .form-group { margin-bottom: 0; flex: 1 1 100px; }
 
         .chart-legend {
             display: flex;
@@ -542,7 +443,6 @@
             opacity: 0.6;
         }
 
-        /* LAYOUT EDITOR STYLES */
         .layout-editor-container {
             position: relative;
             width: 100%;
@@ -561,26 +461,22 @@
             position: relative;
             width: 100%;
             height: 0;
-            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+            padding-bottom: 56.25%;
             background: #fff;
         }
 
         .layout-bg-image {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
             object-fit: contain;
             pointer-events: none;
         }
 
         .layout-canvas {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
             cursor: crosshair;
         }
 
@@ -596,10 +492,7 @@
             border: 1px solid var(--border);
         }
 
-        .layout-toolbar .form-group {
-            margin-bottom: 0;
-            min-width: 180px;
-        }
+        .layout-toolbar .form-group { margin-bottom: 0; min-width: 180px; }
 
         .tag-select-container {
             display: flex;
@@ -625,10 +518,7 @@
             user-select: none;
         }
 
-        .tag-option input {
-            width: auto;
-            cursor: pointer;
-        }
+        .tag-option input { width: auto; cursor: pointer; }
 
         .badge {
             background: #e8efe9;
@@ -643,17 +533,8 @@
             word-break: break-word;
         }
 
-        .badge-type {
-            background: #e0f2fe;
-            color: #0369a1;
-            border: 1px solid #bae6fd;
-        }
-
-        .badge-area {
-            background: #fef3c7;
-            color: #92400e;
-            border: 1px solid #fde68a;
-        }
+        .badge-type { background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd; }
+        .badge-area { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
 
         .author-tag {
             font-size: 0.72rem;
@@ -665,73 +546,11 @@
             margin-left: 4px;
         }
 
-        /* PHOTO THUMBNAIL & PREVIEW STYLES */
-        .photo-gallery {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-            margin-top: 6px;
-        }
-
-        .photo-thumb {
-            width: 48px;
-            height: 48px;
-            object-fit: cover;
-            border-radius: 6px;
-            border: 1px solid var(--border);
-            cursor: pointer;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-
-        .photo-thumb:hover {
-            transform: scale(1.08);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-        }
-
-        .photo-preview-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-top: 8px;
-        }
-
-        .photo-preview-wrapper {
-            position: relative;
-            display: inline-block;
-        }
-
-        .photo-preview-wrapper img {
-            width: 60px;
-            height: 60px;
-            object-fit: cover;
-            border-radius: 6px;
-            border: 1px solid var(--border);
-        }
-
-        .photo-remove-btn {
-            position: absolute;
-            top: -6px;
-            right: -6px;
-            background: var(--danger);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 18px;
-            height: 18px;
-            font-size: 0.7rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
         .modal {
             display: none;
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
             background: rgba(0,0,0,0.5);
             align-items: center;
             justify-content: center;
@@ -770,11 +589,70 @@
             padding: 2px 4px;
             border-radius: 4px;
         }
+
+        .log-photo-preview-container {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 8px;
+        }
+
+        .log-photo-preview-item {
+            position: relative;
+            width: 60px;
+            height: 60px;
+            border-radius: 6px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        .log-photo-preview-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .log-photo-preview-item .remove-photo-btn {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            background: rgba(0,0,0,0.6);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .log-thumb-gallery {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            margin-top: 6px;
+        }
+
+        .log-thumb-gallery img {
+            width: 48px;
+            height: 48px;
+            object-fit: cover;
+            border-radius: 4px;
+            border: 1px solid var(--border);
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .log-thumb-gallery img:hover {
+            transform: scale(1.05);
+        }
     </style>
 </head>
 <body>
 
-    <!-- SIDEBAR DRAWER & OVERLAY -->
     <div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
     <div class="sidebar-drawer" id="sidebar-drawer">
         <div class="sidebar-header">
@@ -809,46 +687,42 @@
         </div>
     </header>
 
-    <!-- TAB 1: CROP INVENTORY -->
     <div id="tab-inventory" class="tab-content active">
         <div class="grid">
-            <!-- CHANGE 1: COLLAPSIBLE CROP FORM -->
-            <details class="collapsible-card" id="crop-details">
-                <summary id="crop-form-title">Add New Crop</summary>
-                <div class="collapsible-body">
-                    <form id="crop-form" onsubmit="handleCropSubmit(event)">
-                        <input type="hidden" id="crop-id" value="">
-                        <div class="form-group">
-                            <label>Crop Name</label>
-                            <input type="text" id="crop-name" placeholder="e.g. Early Girl Tomato" required="">
-                        </div>
-                        <div class="form-group">
-                            <label>Date Planted</label>
-                            <input type="date" id="crop-date-planted" required="">
-                        </div>
-                        <div class="form-group">
-                            <label>Amount Planted</label>
-                            <input type="number" id="crop-amount-planted" min="1" placeholder="e.g. 6" required="">
-                        </div>
-                        <div class="form-group">
-                            <label>Expected Ripening Date</label>
-                            <input type="date" id="crop-date-ripening">
-                        </div>
-                        <div class="form-group">
-                            <label>Default Harvest Unit</label>
-                            <input type="text" id="crop-harvest-unit" placeholder="e.g. lbs, count, ears" required="">
-                        </div>
-                        <div class="form-group">
-                            <label>Total Harvest Amount <span class="badge-read-only">Auto-updated</span></label>
-                            <input type="text" id="crop-harvest-amount" value="0 (managed via Harvest Tab)" disabled="">
-                        </div>
-                        <div style="display: flex; gap: 8px;">
-                            <button type="submit" class="btn" id="crop-save-btn">Save Crop</button>
-                            <button type="button" class="btn btn-secondary" id="crop-cancel-btn" style="display: none;" onclick="resetCropForm()">Cancel</button>
-                        </div>
-                    </form>
-                </div>
-            </details>
+            <div class="card">
+                <h2 id="crop-form-title">Add New Crop</h2>
+                <form id="crop-form" onsubmit="handleCropSubmit(event)">
+                    <input type="hidden" id="crop-id" value="">
+                    <div class="form-group">
+                        <label>Crop Name</label>
+                        <input type="text" id="crop-name" placeholder="e.g. Early Girl Tomato" required="">
+                    </div>
+                    <div class="form-group">
+                        <label>Date Planted</label>
+                        <input type="date" id="crop-date-planted" required="">
+                    </div>
+                    <div class="form-group">
+                        <label>Amount Planted</label>
+                        <input type="number" id="crop-amount-planted" min="1" placeholder="e.g. 6" required="">
+                    </div>
+                    <div class="form-group">
+                        <label>Expected Ripening Date</label>
+                        <input type="date" id="crop-date-ripening">
+                    </div>
+                    <div class="form-group">
+                        <label>Default Harvest Unit</label>
+                        <input type="text" id="crop-harvest-unit" placeholder="e.g. lbs, count, ears" required="">
+                    </div>
+                    <div class="form-group">
+                        <label>Total Harvest Amount <span class="badge-read-only">Auto-updated</span></label>
+                        <input type="text" id="crop-harvest-amount" value="0 (managed via Harvest Tab)" disabled="">
+                    </div>
+                    <div style="display: flex; gap: 8px;">
+                        <button type="submit" class="btn" id="crop-save-btn">Save Crop</button>
+                        <button type="button" class="btn btn-secondary" id="crop-cancel-btn" style="display: none;" onclick="resetCropForm()">Cancel</button>
+                    </div>
+                </form>
+            </div>
 
             <div class="card grid-span-2">
                 <h2>Master Crop Inventory</h2>
@@ -871,7 +745,6 @@
         </div>
     </div>
 
-    <!-- TAB 2: GARDEN LAYOUT EDITOR -->
     <div id="tab-layout" class="tab-content">
         <div class="card">
             <h2>
@@ -879,26 +752,20 @@
                 <span style="font-size: 0.8rem; font-weight: normal; color: var(--text-light);">Click &amp; drag on canvas to draw bounding boxes</span>
             </h2>
 
-            <!-- CHANGE 1: COLLAPSIBLE ACTIVE CROP SELECTION IN LAYOUT -->
-            <details class="collapsible-card" style="margin-top: 12px;">
-                <summary>Active Crop Selection &amp; Tools</summary>
-                <div class="collapsible-body">
-                    <div class="layout-toolbar" style="margin-bottom: 0;">
-                        <div class="form-group">
-                            <label>Active Crop Selection</label>
-                            <select id="layout-crop-select"></select>
-                        </div>
-                        <div class="form-group" style="min-width: 140px;">
-                            <label>Box Color</label>
-                            <input type="color" id="layout-box-color" value="#4caf50" style="height: 38px; padding: 2px;">
-                        </div>
-                        <button class="btn btn-secondary" style="margin-top: auto;" onclick="clearSelectedLayoutBox()">🗑️ Remove Crop Box</button>
-                        <button class="btn btn-danger" style="margin-top: auto; margin-left: auto;" onclick="clearAllLayoutBoxes()">🧹 Clear All Map Boxes</button>
-                    </div>
+            <div class="layout-toolbar">
+                <div class="form-group">
+                    <label>Active Crop Selection</label>
+                    <select id="layout-crop-select"></select>
                 </div>
-            </details>
+                <div class="form-group" style="min-width: 140px;">
+                    <label>Box Color</label>
+                    <input type="color" id="layout-box-color" value="#4caf50" style="height: 38px; padding: 2px;">
+                </div>
+                <button class="btn btn-secondary" style="margin-top: auto;" onclick="clearSelectedLayoutBox()">🗑️ Remove Crop Box</button>
+                <button class="btn btn-danger" style="margin-top: auto; margin-left: auto;" onclick="clearAllLayoutBoxes()">🧹 Clear All Map Boxes</button>
+            </div>
 
-            <div class="layout-editor-container" id="layout-container" style="margin-top: 12px;">
+            <div class="layout-editor-container" id="layout-container">
                 <div class="layout-bg-wrapper">
                     <img class="layout-bg-image" id="layout-bg-img" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1000 562.5'><rect width='1000' height='562.5' fill='%23806000'/><rect width='825' height='162' fill='%23626466'/><text x='412.5' y='90' font-family='sans-serif' font-size='28' fill='%23ffffff' text-anchor='middle' dominant-baseline='middle'>Barn</text><rect x='648' y='162' width='352' height='178' fill='%23ffffff'/></svg>" alt="Garden Plot Layout">
                     <canvas class="layout-canvas" id="layoutCanvas"></canvas>
@@ -907,56 +774,49 @@
         </div>
     </div>
 
-    <!-- TAB 3: METRICS -->
     <div id="tab-metrics" class="tab-content">
         <div class="grid">
-            <!-- CHANGE 1: COLLAPSIBLE DEFINE METRIC TYPE -->
-            <details class="collapsible-card">
-                <summary>1. Define Metric Type</summary>
-                <div class="collapsible-body">
-                    <form id="metric-def-form" onsubmit="handleMetricDefSubmit(event)">
-                        <div class="form-group">
-                            <label>Metric Name</label>
-                            <input type="text" id="metric-name" placeholder="e.g. Plant Height" required="">
-                        </div>
-                        <div class="form-group">
-                            <label>Units</label>
-                            <input type="text" id="metric-unit" placeholder="e.g. inches" required="">
-                        </div>
-                        <button type="submit" class="btn">Define Metric</button>
-                    </form>
-                </div>
-            </details>
+            <div class="card">
+                <h2>1. Define Metric Type</h2>
+                <form id="metric-def-form" onsubmit="handleMetricDefSubmit(event)">
+                    <div class="form-group">
+                        <label>Metric Name</label>
+                        <input type="text" id="metric-name" placeholder="e.g. Plant Height" required="">
+                    </div>
+                    <div class="form-group">
+                        <label>Units</label>
+                        <input type="text" id="metric-unit" placeholder="e.g. inches" required="">
+                    </div>
+                    <button type="submit" class="btn">Define Metric</button>
+                </form>
+            </div>
 
-            <!-- CHANGE 1: COLLAPSIBLE ADD MEASUREMENT -->
-            <details class="collapsible-card" id="meas-details">
-                <summary id="meas-form-title">2. Add Measurement</summary>
-                <div class="collapsible-body">
-                    <form id="meas-form" onsubmit="handleMeasurementSubmit(event)">
-                        <input type="hidden" id="meas-id" value="">
-                        <div class="form-group">
-                            <label>Select Crop</label>
-                            <select id="meas-crop" required=""></select>
-                        </div>
-                        <div class="form-group">
-                            <label>Metric Type</label>
-                            <select id="meas-metric" required=""></select>
-                        </div>
-                        <div class="form-group">
-                            <label>Date</label>
-                            <input type="date" id="meas-date" required="">
-                        </div>
-                        <div class="form-group">
-                            <label>Value</label>
-                            <input type="number" step="any" id="meas-value" required="">
-                        </div>
-                        <div style="display:flex; gap:8px;">
-                            <button type="submit" class="btn" id="meas-save-btn">Log Value</button>
-                            <button type="button" class="btn btn-secondary" id="meas-cancel-btn" style="display:none;" onclick="resetMeasForm()">Cancel</button>
-                        </div>
-                    </form>
-                </div>
-            </details>
+            <div class="card">
+                <h2 id="meas-form-title">2. Add Measurement</h2>
+                <form id="meas-form" onsubmit="handleMeasurementSubmit(event)">
+                    <input type="hidden" id="meas-id" value="">
+                    <div class="form-group">
+                        <label>Select Crop</label>
+                        <select id="meas-crop" required=""></select>
+                    </div>
+                    <div class="form-group">
+                        <label>Metric Type</label>
+                        <select id="meas-metric" required=""></select>
+                    </div>
+                    <div class="form-group">
+                        <label>Date</label>
+                        <input type="date" id="meas-date" required="">
+                    </div>
+                    <div class="form-group">
+                        <label>Value</label>
+                        <input type="number" step="any" id="meas-value" required="">
+                    </div>
+                    <div style="display:flex; gap:8px;">
+                        <button type="submit" class="btn" id="meas-save-btn">Log Value</button>
+                        <button type="button" class="btn btn-secondary" id="meas-cancel-btn" style="display:none;" onclick="resetMeasForm()">Cancel</button>
+                    </div>
+                </form>
+            </div>
         </div>
 
         <div class="chart-container" id="chart-card">
@@ -1015,40 +875,36 @@
         </div>
     </div>
 
-    <!-- TAB 4: FIELD LOGS -->
+    <!-- TAB 4: FIELD LOGS (UPDATED WITH PHOTO ATTACHMENTS) -->
     <div id="tab-logs" class="tab-content">
         <div class="grid">
-            <!-- CHANGE 1 & 3: COLLAPSIBLE NEW FIELD LOG WITH PHOTO UPLOAD -->
-            <details class="collapsible-card" id="log-details">
-                <summary id="log-form-title">New Field Log</summary>
-                <div class="collapsible-body">
-                    <form id="log-form" onsubmit="handleLogSubmit(event)">
-                        <input type="hidden" id="log-id" value="">
-                        <div class="form-group">
-                            <label>Date</label>
-                            <input type="date" id="log-date" required="">
-                        </div>
-                        <div class="form-group">
-                            <label>Tag Crops</label>
-                            <div class="tag-select-container" id="log-tags-container"></div>
-                        </div>
-                        <div class="form-group">
-                            <label>Log Entry / Notes</label>
-                            <textarea id="log-notes" rows="4" placeholder="Describe activities, fertilizing, pest management..." required=""></textarea>
-                        </div>
-                        <!-- CHANGE 3: PHOTO ATTACHMENT FIELD -->
-                        <div class="form-group">
-                            <label>Attach Photos (git syncable)</label>
-                            <input type="file" id="log-photos-input" accept="image/*" multiple onchange="handleLogPhotoSelect(event)">
-                            <div class="photo-preview-container" id="log-photo-previews"></div>
-                        </div>
-                        <div style="display:flex; gap:8px;">
-                            <button type="submit" class="btn" id="log-save-btn">Save Log Entry</button>
-                            <button type="button" class="btn btn-secondary" id="log-cancel-btn" style="display:none;" onclick="resetLogForm()">Cancel</button>
-                        </div>
-                    </form>
-                </div>
-            </details>
+            <div class="card">
+                <h2 id="log-form-title">New Field Log</h2>
+                <form id="log-form" onsubmit="handleLogSubmit(event)">
+                    <input type="hidden" id="log-id" value="">
+                    <div class="form-group">
+                        <label>Date</label>
+                        <input type="date" id="log-date" required="">
+                    </div>
+                    <div class="form-group">
+                        <label>Tag Crops</label>
+                        <div class="tag-select-container" id="log-tags-container"></div>
+                    </div>
+                    <div class="form-group">
+                        <label>Log Entry / Notes</label>
+                        <textarea id="log-notes" rows="4" placeholder="Describe activities, fertilizing, pest management..." required=""></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Attach Photos</label>
+                        <input type="file" id="log-photo-input" accept="image/*" multiple onchange="handlePhotoSelection(event)">
+                        <div id="log-photo-previews" class="log-photo-preview-container"></div>
+                    </div>
+                    <div style="display:flex; gap:8px;">
+                        <button type="submit" class="btn" id="log-save-btn">Save Log Entry</button>
+                        <button type="button" class="btn btn-secondary" id="log-cancel-btn" style="display:none;" onclick="resetLogForm()">Cancel</button>
+                    </div>
+                </form>
+            </div>
 
             <div class="card grid-span-2">
                 <h2>
@@ -1063,8 +919,8 @@
                     <table>
                         <thead>
                             <tr>
-                                <th style="width: 18%;">Date</th>
-                                <th style="width: 22%;">Tagged</th>
+                                <th style="width: 20%;">Date</th>
+                                <th style="width: 20%;">Tagged</th>
                                 <th style="width: 45%;">Notes &amp; Photos</th>
                                 <th style="width: 15%;">Act</th>
                             </tr>
@@ -1076,7 +932,6 @@
         </div>
     </div>
 
-    <!-- TAB 5: HARVEST -->
     <div id="tab-harvest" class="tab-content">
         <div class="grid">
             <div class="card">
@@ -1132,48 +987,44 @@
         </div>
     </div>
 
-    <!-- TAB 6: TOOLS -->
     <div id="tab-tools" class="tab-content">
         <div class="grid">
-            <!-- CHANGE 1: COLLAPSIBLE ADD NEW TOOL -->
-            <details class="collapsible-card" id="tool-details">
-                <summary id="tool-form-title">Add New Tool</summary>
-                <div class="collapsible-body">
-                    <form id="tool-form" onsubmit="handleToolSubmit(event)">
-                        <input type="hidden" id="tool-id" value="">
-                        <div class="form-group">
-                            <label>Tool Name</label>
-                            <input type="text" id="tool-name" placeholder="e.g. Broadfork, Neem Oil, Surround WP" required="">
+            <div class="card">
+                <h2 id="tool-form-title">Add New Tool</h2>
+                <form id="tool-form" onsubmit="handleToolSubmit(event)">
+                    <input type="hidden" id="tool-id" value="">
+                    <div class="form-group">
+                        <label>Tool Name</label>
+                        <input type="text" id="tool-name" placeholder="e.g. Broadfork, Neem Oil, Surround WP" required="">
+                    </div>
+                    <div class="form-group">
+                        <label>Type</label>
+                        <select id="tool-type" required="">
+                            <option value="mechanical">Mechanical</option>
+                            <option value="treatment">Treatment</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Application Area</label>
+                        <select id="tool-area" required="">
+                            <option value="soil">Soil</option>
+                            <option value="foliar">Foliar</option>
+                            <option value="fruit">Fruit</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                            <label style="margin-bottom: 0;">Tool Tags / Target Focus</label>
+                            <button type="button" class="btn btn-secondary" style="padding: 2px 6px; font-size: 0.7rem;" onclick="promptAddCustomToolTag()">➕ Custom Tag</button>
                         </div>
-                        <div class="form-group">
-                            <label>Type</label>
-                            <select id="tool-type" required="">
-                                <option value="mechanical">Mechanical</option>
-                                <option value="treatment">Treatment</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Application Area</label>
-                            <select id="tool-area" required="">
-                                <option value="soil">Soil</option>
-                                <option value="foliar">Foliar</option>
-                                <option value="fruit">Fruit</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-                                <label style="margin-bottom: 0;">Tool Tags / Target Focus</label>
-                                <button type="button" class="btn btn-secondary" style="padding: 2px 6px; font-size: 0.7rem;" onclick="promptAddCustomToolTag()">➕ Custom Tag</button>
-                            </div>
-                            <div class="tag-select-container" id="tool-tags-container"></div>
-                        </div>
-                        <div style="display:flex; gap:8px;">
-                            <button type="submit" class="btn" id="tool-save-btn">Save Tool</button>
-                            <button type="button" class="btn btn-secondary" id="tool-cancel-btn" style="display: none;" onclick="resetToolForm()">Cancel</button>
-                        </div>
-                    </form>
-                </div>
-            </details>
+                        <div class="tag-select-container" id="tool-tags-container"></div>
+                    </div>
+                    <div style="display:flex; gap:8px;">
+                        <button type="submit" class="btn" id="tool-save-btn">Save Tool</button>
+                        <button type="button" class="btn btn-secondary" id="tool-cancel-btn" style="display: none;" onclick="resetToolForm()">Cancel</button>
+                    </div>
+                </form>
+            </div>
 
             <div class="card grid-span-2">
                 <h2>
@@ -1210,19 +1061,16 @@
         </div>
     </div>
 
-    <!-- SETTINGS & UTILITIES MODAL -->
     <div class="modal" id="settings-modal">
         <div class="modal-content" style="max-width: 550px;">
             <h2 style="margin-bottom: 12px; color: var(--primary-dark);">⚙️ Dashboard Utilities &amp; Archiving</h2>
             
-            <!-- CHANGE 2: EXCEL & JSON ARCHIVING OPTIONS -->
             <div style="border-bottom: 1px solid var(--border); padding-bottom: 12px; margin-bottom: 12px;">
                 <h3 style="font-size: 0.95rem; margin-bottom: 6px;">1. Archive Current Season</h3>
-                <p style="font-size: 0.8rem; color: var(--text-light); margin-bottom: 8px;">Save active data to JSON or formatted Excel workbook (with sortable headers across tabs).</p>
-                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                    <input type="text" id="archive-name" placeholder="e.g. 2026" style="flex: 1; min-width: 140px;">
-                    <button class="btn" onclick="archiveCurrentSeason()">📦 JSON</button>
-                    <button class="btn btn-secondary" style="background:#2e7d32; color:white;" onclick="archiveCurrentSeasonXLSX()">📊 Excel (.xlsx)</button>
+                <p style="font-size: 0.8rem; color: var(--text-light); margin-bottom: 8px;">Save active data to a named JSON file (e.g. <code>2026</code> becomes <code>archive/2026_data.json</code> or downloaded locally).</p>
+                <div style="display: flex; gap: 8px;">
+                    <input type="text" id="archive-name" placeholder="e.g. 2026" style="flex: 1;">
+                    <button class="btn" onclick="archiveCurrentSeason()">📦 Archive Season</button>
                 </div>
             </div>
 
@@ -1247,7 +1095,6 @@
         </div>
     </div>
 
-    <!-- HARD DELETION CONFIRMATION MODAL -->
     <div class="modal" id="delete-modal">
         <div class="modal-content">
             <h3 style="color: var(--danger); margin-bottom: 8px;">⚠️ High Protection Action</h3>
@@ -1256,14 +1103,6 @@
                 <button class="btn btn-secondary" onclick="closeDeleteModal()">Cancel</button>
                 <button class="btn btn-danger" id="confirm-delete-btn">Confirm Deletion</button>
             </div>
-        </div>
-    </div>
-
-    <!-- CHANGE 3: FULLSIZE PHOTO PREVIEW MODAL -->
-    <div class="modal" id="photo-lightbox-modal" onclick="closePhotoLightbox()">
-        <div class="modal-content" style="max-width: 90vw; max-height: 90vh; padding: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0,0,0,0.9);">
-            <img id="lightbox-img" src="" style="max-width: 100%; max-height: 80vh; object-fit: contain; border-radius: 8px;">
-            <button class="btn btn-secondary" style="margin-top: 12px;" onclick="closePhotoLightbox()">Close Preview</button>
         </div>
     </div>
 
@@ -1288,9 +1127,10 @@
 
         let activePin = localStorage.getItem('gd_pin') || null;
         let activeUser = localStorage.getItem('gd_user') || null;
+        let currentLogPhotos = [];
+        let pendingFilesToUpload = [];
 
         let pendingDeleteFn = null;
-        let currentLogPhotos = []; // Staging array for photos being attached to active log entry
 
         function updateAuthUI() {
             const btn = document.getElementById('auth-btn');
@@ -1340,7 +1180,6 @@
             openSettingsModal();
         }
 
-        // --- NAVIGATION ---
         function switchTab(tabId, btnEl) {
             document.querySelectorAll('.sidebar-btn').forEach(btn => btn.classList.remove('active'));
             document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
@@ -1462,111 +1301,6 @@
             URL.revokeObjectURL(link.href);
 
             alert(`Archived current dataset as ${fileName}!`);
-        }
-
-        /* CHANGE 2: EXCEL ARCHIVE GENERATION FUNCTION */
-        function archiveCurrentSeasonXLSX() {
-            if (typeof XLSX === 'undefined') {
-                alert("Excel export library is loading. Please check your network connection and try again.");
-                return;
-            }
-
-            const name = document.getElementById('archive-name').value.trim() || 'season';
-            const fileName = `${name}_data.xlsx`;
-            const wb = XLSX.utils.book_new();
-
-            // 1. INVENTORY SHEET
-            const { totals: harvestTotals, precision: harvestPrecision } = calculateHarvestTotals();
-            const inventoryRows = state.crops.map(c => {
-                let harvestDisplay = "0";
-                if (harvestTotals[c.id]) {
-                    harvestDisplay = Object.entries(harvestTotals[c.id])
-                        .map(([unit, qty]) => {
-                            const maxDec = harvestPrecision[c.id] && harvestPrecision[c.id][unit] !== undefined 
-                                ? harvestPrecision[c.id][unit] : 0;
-                            return maxDec > 0 ? `${qty.toFixed(maxDec)} ${unit}` : `${qty} ${unit}`;
-                        }).join(', ');
-                }
-                return {
-                    "Crop Name": c.name,
-                    "Date Planted": c.datePlanted || '',
-                    "Quantity Planted": parseFloat(c.amountPlanted) || 0,
-                    "Expected Ripening": c.dateRipening || '',
-                    "Harvest Unit": c.harvestUnit || 'lbs',
-                    "Total Harvest": harvestDisplay,
-                    "Created By": c.author || ''
-                };
-            });
-            const wsInventory = XLSX.utils.json_to_sheet(inventoryRows.length ? inventoryRows : [{}]);
-            wsInventory['!autofilter'] = { ref: "A1:G" + Math.max(2, inventoryRows.length + 1) };
-            XLSX.utils.book_append_sheet(wb, wsInventory, "Inventory");
-
-            // 2. METRICS SHEET
-            const metricRows = state.measurements.map(m => {
-                const crop = state.crops.find(c => c.id === m.cropId);
-                const def = state.metricDefs.find(md => md.id === m.metricId);
-                return {
-                    "Date": m.date || '',
-                    "Crop": crop ? crop.name : 'Deleted',
-                    "Metric": def ? def.name : '',
-                    "Value": m.value,
-                    "Unit": def ? def.unit : '',
-                    "Author": m.author || ''
-                };
-            });
-            const wsMetrics = XLSX.utils.json_to_sheet(metricRows.length ? metricRows : [{}]);
-            wsMetrics['!autofilter'] = { ref: "A1:F" + Math.max(2, metricRows.length + 1) };
-            XLSX.utils.book_append_sheet(wb, wsMetrics, "Metrics");
-
-            // 3. LOGS SHEET
-            const logRows = state.logs.map(l => {
-                const tagsList = Array.isArray(l.tags) ? l.tags : [];
-                let tagsStr = tagsList.includes('ALL') ? 'All Crops' : tagsList.map(tid => {
-                    const c = state.crops.find(cr => cr.id === tid);
-                    return c ? c.name : '';
-                }).filter(Boolean).join(', ');
-
-                return {
-                    "Date": l.date || '',
-                    "Tagged Crops": tagsStr || 'General',
-                    "Log Notes": l.notes || '',
-                    "Photos Attached": Array.isArray(l.photos) ? l.photos.length : 0,
-                    "Author": l.author || ''
-                };
-            });
-            const wsLogs = XLSX.utils.json_to_sheet(logRows.length ? logRows : [{}]);
-            wsLogs['!autofilter'] = { ref: "A1:E" + Math.max(2, logRows.length + 1) };
-            XLSX.utils.book_append_sheet(wb, wsLogs, "Logs");
-
-            // 4. HARVEST SHEET
-            const harvestRows = state.harvests.map(h => {
-                const crop = state.crops.find(c => c.id === h.cropId);
-                return {
-                    "Date Harvested": h.date || '',
-                    "Crop": crop ? crop.name : 'Deleted',
-                    "Quantity": h.qty,
-                    "Unit": h.unit || 'lbs',
-                    "Author": h.author || ''
-                };
-            });
-            const wsHarvest = XLSX.utils.json_to_sheet(harvestRows.length ? harvestRows : [{}]);
-            wsHarvest['!autofilter'] = { ref: "A1:E" + Math.max(2, harvestRows.length + 1) };
-            XLSX.utils.book_append_sheet(wb, wsHarvest, "Harvest");
-
-            // 5. TOOLS SHEET
-            const toolRows = state.tools.map(t => ({
-                "Tool Name": t.name,
-                "Type": t.type,
-                "Application Area": t.area,
-                "Tags / Target Focus": Array.isArray(t.tags) ? t.tags.join(', ') : '',
-                "Author": t.author || ''
-            }));
-            const wsTools = XLSX.utils.json_to_sheet(toolRows.length ? toolRows : [{}]);
-            wsTools['!autofilter'] = { ref: "A1:E" + Math.max(2, toolRows.length + 1) };
-            XLSX.utils.book_append_sheet(wb, wsTools, "Tools");
-
-            XLSX.writeFile(wb, fileName);
-            alert(`Archived current dataset as Excel workbook: ${fileName}!`);
         }
 
         function loadHistoricalFile() {
@@ -1741,9 +1475,6 @@
             const crop = state.crops.find(c => c.id === id);
             if (!crop) return;
 
-            const details = document.getElementById('crop-details');
-            if (details) details.open = true;
-
             document.getElementById('crop-id').value = crop.id;
             document.getElementById('crop-name').value = crop.name;
             document.getElementById('crop-date-planted').value = crop.datePlanted;
@@ -1775,9 +1506,6 @@
             document.getElementById('crop-form-title').innerText = "Add New Crop";
             document.getElementById('crop-save-btn').innerText = "Save Crop";
             document.getElementById('crop-cancel-btn').style.display = 'none';
-
-            const details = document.getElementById('crop-details');
-            if (details) details.open = false;
         }
 
         function calculateHarvestTotals() {
@@ -2170,9 +1898,6 @@
             const m = state.measurements.find(m => m.id === id);
             if (!m) return;
 
-            const details = document.getElementById('meas-details');
-            if (details) details.open = true;
-
             document.getElementById('meas-id').value = m.id;
             document.getElementById('meas-crop').value = m.cropId;
             document.getElementById('meas-metric').value = m.metricId;
@@ -2218,9 +1943,6 @@
 
             document.getElementById('meas-save-btn').innerText = "Log Value";
             document.getElementById('meas-cancel-btn').style.display = 'none';
-
-            const details = document.getElementById('meas-details');
-            if (details) details.open = false;
         }
 
         function renderMetricsUI() {
@@ -2454,7 +2176,7 @@
             renderChart();
         }
 
-        // --- FIELD LOGS MODULE WITH PHOTO UPLOADS ---
+        // --- FIELD LOGS MODULE ---
         function renderLogTagsSelector() {
             const container = document.getElementById('log-tags-container');
             container.innerHTML = `
@@ -2480,51 +2202,55 @@
             });
         }
 
-        /* CHANGE 3: PHOTO HANDLING HELPERS */
-        function handleLogPhotoSelect(evt) {
-            const files = evt.target.files;
-            if (!files || !files.length) return;
-
-            Array.from(files).forEach(file => {
+        function handlePhotoSelection(e) {
+            const files = Array.from(e.target.files);
+            files.forEach(file => {
                 const reader = new FileReader();
-                reader.onload = (e) => {
-                    currentLogPhotos.push(e.target.result);
-                    renderStagedPhotoPreviews();
+                reader.onload = (event) => {
+                    const base64Str = event.target.result;
+                    const cleanBase64 = base64Str.split(',')[1];
+                    const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+                    const repoPath = `photos/${Date.now()}_${safeName}`;
+
+                    pendingFilesToUpload.push({
+                        path: repoPath,
+                        content: cleanBase64
+                    });
+                    currentLogPhotos.push(repoPath);
+                    renderLogPhotoPreviews();
                 };
                 reader.readAsDataURL(file);
             });
-            evt.target.value = '';
         }
 
-        function renderStagedPhotoPreviews() {
+        function renderLogPhotoPreviews() {
             const container = document.getElementById('log-photo-previews');
             if (!container) return;
+            container.innerHTML = '';
 
-            container.innerHTML = currentLogPhotos.map((dataUrl, idx) => `
-                <div class="photo-preview-wrapper">
-                    <img src="${dataUrl}" alt="Staged photo">
-                    <button type="button" class="photo-remove-btn" onclick="removeStagedPhoto(${idx})">✕</button>
-                </div>
-            `).join('');
+            currentLogPhotos.forEach((path, idx) => {
+                const item = document.createElement('div');
+                item.className = 'log-photo-preview-item';
+                
+                let displaySrc = path;
+                const pending = pendingFilesToUpload.find(p => p.path === path);
+                if (pending) {
+                    displaySrc = `data:image/jpeg;base64,${pending.content}`;
+                }
+
+                item.innerHTML = `
+                    <img src="${displaySrc}" alt="Preview">
+                    <button type="button" class="remove-photo-btn" onclick="removeLogPhoto(${idx})">✕</button>
+                `;
+                container.appendChild(item);
+            });
         }
 
-        function removeStagedPhoto(idx) {
-            currentLogPhotos.splice(idx, 1);
-            renderStagedPhotoPreviews();
-        }
-
-        function openPhotoLightbox(src) {
-            const modal = document.getElementById('photo-lightbox-modal');
-            const img = document.getElementById('lightbox-img');
-            if (modal && img) {
-                img.src = src;
-                modal.classList.add('active');
-            }
-        }
-
-        function closePhotoLightbox() {
-            const modal = document.getElementById('photo-lightbox-modal');
-            if (modal) modal.classList.remove('active');
+        function removeLogPhoto(index) {
+            const removedPath = currentLogPhotos[index];
+            currentLogPhotos.splice(index, 1);
+            pendingFilesToUpload = pendingFilesToUpload.filter(p => p.path !== removedPath);
+            renderLogPhotoPreviews();
         }
 
         function handleLogSubmit(e) {
@@ -2571,15 +2297,12 @@
             const l = state.logs.find(l => l.id === id);
             if (!l) return;
 
-            const details = document.getElementById('log-details');
-            if (details) details.open = true;
-
             document.getElementById('log-id').value = l.id;
             document.getElementById('log-date').value = l.date;
             document.getElementById('log-notes').value = l.notes;
 
-            currentLogPhotos = Array.isArray(l.photos) ? [...l.photos] : [];
-            renderStagedPhotoPreviews();
+            currentLogPhotos = l.photos ? [...l.photos] : [];
+            renderLogPhotoPreviews();
 
             const allChk = document.getElementById('tag-all');
             if (allChk) allChk.checked = l.tags.includes('ALL');
@@ -2607,15 +2330,11 @@
             document.getElementById('log-id').value = '';
             document.getElementById('log-form').reset();
             document.getElementById('log-date').value = new Date().toISOString().split('T')[0];
-            currentLogPhotos = [];
-            renderStagedPhotoPreviews();
-
             document.getElementById('log-form-title').innerText = "New Field Log";
             document.getElementById('log-save-btn').innerText = "Save Log Entry";
             document.getElementById('log-cancel-btn').style.display = 'none';
-
-            const details = document.getElementById('log-details');
-            if (details) details.open = false;
+            currentLogPhotos = [];
+            renderLogPhotoPreviews();
         }
 
         function renderLogs() {
@@ -2681,24 +2400,26 @@
                     .replace(/"/g, "&quot;")
                     .replace(/'/g, "&#039;");
 
-                const authorBadge = l.author ? `<span class="author-tag">${l.author}</span>` : '';
-
-                /* CHANGE 3: RENDER PHOTO THUMBNAILS IN LOG TABLE */
-                let photoGalleryHtml = '';
-                if (Array.isArray(l.photos) && l.photos.length > 0) {
-                    photoGalleryHtml = `<div class="photo-gallery">` + 
-                        l.photos.map(p => `<img src="${p}" class="photo-thumb" onclick="openPhotoLightbox('${p}')" title="Click to enlarge">`).join('') +
-                        `</div>`;
+                let photosGallery = '';
+                if (l.photos && l.photos.length > 0) {
+                    const photoImgs = l.photos.map(src => {
+                        let url = src;
+                        const pending = pendingFilesToUpload.find(p => p.path === src);
+                        if (pending) {
+                            url = `data:image/jpeg;base64,${pending.content}`;
+                        }
+                        return `<a href="${url}" target="_blank"><img src="${url}" alt="Log Photo"></a>`;
+                    }).join('');
+                    photosGallery = `<div class="log-thumb-gallery">${photoImgs}</div>`;
                 }
+
+                const authorBadge = l.author ? `<span class="author-tag">${l.author}</span>` : '';
 
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
                     <td>${l.date ? l.date.slice(5) : 'N/A'}${authorBadge}</td>
                     <td>${tagsDisplay || '<em>General</em>'}</td>
-                    <td>
-                        <div style="white-space: pre-wrap;">${safeNotes}</div>
-                        ${photoGalleryHtml}
-                    </td>
+                    <td style="white-space: pre-wrap;">${safeNotes}${photosGallery}</td>
                     <td class="actions-cell">
                         <button class="icon-btn" onclick="editLog('${l.id}')">✏️</button>
                         <button class="icon-btn delete" onclick="deleteLog('${l.id}')">🗑️</button>
@@ -2911,9 +2632,6 @@
             const tool = state.tools.find(t => t.id === id);
             if (!tool) return;
 
-            const details = document.getElementById('tool-details');
-            if (details) details.open = true;
-
             document.getElementById('tool-id').value = tool.id;
             document.getElementById('tool-name').value = tool.name;
             document.getElementById('tool-type').value = tool.type;
@@ -2946,9 +2664,6 @@
             document.getElementById('tool-form-title').innerText = "Add New Tool";
             document.getElementById('tool-save-btn').innerText = "Save Tool";
             document.getElementById('tool-cancel-btn').style.display = 'none';
-
-            const details = document.getElementById('tool-details');
-            if (details) details.open = false;
         }
 
         function renderToolsUI() {
@@ -3024,8 +2739,13 @@
 
                 state.lastUpdated = timestampStr;
 
-                btn.innerText = "⏳ Syncing Data...";
+                btn.innerText = "⏳ Syncing Data & Uploading Photos...";
                 btn.disabled = true;
+
+                const payload = {
+                    data: state,
+                    files: pendingFilesToUpload
+                };
 
                 const res = await fetch(WORKER_URL, {
                     method: "POST",
@@ -3034,7 +2754,7 @@
                         "Content-Type": "application/json",
                         "X-Garden-Auth": activePin
                     },
-                    body: JSON.stringify({ data: state })
+                    body: JSON.stringify(payload)
                 });
 
                 if (res.status === 401) {
@@ -3060,6 +2780,7 @@
                     updateAuthUI();
                 }
 
+                pendingFilesToUpload = [];
                 saveState();
 
                 btn.innerText = "✅ Committed!";
