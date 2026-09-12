@@ -1161,6 +1161,14 @@
       "qty": 1.7,
       "unit": "lbs",
       "author": "Rob"
+    },
+    {
+      "id": "_hk2rp2col",
+      "date": "2026-09-12",
+      "cropId": "crop_corn",
+      "qty": 10,
+      "unit": "ears",
+      "author": "Rob"
     }
   ],
   "layoutBoxes": [
