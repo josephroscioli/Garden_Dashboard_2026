@@ -1141,6 +1141,14 @@
       "qty": 7,
       "unit": "lbs",
       "author": "Wyatt"
+    },
+    {
+      "id": "_5xd3zflm7",
+      "date": "2026-09-12",
+      "cropId": "crop_potatoes",
+      "qty": 1.7,
+      "unit": "lbs",
+      "author": "Rob"
     }
   ],
   "layoutBoxes": [
