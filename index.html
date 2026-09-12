@@ -59,6 +59,32 @@
             }
         }
 
+        .header-title-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .menu-toggle-btn {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            color: var(--primary-dark);
+            padding: 8px 12px;
+            border-radius: var(--radius);
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: var(--shadow);
+            transition: background 0.2s ease;
+        }
+
+        .menu-toggle-btn:hover {
+            background: #e8efe9;
+        }
+
         h1 {
             color: var(--primary-dark);
             font-size: clamp(1.3rem, 4vw, 1.8rem);
@@ -85,44 +111,105 @@
             .last-updated { width: auto; }
         }
 
-        .nav-tabs {
-            display: flex;
-            gap: 4px;
-            margin-bottom: 16px;
-            background: #e8efe9;
-            padding: 4px;
-            border-radius: var(--radius);
-            width: 100%;
+        /* SLIDE-OUT SIDEBAR NAV */
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0,0,0,0.4);
+            z-index: 1050;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
         }
 
-        .tab-btn {
-            flex: 1 1 0;
-            padding: 8px 4px;
+        .sidebar-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .sidebar-drawer {
+            position: fixed;
+            top: 0;
+            left: -280px;
+            width: 280px;
+            height: 100vh;
+            background: var(--surface);
+            z-index: 1100;
+            box-shadow: 4px 0 16px rgba(0,0,0,0.15);
+            transition: left 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            padding: 20px 16px;
+        }
+
+        .sidebar-drawer.active {
+            left: 0;
+        }
+
+        .sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 16px;
+        }
+
+        .sidebar-header h2 {
+            font-size: 1.2rem;
+            color: var(--primary-dark);
+        }
+
+        .sidebar-close-btn {
+            background: transparent;
+            border: none;
+            font-size: 1.4rem;
+            color: var(--text-light);
+            cursor: pointer;
+            padding: 4px 8px;
+        }
+
+        .sidebar-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            flex: 1;
+        }
+
+        .sidebar-btn {
+            width: 100%;
+            text-align: left;
+            padding: 12px 14px;
             border: none;
             background: transparent;
             font-weight: 600;
-            color: var(--text-light);
+            color: var(--text);
             cursor: pointer;
             border-radius: 8px;
             transition: all 0.2s ease;
-            font-size: clamp(0.72rem, 2.5vw, 0.9rem);
+            font-size: 0.95rem;
             display: flex;
             align-items: center;
-            justify-content: center;
-            gap: 4px;
-            text-align: center;
-            word-break: break-word;
+            gap: 10px;
         }
 
-        .tab-btn:hover {
+        .sidebar-btn:hover {
             color: var(--primary-dark);
-            background: rgba(255,255,255,0.5);
+            background: #e8efe9;
         }
 
-        .tab-btn.active {
-            background: var(--surface);
-            color: var(--primary-dark);
-            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+        .sidebar-btn.active {
+            background: var(--primary-light);
+            color: white;
+        }
+
+        .sidebar-divider {
+            height: 1px;
+            background: var(--border);
+            margin: 8px 0;
         }
 
         .tab-content { display: none; }
@@ -528,7 +615,7 @@
             background: rgba(0,0,0,0.5);
             align-items: center;
             justify-content: center;
-            z-index: 1000;
+            z-index: 1200;
             padding: 12px;
         }
 
@@ -567,28 +654,40 @@
 </head>
 <body>
 
+    <!-- SIDEBAR DRAWER & OVERLAY -->
+    <div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
+    <div class="sidebar-drawer" id="sidebar-drawer">
+        <div class="sidebar-header">
+            <h2>Navigation</h2>
+            <button class="sidebar-close-btn" onclick="closeSidebar()">✕</button>
+        </div>
+        <div class="sidebar-menu">
+            <button class="sidebar-btn active" onclick="switchTab('inventory', this)">📦 Inventory</button>
+            <button class="sidebar-btn" onclick="switchTab('layout', this)">🗺️ Layout</button>
+            <button class="sidebar-btn" onclick="switchTab('metrics', this)">📈 Metrics</button>
+            <button class="sidebar-btn" onclick="switchTab('logs', this)">📝 Logs</button>
+            <button class="sidebar-btn" onclick="switchTab('harvest', this)">🧺 Harvest</button>
+            <button class="sidebar-btn" onclick="switchTab('tools', this)">🛠️ Tools</button>
+            <div class="sidebar-divider"></div>
+            <button class="sidebar-btn" onclick="openSettingsModalFromSidebar()">⚙️ Utilities</button>
+        </div>
+    </div>
+
     <header>
-        <div>
-            <h1>🌱 Garden Dashboard</h1>
-            <div id="stats-summary" style="font-size: 0.8rem; color: var(--text-light); margin-top: 2px;">Loading statistics...</div>
+        <div class="header-title-container">
+            <button class="menu-toggle-btn" onclick="openSidebar()" title="Open Navigation Menu">☰ Menu</button>
+            <div>
+                <h1>🌱 Garden Dashboard</h1>
+                <div id="stats-summary" style="font-size: 0.8rem; color: var(--text-light); margin-top: 2px;">Loading statistics...</div>
+            </div>
         </div>
         <div class="header-controls">
             <div id="last-updated-display" class="last-updated">Last Synced: Loading...</div>
             <button class="btn btn-secondary" id="auth-btn" onclick="promptLogin()">🔑 Log In</button>
             <button class="btn btn-secondary" onclick="forceReloadLatest()">🔄 Load Latest</button>
             <button class="btn btn-secondary" id="save-file-btn" onclick="saveDashboardToFile()">💾 Save &amp; Sync</button>
-            <button class="btn btn-secondary" onclick="openSettingsModal()">⚙️ Utilities</button>
         </div>
     </header>
-
-    <div class="nav-tabs">
-        <button class="tab-btn active" onclick="switchTab('inventory', this)">📦 Inventory</button>
-        <button class="tab-btn" onclick="switchTab('layout', this)">🗺️ Layout</button>
-        <button class="tab-btn" onclick="switchTab('metrics', this)">📈 Metrics</button>
-        <button class="tab-btn" onclick="switchTab('logs', this)">📝 Logs</button>
-        <button class="tab-btn" onclick="switchTab('harvest', this)">🧺 Harvest</button>
-        <button class="tab-btn" onclick="switchTab('tools', this)">🛠️ Tools</button>
-    </div>
 
     <!-- TAB 1: CROP INVENTORY -->
     <div id="tab-inventory" class="tab-content active">
@@ -1048,6 +1147,7 @@
             }
         }
 
+        /* CHANGE 1: DO NOT AUTO-SYNC ON LOGIN */
         function promptLogin() {
             if (activeUser) {
                 if (confirm(`Currently logged in as ${activeUser}. Do you want to log out?`)) {
@@ -1064,13 +1164,29 @@
             if (pin && pin.trim()) {
                 activePin = pin.trim();
                 localStorage.setItem('gd_pin', activePin);
-                saveDashboardToFile();
+                updateAuthUI();
             }
+        }
+
+        /* CHANGE 3: SIDEBAR CONTROL FUNCTIONS */
+        function openSidebar() {
+            document.getElementById('sidebar-overlay').classList.add('active');
+            document.getElementById('sidebar-drawer').classList.add('active');
+        }
+
+        function closeSidebar() {
+            document.getElementById('sidebar-overlay').classList.remove('active');
+            document.getElementById('sidebar-drawer').classList.remove('active');
+        }
+
+        function openSettingsModalFromSidebar() {
+            closeSidebar();
+            openSettingsModal();
         }
 
         // --- NAVIGATION ---
         function switchTab(tabId, btnEl) {
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.sidebar-btn').forEach(btn => btn.classList.remove('active'));
             document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
 
             if (btnEl) {
@@ -1078,12 +1194,14 @@
             } else if (window.event && window.event.currentTarget) {
                 window.event.currentTarget.classList.add('active');
             } else {
-                const targetBtn = document.querySelector(`.tab-btn[onclick*="${tabId}"]`);
+                const targetBtn = document.querySelector(`.sidebar-btn[onclick*="${tabId}"]`);
                 if (targetBtn) targetBtn.classList.add('active');
             }
 
             const targetTab = document.getElementById(`tab-${tabId}`);
             if (targetTab) targetTab.classList.add('active');
+
+            closeSidebar();
 
             if (tabId === 'metrics') {
                 setTimeout(() => { renderChart(); }, 50);
@@ -1395,21 +1513,39 @@
             document.getElementById('crop-cancel-btn').style.display = 'none';
         }
 
+        /* CHANGE 2: CALCULATE HARVEST TOTALS WITH SMART DECIMAL PRECISION */
         function calculateHarvestTotals() {
             const totals = {};
+            const precision = {};
+
             state.harvests.forEach(h => {
                 if (!totals[h.cropId]) totals[h.cropId] = {};
                 if (!totals[h.cropId][h.unit]) totals[h.cropId][h.unit] = 0;
-                totals[h.cropId][h.unit] += parseFloat(h.qty);
+                
+                if (!precision[h.cropId]) precision[h.cropId] = {};
+                if (!precision[h.cropId][h.unit]) precision[h.cropId][h.unit] = 0;
+
+                const qtyVal = parseFloat(h.qty);
+                totals[h.cropId][h.unit] += qtyVal;
+
+                // Track max decimal places used across all entries for this crop/unit
+                const rawStr = h.qty.toString();
+                if (rawStr.includes('.')) {
+                    const decPlaces = rawStr.split('.')[1].length;
+                    if (decPlaces > precision[h.cropId][h.unit]) {
+                        precision[h.cropId][h.unit] = decPlaces;
+                    }
+                }
             });
-            return totals;
+
+            return { totals, precision };
         }
 
         function renderInventory() {
             const tbody = document.getElementById('inventory-table-body');
             tbody.innerHTML = '';
 
-            const harvestTotals = calculateHarvestTotals();
+            const { totals: harvestTotals, precision: harvestPrecision } = calculateHarvestTotals();
 
             if (state.crops.length === 0) {
                 tbody.innerHTML = `<tr><td colspan="6" class="empty-state">No crops added yet. Populate your master inventory to start tracking!</td></tr>`;
@@ -1420,7 +1556,13 @@
                 let harvestDisplay = "0";
                 if (harvestTotals[crop.id]) {
                     harvestDisplay = Object.entries(harvestTotals[crop.id])
-                        .map(([unit, qty]) => `${qty} ${unit}`)
+                        .map(([unit, qty]) => {
+                            const maxDec = harvestPrecision[crop.id] && harvestPrecision[crop.id][unit] !== undefined 
+                                ? harvestPrecision[crop.id][unit] 
+                                : 0;
+                            const formattedQty = maxDec > 0 ? qty.toFixed(maxDec) : qty.toString();
+                            return `${formattedQty} ${unit}`;
+                        })
                         .join(', ');
                 }
 
@@ -1829,7 +1971,6 @@
             const prevMeasMetric = measMetricSelect.value;
             const prevChartMetric = chartMetricSelect.value;
 
-            // Only show metrics that currently have logged measurements OR are newly defined
             const activeMetricDefs = state.metricDefs.filter(m => {
                 const hasMeasurements = state.measurements.some(meas => meas.metricId === m.id);
                 const isFreshlyCreated = m.isNew === true;
@@ -2382,7 +2523,6 @@
                 if (!state.toolTagList.includes(cleanTag)) {
                     state.toolTagList.push(cleanTag);
                     renderToolTagsSelector();
-                    // Auto-check the newly added tag
                     const chk = document.querySelector(`.tool-tag-chk[value="${cleanTag}"]`);
                     if (chk) chk.checked = true;
                 }
