@@ -1,6 +1,6 @@
 {
-  "lastUpdated": "2026-09-11 08:11",
-  "lastUpdatedBy": "Rob",
+  "lastUpdated": "2026-09-12 14:39",
+  "lastUpdatedBy": "Wyatt",
   "crops": [
     {
       "id": "crop_corn",
@@ -1099,6 +1099,46 @@
       "date": "2026-09-11",
       "cropId": "crop_beans1",
       "qty": 1.9,
+      "unit": "lbs",
+      "author": "Wyatt"
+    },
+    {
+      "id": "_9wad41skp",
+      "date": "2026-09-12",
+      "cropId": "crop_carrots",
+      "qty": 7.4,
+      "unit": "lbs",
+      "author": "Wyatt"
+    },
+    {
+      "id": "_4i62bku1k",
+      "date": "2026-09-12",
+      "cropId": "crop_carrots",
+      "qty": 3,
+      "unit": "lbs",
+      "author": "Wyatt"
+    },
+    {
+      "id": "_6kazpln5p",
+      "date": "2026-09-12",
+      "cropId": "crop_carrots",
+      "qty": 5.5,
+      "unit": "lbs",
+      "author": "Wyatt"
+    },
+    {
+      "id": "_66gvgmay8",
+      "date": "2026-09-12",
+      "cropId": "crop_carrots",
+      "qty": 5.3,
+      "unit": "lbs",
+      "author": "Wyatt"
+    },
+    {
+      "id": "_glpz9hpmy",
+      "date": "2026-09-12",
+      "cropId": "crop_carrots",
+      "qty": 7,
       "unit": "lbs",
       "author": "Wyatt"
     }
