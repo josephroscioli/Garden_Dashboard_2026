@@ -1408,16 +1408,7 @@
             });
             const wsCrops = XLSX.utils.json_to_sheet(cropsData.length ? cropsData : [{}]);
 
-            // 2. Metric Definitions Tab
-            const metricDefsData = state.metricDefs.map(m => ({
-                "Metric ID": m.id,
-                "Metric Name": m.name,
-                "Unit": m.unit,
-                "Author": m.author || ""
-            }));
-            const wsMetricDefs = XLSX.utils.json_to_sheet(metricDefsData.length ? metricDefsData : [{}]);
-
-            // 3. Measurements Tab
+            // 2. Metrics Tab (Actual Measurements Log)
             const measurementsData = [...state.measurements]
                 .sort((a,b) => new Date(b.date) - new Date(a.date))
                 .map(m => {
@@ -1433,6 +1424,15 @@
                     };
                 });
             const wsMeasurements = XLSX.utils.json_to_sheet(measurementsData.length ? measurementsData : [{}]);
+
+            // 3. Metric Definitions Tab
+            const metricDefsData = state.metricDefs.map(m => ({
+                "Metric ID": m.id,
+                "Metric Name": m.name,
+                "Unit": m.unit,
+                "Author": m.author || ""
+            }));
+            const wsMetricDefs = XLSX.utils.json_to_sheet(metricDefsData.length ? metricDefsData : [{}]);
 
             // 4. Field Logs Tab
             const logsData = [...state.logs]
@@ -1485,14 +1485,14 @@
 
             // Add sheets to workbook
             XLSX.utils.book_append_sheet(wb, wsCrops, "Crops");
+            XLSX.utils.book_append_sheet(wb, wsMeasurements, "Metrics");
             XLSX.utils.book_append_sheet(wb, wsMetricDefs, "Metric Definitions");
-            XLSX.utils.book_append_sheet(wb, wsMeasurements, "Measurements");
             XLSX.utils.book_append_sheet(wb, wsLogs, "Field Logs");
             XLSX.utils.book_append_sheet(wb, wsHarvests, "Harvests");
             XLSX.utils.book_append_sheet(wb, wsTools, "Tools");
 
             // Enable auto-filters and auto column width for all sheets
-            [wsCrops, wsMetricDefs, wsMeasurements, wsLogs, wsHarvests, wsTools].forEach(ws => {
+            [wsCrops, wsMeasurements, wsMetricDefs, wsLogs, wsHarvests, wsTools].forEach(ws => {
                 if (ws['!ref']) {
                     ws['!autofilter'] = { ref: ws['!ref'] };
                     const range = XLSX.utils.decode_range(ws['!ref']);
