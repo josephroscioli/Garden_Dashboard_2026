@@ -1,6 +1,6 @@
 {
-  "lastUpdated": "2026-09-19 07:52",
-  "lastUpdatedBy": "Wyatt",
+  "lastUpdated": "2026-09-19 12:33",
+  "lastUpdatedBy": "Rob",
   "crops": [
     {
       "id": "crop_corn",
@@ -722,6 +722,46 @@
       "date": "2026-09-11",
       "value": 102,
       "author": "Wyatt"
+    },
+    {
+      "id": "_rw1t3vy1l",
+      "cropId": "crop_carrots",
+      "metricId": "m_height",
+      "date": "2026-09-19",
+      "value": 0,
+      "author": "Rob"
+    },
+    {
+      "id": "_ny4yrlhjf",
+      "cropId": "crop_beans1",
+      "metricId": "m_height",
+      "date": "2026-09-19",
+      "value": 24,
+      "author": "Rob"
+    },
+    {
+      "id": "_4dk0kdspo",
+      "cropId": "crop_beans2",
+      "metricId": "m_height",
+      "date": "2026-09-19",
+      "value": 19,
+      "author": "Rob"
+    },
+    {
+      "id": "_orn36m3fb",
+      "cropId": "crop_corn",
+      "metricId": "m_height",
+      "date": "2026-09-19",
+      "value": 101,
+      "author": "Rob"
+    },
+    {
+      "id": "_e71kdsmtf",
+      "cropId": "crop_tomatoes",
+      "metricId": "m_height",
+      "date": "2026-09-19",
+      "value": 52,
+      "author": "Rob"
     }
   ],
   "logs": [
