@@ -717,7 +717,7 @@
             <button class="sidebar-btn" onclick="switchTab('metrics', this)">📈 Metrics</button>
             <button class="sidebar-btn" onclick="switchTab('logs', this)">📝 Logs</button>
             <button class="sidebar-btn" onclick="switchTab('harvest', this)">🧺 Harvest</button>
-            <button class="sidebar-btn" onclick="switchTab('tools', this)">🛠️ Tools</button>
+            <button class="sidebar-btn" onclick="switchTab('tools', this)">🛠️️ Tools</button>
             <div class="sidebar-divider"></div>
             <button class="sidebar-btn" onclick="openSettingsModalFromSidebar()">⚙️ Utilities</button>
         </div>
@@ -1217,7 +1217,7 @@
             }
         }
 
-        function promptLogin() {
+        async function promptLogin() {
             if (activeUser) {
                 if (confirm(`Currently logged in as ${activeUser}. Do you want to log out?`)) {
                     activePin = null;
@@ -1230,9 +1230,50 @@
             }
 
             const pin = prompt("Enter your security PIN:");
-            if (pin && pin.trim()) {
-                activePin = pin.trim();
+            if (!pin || !pin.trim()) return;
+
+            const trimmedPin = pin.trim();
+            const WORKER_URL = "https://garden-dashboard-sync.joseph-roscioli.workers.dev";
+
+            const btn = document.getElementById('auth-btn');
+            if (btn) btn.innerText = "⏳ Verifying...";
+
+            try {
+                // Send a lightweight verification payload (or empty file sync check) to resolve author immediately
+                const res = await fetch(WORKER_URL, {
+                    method: "POST",
+                    mode: "cors",
+                    headers: { 
+                        "Content-Type": "application/json",
+                        "X-Garden-Auth": trimmedPin
+                    },
+                    body: JSON.stringify({ data: state, files: [] })
+                });
+
+                if (res.status === 401) {
+                    throw new Error("Invalid PIN. Access denied.");
+                }
+
+                const responseData = await res.json().catch(() => ({}));
+                if (!res.ok || responseData.error) {
+                    throw new Error(responseData.error || `HTTP ${res.status}: ${res.statusText}`);
+                }
+
+                activePin = trimmedPin;
+                if (responseData.author) {
+                    activeUser = responseData.author;
+                    state.lastUpdatedBy = responseData.author;
+                    localStorage.setItem('gd_user', activeUser);
+                } else {
+                    activeUser = "Authenticated";
+                }
+
                 localStorage.setItem('gd_pin', activePin);
+                updateAuthUI();
+                saveLocalState();
+            } catch (err) {
+                console.error("Login Error:", err);
+                alert("Login failed: " + err.message);
                 updateAuthUI();
             }
         }
@@ -2223,7 +2264,7 @@
                     <td><strong>${m.value}</strong></td>
                     <td class="actions-cell">
                         <button class="icon-btn" onclick="editMeas('${m.id}')" title="Edit">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteMeas('${m.id}')" title="Hard Remove">🗑️</button>
+                        <button class="icon-btn delete" onclick="deleteMeas('${m.id}')" title="Hard Remove">🗑️️</button>
                     </td>
                 `;
                 tbody.appendChild(tr);
