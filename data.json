@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-10-04 21:46",
+  "lastUpdated": "2026-10-04 21:49",
   "lastUpdatedBy": "Rob",
   "crops": [
     {
@@ -761,6 +761,38 @@
       "metricId": "m_height",
       "date": "2026-09-19",
       "value": 52,
+      "author": "Rob"
+    },
+    {
+      "id": "_8o26q0ulm",
+      "cropId": "crop_beans1",
+      "metricId": "m_height",
+      "date": "2026-10-01",
+      "value": 23,
+      "author": "Rob"
+    },
+    {
+      "id": "_1f2mej7h3",
+      "cropId": "crop_beans2",
+      "metricId": "m_height",
+      "date": "2026-10-01",
+      "value": 16,
+      "author": "Rob"
+    },
+    {
+      "id": "_xag88nsps",
+      "cropId": "crop_tomatoes",
+      "metricId": "m_height",
+      "date": "2026-10-01",
+      "value": 48,
+      "author": "Rob"
+    },
+    {
+      "id": "_mzkcfnm51",
+      "cropId": "crop_corn",
+      "metricId": "m_height",
+      "date": "2026-10-01",
+      "value": 97,
       "author": "Rob"
     }
   ],
