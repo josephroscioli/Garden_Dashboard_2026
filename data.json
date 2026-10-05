@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-10-04 21:33",
+  "lastUpdated": "2026-10-04 21:39",
   "lastUpdatedBy": "Rob",
   "crops": [
     {
@@ -986,6 +986,17 @@
       "tags": [],
       "notes": "Test",
       "photos": [],
+      "author": "Rob"
+    },
+    {
+      "id": "_zzbgf0roo",
+      "date": "2026-10-05",
+      "tags": [],
+      "notes": "test",
+      "photos": [
+        "photos/1791164385699_13CH4_spec.png",
+        "photos/1791164389709_CH3D_spec.png"
+      ],
       "author": "Rob"
     }
   ],
