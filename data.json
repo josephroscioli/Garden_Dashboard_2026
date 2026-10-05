@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-10-01 08:04",
+  "lastUpdated": "2026-10-04 21:31",
   "lastUpdatedBy": "Rob",
   "crops": [
     {
@@ -978,6 +978,14 @@
       "photos": [
         "photos/1789256488976_Image__8_.jpeg"
       ],
+      "author": "Rob"
+    },
+    {
+      "id": "_cj6isy9iz",
+      "date": "2026-10-05",
+      "tags": [],
+      "notes": "Test",
+      "photos": [],
       "author": "Rob"
     }
   ],
