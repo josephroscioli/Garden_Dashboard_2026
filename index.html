@@ -700,6 +700,53 @@
         .log-thumb-gallery img:hover {
             transform: scale(1.05);
         }
+
+        /* LIGHTBOX MODAL */
+        .lightbox-modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            background: rgba(0,0,0,0.85);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            cursor: pointer;
+        }
+        .lightbox-modal.active { display: flex; }
+        .lightbox-content {
+            position: relative;
+            max-width: 90vw;
+            max-height: 90vh;
+            cursor: default;
+        }
+        .lightbox-content img {
+            display: block;
+            max-width: 100%;
+            max-height: 90vh;
+            border-radius: var(--radius);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            object-fit: contain;
+        }
+        .lightbox-close {
+            position: absolute;
+            top: -12px;
+            right: -12px;
+            background: white;
+            color: var(--text);
+            border: none;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
     </style>
 </head>
 <body>
@@ -717,7 +764,7 @@
             <button class="sidebar-btn" onclick="switchTab('metrics', this)">📈 Metrics</button>
             <button class="sidebar-btn" onclick="switchTab('logs', this)">📝 Logs</button>
             <button class="sidebar-btn" onclick="switchTab('harvest', this)">🧺 Harvest</button>
-            <button class="sidebar-btn" onclick="switchTab('tools', this)">🛠️️ Tools</button>
+            <button class="sidebar-btn" onclick="switchTab('tools', this)">🛠️ Tools</button>
             <div class="sidebar-divider"></div>
             <button class="sidebar-btn" onclick="openSettingsModalFromSidebar()">⚙️ Utilities</button>
         </div>
@@ -1178,6 +1225,14 @@
         </div>
     </div>
 
+    <!-- LIGHTBOX MODAL -->
+    <div class="lightbox-modal" id="lightbox-modal" onclick="closeLightbox(event)">
+        <div class="lightbox-content">
+            <button class="lightbox-close" onclick="closeLightboxDirect()">✕</button>
+            <img id="lightbox-img" src="" alt="Enlarged Photo">
+        </div>
+    </div>
+
     <script>
         const DEFAULT_TOOL_TAGS = [
             "soil texture", "soil nutrient", "soil pest", "foliar pest",
@@ -1239,7 +1294,6 @@
             if (btn) btn.innerText = "⏳ Verifying...";
 
             try {
-                // Send a lightweight verification payload (or empty file sync check) to resolve author immediately
                 const res = await fetch(WORKER_URL, {
                     method: "POST",
                     mode: "cors",
@@ -2264,7 +2318,7 @@
                     <td><strong>${m.value}</strong></td>
                     <td class="actions-cell">
                         <button class="icon-btn" onclick="editMeas('${m.id}')" title="Edit">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteMeas('${m.id}')" title="Hard Remove">🗑️️</button>
+                        <button class="icon-btn delete" onclick="deleteMeas('${m.id}')" title="Hard Remove">🗑️</button>
                     </td>
                 `;
                 tbody.appendChild(tr);
@@ -2670,7 +2724,7 @@
                         if (pending) {
                             url = `data:image/jpeg;base64,${pending.content}`;
                         }
-                        return `<a href="${url}" target="_blank"><img src="${url}" alt="Log Photo"></a>`;
+                        return `<img src="${url}" alt="Log Photo" onclick="openLightbox('${url.replace(/'/g, "\\'")}')">`;
                     }).join('');
                     photosGallery = `<div class="log-thumb-gallery">${photoImgs}</div>`;
                 }
@@ -2689,6 +2743,24 @@
                 `;
                 tbody.appendChild(tr);
             });
+        }
+
+        // --- LIGHTBOX FUNCTIONS ---
+        function openLightbox(url) {
+            const modal = document.getElementById('lightbox-modal');
+            const img = document.getElementById('lightbox-img');
+            img.src = url;
+            modal.classList.add('active');
+        }
+
+        function closeLightbox(e) {
+            if (e.target.id === 'lightbox-modal') {
+                document.getElementById('lightbox-modal').classList.remove('active');
+            }
+        }
+
+        function closeLightboxDirect() {
+            document.getElementById('lightbox-modal').classList.remove('active');
         }
 
         // --- HARVEST MODULE ---
