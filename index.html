@@ -2490,6 +2490,8 @@
         }
 
         // --- FIELD LOGS MODULE ---
+        let localStagedPhotos = {}; // Map of repoPath -> base64 string for instant local rendering post-sync
+
         function renderLogTagsSelector() {
             const container = document.getElementById('log-tags-container');
             container.innerHTML = `
@@ -2529,6 +2531,7 @@
                         path: repoPath,
                         content: cleanBase64
                     });
+                    localStagedPhotos[repoPath] = cleanBase64;
                     currentLogPhotos.push(repoPath);
                     renderLogPhotoPreviews();
                 };
@@ -2549,6 +2552,8 @@
                 const pending = pendingFilesToUpload.find(p => p.path === path);
                 if (pending) {
                     displaySrc = `data:image/jpeg;base64,${pending.content}`;
+                } else if (localStagedPhotos[path]) {
+                    displaySrc = `data:image/jpeg;base64,${localStagedPhotos[path]}`;
                 }
 
                 item.innerHTML = `
@@ -2563,6 +2568,7 @@
             const removedPath = currentLogPhotos[index];
             currentLogPhotos.splice(index, 1);
             pendingFilesToUpload = pendingFilesToUpload.filter(p => p.path !== removedPath);
+            delete localStagedPhotos[removedPath];
             renderLogPhotoPreviews();
         }
 
@@ -2723,6 +2729,8 @@
                         const pending = pendingFilesToUpload.find(p => p.path === src);
                         if (pending) {
                             url = `data:image/jpeg;base64,${pending.content}`;
+                        } else if (localStagedPhotos[src]) {
+                            url = `data:image/jpeg;base64,${localStagedPhotos[src]}`;
                         }
                         return `<img src="${url}" alt="Log Photo" onclick="openLightbox('${url.replace(/'/g, "\\'")}')">`;
                     }).join('');
