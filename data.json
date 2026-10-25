@@ -1,6 +1,6 @@
 {
-  "lastUpdated": "2026-10-04 21:49",
-  "lastUpdatedBy": "Cory",
+  "lastUpdated": "2026-10-25 13:26",
+  "lastUpdatedBy": "Rob",
   "crops": [
     {
       "id": "crop_corn",
@@ -1234,6 +1234,14 @@
       "date": "2026-09-12",
       "cropId": "crop_potatoes",
       "qty": 1.7,
+      "unit": "lbs",
+      "author": "Rob"
+    },
+    {
+      "id": "_mqumgijar",
+      "date": "2026-10-25",
+      "cropId": "crop_potatoes",
+      "qty": 4.5,
       "unit": "lbs",
       "author": "Rob"
     }
